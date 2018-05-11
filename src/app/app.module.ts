@@ -12,12 +12,10 @@ import { AppRoutingModule } from './/app-routing.module'
 import { LoginComponent } from './login/login.component'
 
 
-
-
 import { MatAutocompleteModule, MatButtonModule, MatButtonToggleModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatExpansionModule, MatGridListModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatNativeDateModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule, MatRadioModule, MatRippleModule, MatSelectModule, MatSidenavModule, MatSliderModule, MatSlideToggleModule, MatSnackBarModule, MatSortModule, MatTableModule, MatTabsModule, MatToolbarModule, MatTooltipModule } from '@angular/material';
-import { StatComponent } from './stat/stat.component';
 import { ApiService } from './api.service';
 import { ApplyComponent } from './apply/apply.component';
+
 
 @NgModule({
   declarations:[
@@ -25,7 +23,6 @@ import { ApplyComponent } from './apply/apply.component';
     NavComponent,
     DashboardComponent,
     LoginComponent,
-    StatComponent,
     ApplyComponent,
   ],
   imports:[
@@ -42,7 +39,7 @@ import { ApplyComponent } from './apply/apply.component';
     MatRippleModule, MatSelectModule, MatSidenavModule, MatSliderModule,
     MatSlideToggleModule, MatSnackBarModule, MatSortModule, MatTableModule,
     MatTabsModule, MatToolbarModule, MatTooltipModule
-    ],
+  ],
   providers:[ LmsService, ApiService ],
   bootstrap:[
     AppComponent

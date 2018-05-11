@@ -9,6 +9,7 @@ import 'rxjs/add/operator/map'
 
 export class ApiService {
 
+  addEmp: any;
   URL:string = "http://192.168.15.219:5000/"
   token:string // Useful in Authentication
   headers:Headers // Useful when backend and frontend have different IP's
@@ -26,10 +27,10 @@ export class ApiService {
     return this.http.get( this.URL+'lms/employeeDetails' ).map( r => r.json() )
   }
 
-    addEmp(data:any){
-      let temp = JSON.stringify(data)
-      console.log(temp)
-      return this.http.post( this.URL+'lms/addEmployee', temp).map( r => console.log(r) )
-    }
+  // addEmp(data:any){
+  //   let temp = JSON.stringify(data)
+  //   console.log(temp)
+  //   return this.http.post( this.URL+'lms/addEmployee', temp).map( r => console.log(r) )
+  // }
 
 }
