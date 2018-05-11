@@ -1,3 +1,18 @@
-<div class="col-sm-4">
-  <mat-form-field><input matInput placeholder="Username" /></mat-form-field>
+<div class="d-flex justify-content-center mt-5">
+    <div class="col-sm-4 pt-2 pb-2 mt-5">
+        <h5 class="text-center">Employee Login</h5>
+        <div class="col-sm-12 bg-white pl-5 pt-5 pr-5 pb-5 d-inline-block">
+          <form class="example-form mb-0"> 
+            <mat-form-field class="example-full-width pt-2">
+              <input matInput placeholder="Username" />
+            </mat-form-field>
+            <mat-form-field class="example-full-width pt-4">
+              <input matInput placeholder="Password" type="password" name="password" /><!-- [(ngModel)]="employee.password" -->
+            </mat-form-field>
+            <div class="clearfix"></div>
+            <button mat-button class="btn btn-primary mt-4" (click)="login()">Login</button>
+            <!-- <small class="text-center d-block pt-5">Quality Council of India</small> -->
+          </form>
+        </div>
+    </div>
 </div>

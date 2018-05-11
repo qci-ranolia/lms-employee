@@ -1,0 +1,39 @@
+<div class="d-flex justify-content-center">
+  <div class="col-sm-8 bg-white pt-2 pb-2">
+    <div class="col-sm-12 bg-white p-4 d-inline-block">
+      <form class="example-form">
+        <div class="col-sm-6 col-md-4 pl-0 float-left">
+          <mat-form-field>
+            <input matInput [matDatepicker]="picker1" placeholder="Applying leave from" [formControl]="materialDate">
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-4 pr-0 float-left">
+          <mat-form-field>
+            <input matInput [matDatepicker]="picker2" placeholder="Applying leave to" [formControl]="serializedDate">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="clearfix"></div>
+        <!-- <h6 class="mt-4" style="text-transform:inherit">Select Type of leave <small class="text-danger"> You can only apply for one leave type</small></h6> -->
+        <mat-form-field>
+          <mat-select placeholder="Leave type" [(ngModel)]="selectedValue" name="leave">
+            <mat-option *ngFor="let leave of leaves" [value]="leave.value">
+              {{leave.tol}}
+              <strong class="d-inline">({{leave.bal}})</strong>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <p *ngIf="showUs">{{selectedValue}}:</p>
+        <div class="clearfix mt-5"></div>
+        <mat-form-field>
+          <textarea matInput placeholder="Reason for leave..."></textarea>
+        </mat-form-field>
+        <div class="clearfix"></div>
+        <button mat-button class="btn btn-theme">Apply</button>
+      </form>
+    </div>
+  </div>
+</div>

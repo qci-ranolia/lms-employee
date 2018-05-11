@@ -10,15 +10,15 @@ import * as moment from 'moment'
 
 export class DashboardComponent implements OnInit {
   
-  public date = moment()
+  public momentDate = moment()
   public daysArr
   
-  employees:any
+  employee = new Object()
   
   constructor( private service: LmsService ) { }
   
   public ngOnInit() {
-    this.daysArr = this.createCalendar( this.date )
+    this.daysArr = this.createCalendar( this.momentDate )
   }
   
   public todayCheck(day){
@@ -39,13 +39,13 @@ export class DashboardComponent implements OnInit {
   }
 
   public nextMonth() {
-    this.date.add(1, 'M' )
-    this.daysArr = this.createCalendar( this.date )
+    this.momentDate.add(1, 'M' )
+    this.daysArr = this.createCalendar( this.momentDate )
   }
 
   public previousMonth() {
-    this.date.subtract( 1, 'M' )
-    this.daysArr = this.createCalendar( this.date )
+    this.momentDate.subtract( 1, 'M' )
+    this.daysArr = this.createCalendar( this.momentDate )
   }
   
 }

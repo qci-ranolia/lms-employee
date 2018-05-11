@@ -1,11 +1,9 @@
-<mat-toolbar color="primary">  
+<mat-toolbar color="warn">  
   <mat-toolbar-row>
     <div class="col-sm-5">
-      <span class="pl-3 pr-3 bg-white text-dark">QCI | LMS</span>
+      <span class="pl-3 pr-3 bg-white text-dark">QCI | LMS | Employee</span>
       <span class="pl-3 pr-3" [routerLink]="['/']" routerLinkActive="active">Home</span>
-      <span class="pl-3 pr-3" [routerLink]="['/employee-section']" routerLinkActive="active">Applications</span>
-      <span class="pl-3 pr-3" [routerLink]="['/employee-list']" routerLinkActive="active">Employees</span>
-      <span class="pl-3 pr-3" [routerLink]="['/application-status']" routerLinkActive="active">Employees on leave</span>
+      <span class="pl-3 pr-3" [routerLink]="['/apply-leave']" routerLinkActive="active">Apply for leave</span>
     </div>
     <div class="col-sm-7 float-right text-right p-0">
       <mat-menu #appMenu="matMenu" yPosition="above">
