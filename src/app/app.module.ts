@@ -7,14 +7,17 @@ import { HttpModule } from '@angular/http'
 import { AppComponent } from './app.component'
 import { NavComponent } from './nav/nav.component'
 import { DashboardComponent } from './dashboard/dashboard.component'
-import { LmsService } from './lms.service'
-import { AppRoutingModule } from './/app-routing.module'
+import { AppRoutingModule } from './app-routing.module'
 import { LoginComponent } from './login/login.component'
 
+import { LmsService } from './lms.service'
+import { ApiService } from './api.service'
+import { AuthService } from './auth.service'
 
 import { MatAutocompleteModule, MatButtonModule, MatButtonToggleModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatExpansionModule, MatGridListModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatNativeDateModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule, MatRadioModule, MatRippleModule, MatSelectModule, MatSidenavModule, MatSliderModule, MatSlideToggleModule, MatSnackBarModule, MatSortModule, MatTableModule, MatTabsModule, MatToolbarModule, MatTooltipModule } from '@angular/material';
-import { ApiService } from './api.service';
-import { ApplyComponent } from './apply/apply.component';
+
+import { ApplyComponent } from './apply/apply.component'
+import { RouterModule } from '@angular/router'
 
 
 @NgModule({
@@ -38,9 +41,12 @@ import { ApplyComponent } from './apply/apply.component';
     MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule, MatRadioModule,
     MatRippleModule, MatSelectModule, MatSidenavModule, MatSliderModule,
     MatSlideToggleModule, MatSnackBarModule, MatSortModule, MatTableModule,
-    MatTabsModule, MatToolbarModule, MatTooltipModule
+    MatTabsModule, MatToolbarModule, MatTooltipModule,
+    RouterModule.forRoot([
+      { path: 'login', component: LoginComponent }
+    ])
   ],
-  providers:[ LmsService, ApiService ],
+  providers:[ LmsService, ApiService, AuthService ],
   bootstrap:[
     AppComponent
   ]

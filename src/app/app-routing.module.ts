@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { AuthService } from './auth.service';
+
 //login platform for admin and employee
 import { LoginComponent } from './login/login.component';
 
@@ -12,11 +14,12 @@ import { ApplyComponent } from './apply/apply.component';
 
 const routes: Routes = [
   { path:'', component:NavComponent, children:[
-    { path:'dashboard', component:DashboardComponent },
-    { path:'', redirectTo:'/dashboard', pathMatch:'full' },
-    { path:'apply-leave', component:ApplyComponent },
+    { path:'dashboard', component:DashboardComponent, canActivate:[AuthService]  },
+    { path:'', redirectTo:'/dashboard', pathMatch:'full', canActivate:[AuthService]  },
+    { path:'apply-leave', component:ApplyComponent, canActivate:[AuthService]  },
   ]},
-  { path:'login', component:LoginComponent }
+  { path:'login', component:LoginComponent },
+  { path: '**', redirectTo: '/login'}
 ];
 
 @NgModule({

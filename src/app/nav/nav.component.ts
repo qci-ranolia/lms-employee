@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 // import { MatTabsModule } from '@angular/material/tabs';
 import { LmsService } from '../lms.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector:'app-nav',
@@ -9,8 +10,18 @@ import { LmsService } from '../lms.service';
 })
 
 export class NavComponent implements OnInit {
-  constructor( private service:LmsService ){ }
+  
+  loader : boolean = false
+  constructor( private lms: LmsService, private router: Router ){
+    this.lms.emitsload.subscribe( el => this.loader = el )
+  }
 
   ngOnInit(){ }
+
+  logout() {
+    localStorage.removeItem('token')
+    this.lms.showLoader()
+    this.router.navigate(['/login'])
+  }
 
 }

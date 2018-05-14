@@ -9,20 +9,25 @@ import { LmsService } from '../lms.service'
 })
 
 export class DashboardComponent implements OnInit {
-  
+  loader : boolean = false
   // public momentDate = moment()
   // public daysArr
   
   employee = new Object()
   
   constructor( private lms: LmsService ) {
+    this.lms.emitsload.subscribe( el => this.loader = el )
+    this.lms.showLoader()
+    
     this.lms.emitgetEmployees.subscribe( r => {
       this.employee = r
+      console.log(this.employee)
     })
   }
   
   public ngOnInit() {
     this.lms.getEmployees()
+
     // this.daysArr = this.createCalendar( this.momentDate )
   }
   
