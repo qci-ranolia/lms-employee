@@ -13,6 +13,7 @@ export class AppComponent {
     this.lms.emitsload.subscribe( el => this.loader = el )
     this.lms.emithload.subscribe( el => this.loader = el )
   }
+  
   ngOnInit() {
     this.lms.showLoader()
     setTimeout(() => {
