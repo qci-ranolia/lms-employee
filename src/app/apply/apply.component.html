@@ -5,25 +5,23 @@
       <form class="example-form">
         <div class="col-sm-6 col-md-4 pl-0 float-left">
           <mat-form-field>
-            <input matInput [matDatepicker]="picker1" placeholder="Applying leave from" [formControl]="materialDate">
-            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-            <mat-datepicker #picker1></mat-datepicker>
+            <input matInput value="" [matDatepickerFilter]="disableSunDay" [matDatepicker]="firstDate" placeholder="Date from" (dateInput)="firstDateEvent($event)">
+            <mat-datepicker-toggle matSuffix [for]="firstDate"></mat-datepicker-toggle>
+            <mat-datepicker #firstDate></mat-datepicker>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-4 pr-0 float-left">
           <mat-form-field>
-            <input matInput [matDatepicker]="picker2" placeholder="Applying leave to" [formControl]="serializedDate">
-            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-            <mat-datepicker #picker2></mat-datepicker>
+            <input matInput value="" [matDatepickerFilter]="disableSunDay" [matDatepicker]="secondDate" placeholder="Date to" (dateInput)="secondDateEvent($event)">
+            <mat-datepicker-toggle matSuffix [for]="secondDate"></mat-datepicker-toggle>
+            <mat-datepicker #secondDate></mat-datepicker>
           </mat-form-field>
         </div>
         <div class="clearfix"></div>
         <!-- <h6 class="mt-4" style="text-transform:inherit">Select Type of leave <small class="text-danger"> You can only apply for one leave type</small></h6> -->
         <mat-form-field>
           <mat-select placeholder="Leave type" [(ngModel)]="selectedValue" name="leave">
-            <mat-option *ngFor="let leave of leaves" [value]="leave.value">
-              {{leave.tol}}
-              <strong class="d-inline">({{leave.bal}})</strong>
+            <mat-option *ngFor="let leave of leaves" [value]="leave.value">{{leave.tol}}<strong class="d-inline">({{leave.bal}})</strong>
             </mat-option>
           </mat-select>
         </mat-form-field>
