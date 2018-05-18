@@ -1,7 +1,8 @@
 <div class="d-flex justify-content-center">
   <div class="col-sm-8 pt-2 pb-2">
     <h5>Apply for leave</h5>
-    <div class="col-sm-12 bg-white p-4 d-inline-block rad-box">
+    <div class="col-sm-12 pl-4 pt-4 pr-4 pb-3 d-inline-block bg-white rad-box">
+      <!--
       <form class="example-form">
         <div class="col-sm-6 col-md-3 pl-0 float-left">
           <mat-form-field>
@@ -20,8 +21,7 @@
         <div class="col-sm-6 col-md-6 pr-0 float-left">
           <mat-form-field>
             <mat-select placeholder="Select leave type" [(ngModel)]="selectedValue" name="leave">
-              <mat-option *ngFor="let leave of leaves" [value]="leave.value">{{leave.tol}}<strong class="d-inline">({{leave.bal}})</strong>
-              </mat-option>
+              <mat-option *ngFor="let leave of leaves" [value]="leave.value">{{ leave.tol }}<strong class="d-inline">({{ leave.bal }})</strong></mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -38,43 +38,91 @@
         </div>
         <div class="clearfix"></div>
         <button mat-button class="btn btn-theme">Apply</button>
-        </form>
-        <!-- form [formGroup]="formGroup">
-          <button mat-raised-button (click)="isOptional = !isOptional">{{!isOptional ? 'Enable optional steps' : 'Disable optional steps'}}</button>
-          <mat-horizontal-stepper [linear]="true" #stepper>
-            <mat-step [stepControl]="firstFormGroup">
-              <form [formGroup]="firstFormGroup">
-                <ng-template matStepLabel>Fill out your name</ng-template>
-                <mat-form-field>
-                  <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
-                </mat-form-field>
-                <div>
-                  <button mat-button matStepperNext>Next</button>
-                </div>
-              </form>
-            </mat-step>
-            <mat-step [stepControl]="secondFormGroup" [optional]="isOptional">
-              <form [formGroup]="secondFormGroup">
-                <ng-template matStepLabel>Fill out your address</ng-template>
-                <mat-form-field>
-                  <input matInput placeholder="Address" formControlName="secondCtrl" required>
-                </mat-form-field>
-                <div>
-                  <button mat-button matStepperPrevious>Back</button>
-                  <button mat-button matStepperNext>Next</button>
-                </div>
-              </form>
-            </mat-step>
-            <mat-step>
-              <ng-template matStepLabel>Done</ng-template>
-              You are now done.
-              <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button (click)="stepper.reset()">Reset</button>
-              </div>
-            </mat-step>
-          </mat-horizontal-stepper>
-        </form -->
+      </form>
+      -->
+      <mat-horizontal-stepper [linear]="isLinear" #stepper>
+        <mat-step [stepControl]="firstFormGroup">
+          <form [formGroup]="firstFormGroup">
+            <ng-template matStepLabel>Select date and type</ng-template>
+            <div class="col-sm-6 col-md-3 float-left pt-4">
+              <mat-form-field>
+                <input matInput [min]="minDate" [matDatepickerFilter]="disableSunDay" [matDatepicker]="firstDate" placeholder="Date from" (dateInput)="firstDateEvent($event)" formControlName="check1">
+                <mat-datepicker-toggle matSuffix [for]="firstDate"></mat-datepicker-toggle>
+                <mat-datepicker #firstDate></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6 col-md-3 float-left pt-4">
+              <mat-form-field>
+                <input matInput [min]="minDate" [matDatepickerFilter]="disableSunDay" [matDatepicker]="secondDate" placeholder="Date to" (dateInput)="secondDateEvent($event)" :disabled="{{isFirstDateSelected}}">
+                <mat-datepicker-toggle matSuffix [for]="secondDate"></mat-datepicker-toggle>
+                <mat-datepicker #secondDate></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6 col-md-4 float-right pt-4">
+              <mat-form-field>
+                <mat-select placeholder="Select leave type" formControlName="check2" name="leave"><!-- [(ngModel)]="selectedValue" -->
+                  <mat-option *ngFor="let leave of leaves" [value]="leave.value">{{ leave.tol }}<strong class="d-inline">({{ leave.bal }})</strong></mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="clearfix pt-4"></div>
+            <div class="clearfix pt-1"></div>
+            <div class="col-sm-6 col-md-4 float-left pt-4">
+              <mat-form-field>
+                <input matInput placeholder="Total Applied Dates" :value="{{leavedays}}" disabled />
+              </mat-form-field>
+            </div>
+            <div class="clearfix pt-4"></div>
+            <div class="col-sm-6 col-md-4 float-left mb-3 mt-4">
+              <button mat-raised-button matStepperNext>Next</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step [stepControl]="secondFormGroup" [optional]="isOptional">
+          <form [formGroup]="secondFormGroup">
+            <ng-template matStepLabel>Reason for leave</ng-template>
+            <div class="col-sm-6 col-md-12 float-left pt-4">
+              <mat-form-field>
+                <textarea matInput placeholder="Reason for leave..." formControlName="check3"></textarea>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6 col-md-12 float-left pt-1">
+              <mat-form-field>
+                <input matInput placeholder="Total Applied Dates" disabled formControlName="check4" value="1" />
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6 col-md-4 float-left mb-3 mt-4">
+              <button mat-raised-button color="accent" matStepperPrevious>Back</button>
+              <button matStepperNext mat-raised-button>Next</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step>
+          <ng-template matStepLabel>Confirmation</ng-template>
+          <div class="d-flex justify-content-center">
+            <div class="col-sm-12 col-md-12 p-0">
+              <mat-card class="example-card" style="box-shadow:none">
+                <mat-card-header>
+                  <div mat-card-avatar class="example-header-image">
+                    <h3 class="material-icons">label</h3>
+                  </div>
+                  <mat-card-title><h4>Successfully apllied !!</h4></mat-card-title>
+                  <mat-card-subtitle>Status : Completed</mat-card-subtitle>
+                </mat-card-header><!-- 
+                <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+                <mat-card-content>
+                  <p>The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
+                    A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally bred for hunting.</p>
+                </mat-card-content>
+                <mat-card-actions class="pl-3">
+                  <button mat-raised-button color="accent" matStepperPrevious>Back</button>
+                  <!-- <button mat-button (click)="stepper.reset()">Reset</button> -->
+                </mat-card-actions>
+              </mat-card>
+            </div>
+          </div>
+        </mat-step>
+      </mat-horizontal-stepper>
     </div>
   </div>
 </div>

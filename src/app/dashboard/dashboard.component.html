@@ -25,21 +25,30 @@
         <h5 class="col-sm-12">Profile Status</h5>
         <div class="col-sm-12 h78 ovf-y">
             <div class="col-sm-12 p-0 bg-white rad-box">
-                <mat-list>
-                    <mat-list-item>
-                        <mat-chip-list>
-                            <mat-chip>1.</mat-chip>
-                        </mat-chip-list>
-                        <div class="col-sm-12"><i class="material-icons text-success">face</i> Your leave from //date// to //date// is approved !</div>
-                    </mat-list-item>
-                    <mat-divider></mat-divider>
-                    <mat-list-item>
-                        <mat-chip-list>
-                            <mat-chip>2.</mat-chip>
-                        </mat-chip-list>
-                        <div class="col-sm-12"><i class="material-icons text-warning">face</i> Your leave //date// to //date// is not approved !</div>
-                    </mat-list-item>
-                </mat-list>
+                <mat-accordion>
+                    <mat-card class="example-card" style="box-shadow:none;">
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-card-header>
+                                        <div mat-card-avatar class="example-header-image"></div>
+                                        <mat-card-title>Shiba Inu</mat-card-title>
+                                        <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+                                    </mat-card-header>
+                                </mat-panel-title>
+                                <!--<mat-panel-description>Type your name and age</mat-panel-description>-->
+                            </mat-expansion-panel-header>
+                            <!--<img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu" />-->
+                            <mat-card-content>
+                                <p> The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally bred for hunting.</p>
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <button mat-button>LIKE</button>
+                                <button mat-button>SHARE</button>
+                            </mat-card-actions>
+                        </mat-expansion-panel>
+                    </mat-card>
+                </mat-accordion>
             </div>
         </div>
     </div>
