@@ -9,8 +9,8 @@ import 'rxjs/add/operator/map'
 
 export class ApiService {
 
-  //URL : string = "http://13.127.13.175:5000/"
-  URL : string = "http://192.168.15.219:5000/"
+  // URL : string = "http://13.127.13.175:5000/"
+  URL : string = "http://192.168.15.55:5000/"
   token : string // Useful in Authentication
   headers : Headers // Useful when backend and frontend have different IP's
   opts : any
@@ -28,7 +28,7 @@ export class ApiService {
   
   Login( data : any ){
     this.uid = data.qci_id
-    return this.http.post( this.URL+'lms/loginEmp'+this.uid, data).map( r => r.json() )
+    return this.http.post( this.URL+'lms/loginEmp', data).map( r => r.json() )
   } 
    
   //HINT : Are we checking the response is a success or not ???
@@ -37,10 +37,8 @@ export class ApiService {
     return this.http.get( this.URL+'lms/addEmployee/'+this.uid, this.opts ).map( r => r.json() )
   }
 
-  // addEmp( data : any ) {
-  //   let temp = JSON.stringify(data)
-  //   console.log(temp)
-  //   return this.http.post( this.URL+'lms/addEmployee', temp).map( r => console.log(r) )
-  // }
+  ApplyLeave( data : any ) {
+    return this.http.post( this.URL+'lms/applyLeave', data, this.opts).map( r => console.log(r.json()) )
+  }
 
 }

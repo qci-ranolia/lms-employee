@@ -13,7 +13,7 @@ export class DashboardComponent implements OnInit {
   // public momentDate = moment()
   // public daysArr
   
-  employee = new Object()
+  employee = new Array()
   
   constructor( private lms: LmsService ) {
     this.lms.emitsload.subscribe( el => this.loader = el )
@@ -27,7 +27,6 @@ export class DashboardComponent implements OnInit {
   
   public ngOnInit() {
     this.lms.getEmployees()
-
     // this.daysArr = this.createCalendar( this.momentDate )
   }
   

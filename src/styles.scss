@@ -23156,15 +23156,11 @@ mat-tab-header {
 // tabels
 .table > tbody > tr > td {
     padding:0 8px;
-}
-.table > thead > tr > th.modify {
+} .table > thead > tr > th.modify {
     width:13% !important
 }
 
-
-
-
-::-moz-selection{
+::-moz-selection {
     background:#9124a3;
     color:white;
 }
@@ -23191,7 +23187,7 @@ mat-tab-header {
 form .ng-valid .mat-focused .mat-form-field-label, form .ng-valid .mat-form-field-label, form .ng-valid.mat-focused .mat-form-field-label
 {
     color:#3f51b5 !important;
-}form .ng-valid .mat-input-underline, form .ng-valid .mat-input-underline .mat-input-ripple{
+} form .ng-valid .mat-input-underline, form .ng-valid .mat-input-underline .mat-input-ripple {
     background-color: #3f51b3;
     height:1px
 }
@@ -23206,5 +23202,13 @@ form .ng-valid .mat-focused .mat-form-field-label, form .ng-valid .mat-form-fiel
 }
 
 .rad-box {
-   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12)
+}
+
+.mat-card-avatar {
+    height:90px !important;
+    width:90px !important;
+    box-shadow:1px 1px 1px 1px #ccc inset !important;
+    line-height:90px;
+    text-align:center;
 }

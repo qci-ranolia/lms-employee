@@ -13,7 +13,7 @@ export class LmsService {
   emitLogin = new EventEmitter<any>()
   emitErr = new EventEmitter<any>()
 
-  constructor( private api: ApiService, private router:Router, public snackBar: MatSnackBar) { }// 
+  constructor( private api: ApiService, private router:Router, public snackBar: MatSnackBar ) { } 
 
   showLoader(){
     this.loader = true
@@ -39,11 +39,11 @@ export class LmsService {
     tmp = { qci_id:uname, password:pwd }
     let temp = JSON.stringify( tmp )
     this.api.Login( temp ).subscribe( el => {
-      if( el.success ) {
+      if ( el.success ) {
         localStorage.setItem('token',el.token)
         this.emitLogin.emit()
       } // else {
-      //   this.emitErr.emit()
+      // this.emitErr.emit()
       // }
     }, err => alert( err ) )
   }
@@ -55,4 +55,14 @@ export class LmsService {
     }, err => console.log( err ) )
   }
   
+  applyleave(leave:any) {
+    this.api.ApplyLeave(leave).subscribe( el => {
+      
+      // if ( el.success ) console.log(el) 
+      // else console.log(el)
+    
+    }, err => {
+      console.log(err)
+    })
+  }
 }

@@ -8,14 +8,23 @@
                         <mat-chip-list>
                             <mat-chip>1.</mat-chip>
                         </mat-chip-list>
-                        <div class="col-sm-12"><i class="material-icons text-success">face</i> Your leave from //date// to //date// is approved !</div>
+                        <div class="col-sm-12"><i class="material-icons text-success">face</i> Your leave from 13/05/2018 to 14/05/2018 is approved !</div>
                     </mat-list-item>
                     <mat-divider></mat-divider>
                     <mat-list-item>
                         <mat-chip-list>
                             <mat-chip>2.</mat-chip>
                         </mat-chip-list>
-                        <div class="col-sm-12"><i class="material-icons text-warning">face</i> Your leave //date// to //date// is not approved !</div>
+                        <div class="col-sm-12"><i class="material-icons text-danger">face</i> Your leave from 24/05/2018 to 25/05/2018 is still pending !</div>
+                    </mat-list-item>
+                    <mat-divider></mat-divider>
+                    <mat-list-item>
+                        <mat-chip-list>
+                            <mat-chip>3.</mat-chip>
+                        </mat-chip-list>
+                        <div class="col-sm-12">
+                            <i class="material-icons text-warning">face</i> Your leave from 29/05/2018 is not approved !
+                        </div>
                     </mat-list-item>
                 </mat-list>
             </div>
@@ -25,75 +34,27 @@
         <h5 class="col-sm-12">Profile Status</h5>
         <div class="col-sm-12 h78 ovf-y">
             <div class="col-sm-12 p-0 bg-white rad-box">
-                <mat-accordion>
-                    <mat-card class="example-card" style="box-shadow:none;">
-                        <mat-expansion-panel>
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                    <mat-card-header>
-                                        <div mat-card-avatar class="example-header-image"></div>
-                                        <mat-card-title>Shiba Inu</mat-card-title>
-                                        <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-                                    </mat-card-header>
-                                </mat-panel-title>
-                                <!--<mat-panel-description>Type your name and age</mat-panel-description>-->
-                            </mat-expansion-panel-header>
-                            <!--<img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu" />-->
-                            <mat-card-content>
-                                <p> The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally bred for hunting.</p>
-                            </mat-card-content>
-                            <mat-card-actions>
-                                <button mat-button>LIKE</button>
-                                <button mat-button>SHARE</button>
-                            </mat-card-actions>
-                        </mat-expansion-panel>
-                    </mat-card>
-                </mat-accordion>
+                <mat-card class="example-card" style="box-shadow:none;">
+                    <mat-card-header>
+                        <div mat-card-avatar class="example-header-image">{{employee.qci_id}}</div>
+                        <mat-card-title>{{employee.name}}</mat-card-title>
+                        <mat-card-subtitle>{{employee.email}}&nbsp;(<strong>{{employee.designation}}</strong>)</mat-card-subtitle>
+                        <mat-card-subtitle>{{employee.type_of_employee}}</mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <div>
+                            <strong class="mb-3">Leave Balance</strong>
+                            <mat-chip-list>
+                                <mat-chip class="mb-2">Casual Leave : {{employee.bal_cl}}</mat-chip>
+                                <mat-chip class="mb-2">Extra Ordinary Leave : {{employee.bal_eol}}</mat-chip>
+                                <mat-chip class="mb-2">Materinity Leave : {{employee.bal_ml}}</mat-chip>
+                                <mat-chip class="mb-2">Paterinity Leave : {{employee.bal_pl}}</mat-chip>
+                                <mat-chip class="mb-2">Sick Leave : {{employee.bal_sl}}</mat-chip>
+                            </mat-chip-list>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
             </div>
         </div>
     </div>
-    <!-- <mat-form-field>
-        <input matInput [matDatepicker]="picker3" placeholder="Value binding" [value]="materialDate.value">
-        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
-        <mat-datepicker #picker3></mat-datepicker>
-    </mat-form-field> -->
 </div>
-<!-- 
-<div class="col-sm-6">
-    <mat-accordion>
-        <mat-expansion-panel [expanded]="true">
-            <mat-expansion-panel-header>
-                <mat-panel-title></mat-panel-title>
-                <mat-panel-description>See all the holiday lists according to&nbsp;<strong> Quality Council Of India</strong></mat-panel-description>
-            </mat-expansion-panel-header>
-            <mat-chip-list>
-                <div class="col-sm-12 p-0">
-                    <div class="col-sm-6 mt-4 float-left"><mat-chip color="primary" selected="true">January 26</mat-chip>&nbsp;Republic Day</div>
-                    <div class="col-sm-6 mt-4 float-left"><mat-chip color="primary" selected="true">Holi date</mat-chip>&nbsp;Holi</div>
-                    <div class="col-sm-6 mt-4 float-left"><mat-chip color="primary" selected="true">January 26</mat-chip>&nbsp;Republic Day</div>
-                    <div class="col-sm-6 mt-4 float-left"><mat-chip color="primary" selected="true">Holi date</mat-chip>&nbsp;Holi</div>
-                    <div class="col-sm-6 mt-4 float-left"><mat-chip color="primary" selected="true">January 26</mat-chip>&nbsp;Republic Day</div>
-                    <div class="col-sm-6 mt-4 float-left"><mat-chip color="primary" selected="true">Holi date</mat-chip>&nbsp;Holi</div>
-                    <div class="col-sm-6 mt-4 float-left"><mat-chip color="primary" selected="true">January 26</mat-chip>&nbsp;Republic Day</div>
-                    <div class="col-sm-6 mt-4 float-left"><mat-chip color="primary" selected="true">Holi date</mat-chip>&nbsp;Holi</div>
-                    <div class="col-sm-6 mt-4 float-left"><mat-chip color="primary" selected="true">January 26</mat-chip>&nbsp;Republic Day</div>
-                    <div class="col-sm-6 mt-4 float-left"><mat-chip color="primary" selected="true">Holi date</mat-chip>&nbsp;Holi</div>
-                </div>
-            </mat-chip-list>
-        </mat-expansion-panel>
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title></mat-panel-title>
-                <mat-panel-description>See all the holiday lists according to&nbsp;<strong> Quality Council Of India</strong></mat-panel-description>
-            </mat-expansion-panel-header>
-            <mat-chip-list>
-                <div class="col-sm-12 p-0">
-                    <div class="col-sm-6 mt-4 float-left"><mat-chip color="primary" selected="true">January 26</mat-chip>&nbsp;Republic Day</div>
-                    <div class="col-sm-6 mt-4 float-left"><mat-chip color="primary" selected="true">Holi date</mat-chip>&nbsp;Holi</div>
-                </div>
-            </mat-chip-list>
-        </mat-expansion-panel>
-    </mat-accordion>
-</div>
--->
-<div class="col-sm-6"></div>
