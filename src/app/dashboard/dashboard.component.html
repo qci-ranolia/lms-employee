@@ -1,16 +1,19 @@
-<div class="col-sm-12 p-0">
-    <div class="col-sm-6 float-left p-0">
+<div class="col-sm-12 p-0 d-flex justify-content-center">
+    <div class="col-sm-6 float-left p-0" *ngIf="hide">
         <h5 class="col-sm-12">Application Status</h5>
         <div class="col-sm-12 h78 ovf-y">
             <div class="col-sm-12 p-0 bg-white rad-box">
                 <mat-list>
-                    <mat-list-item>
-                        <mat-chip-list>
-                            <mat-chip>1.</mat-chip>
-                        </mat-chip-list>
-                        <div class="col-sm-12"><i class="material-icons text-success">face</i> Your leave from 13/05/2018 to 14/05/2018 is approved !</div>
-                    </mat-list-item>
-                    <mat-divider></mat-divider>
+                    <div class="" *ngFor="let stat of stats; let i = index">
+                        <mat-list-item>
+                            <mat-chip-list>
+                                <mat-chip>{{i+1}}</mat-chip>
+                            </mat-chip-list>
+                            <div class="col-sm-12"><i class="material-icons text-success">face</i> Your leave from 13/05/2018 to 14/05/2018 is approved !</div>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                    </div>
+<!-- 
                     <mat-list-item>
                         <mat-chip-list>
                             <mat-chip>2.</mat-chip>
@@ -25,7 +28,7 @@
                         <div class="col-sm-12">
                             <i class="material-icons text-warning">face</i> Your leave from 29/05/2018 is not approved !
                         </div>
-                    </mat-list-item>
+                    </mat-list-item> -->
                 </mat-list>
             </div>
         </div>

@@ -10,23 +10,30 @@ import { LmsService } from '../lms.service'
 
 export class DashboardComponent implements OnInit {
   loader : boolean = false
+  
   // public momentDate = moment()
   // public daysArr
-  
+
+  hide : boolean = true
   employee = new Array()
+  myLeaveStatus : any
   
   constructor( private lms: LmsService ) {
     this.lms.emitsload.subscribe( el => this.loader = el )
     this.lms.showLoader()
     
+    this.lms.emitMyZero.subscribe( r => this.hide = false )
+    
+    
     this.lms.emitgetEmployees.subscribe( r => {
       this.employee = r
-      console.log(this.employee)
+      // console.log( this.employee )
     })
   }
   
   public ngOnInit() {
     this.lms.getEmployees()
+    this.lms.myLeaves()
     // this.daysArr = this.createCalendar( this.momentDate )
   }
   

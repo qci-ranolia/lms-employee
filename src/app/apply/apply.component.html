@@ -8,26 +8,27 @@
             <ng-template matStepLabel>Select date and type</ng-template>
             <div class="col-sm-6 col-md-3 float-left pt-4">
               <mat-form-field>
-                <input matInput [min]="minDate" [matDatepickerFilter]="disableSunDay" [matDatepicker]="firstDate" placeholder="Date from" (dateInput)="firstDateEvent($event)" formControlName="check1" [(ngModel)]="applyLeave.date_from" name="date_from">
+                <input matInput [min]="minDate" [matDatepickerFilter]="disableSunDay" [matDatepicker]="firstDate" placeholder="Date from" (dateInput)="firstDateEvent($event)" formControlName="check1">
                 <mat-datepicker-toggle matSuffix [for]="firstDate"></mat-datepicker-toggle>
                 <mat-datepicker #firstDate></mat-datepicker>
               </mat-form-field>
             </div>
             <div class="col-sm-6 col-md-3 float-left pt-4">
               <mat-form-field>
-                <input matInput [min]="minDate2" [matDatepickerFilter]="disableSunDay" [matDatepicker]="secondDate" placeholder="Date to" (dateInput)="secondDateEvent($event)" formControlName="check1" [(ngModel)]="applyLeave.date_to" name="date_to" :disabled="{{isFirstDateSelected}}">
+                <input matInput [min]="minDate2" [matDatepickerFilter]="disableSunDay" [matDatepicker]="secondDate" placeholder="Date to" (dateInput)="secondDateEvent($event)" :disabled="{{isFirstDateSelected}}">
                 <mat-datepicker-toggle matSuffix [for]="secondDate"></mat-datepicker-toggle>
                 <mat-datepicker #secondDate></mat-datepicker>
               </mat-form-field>
             </div>
             <div class="col-sm-6 col-md-4 float-right pt-4">
               <mat-form-field>
-                <mat-select placeholder="Select leave type" formControlName="check2" [(ngModel)]="applyLeave.leave_type" (change)="ifLeavesAreLess(applyLeave.leave_type)" name="leave" [(value)]="selected">
-                  <mat-option value="bal_cl">Casual leave<strong class="d-inline">({{ employee.bal_cl }})</strong></mat-option>
-                  <mat-option value="bal_eol">Extra Ordinary leave<strong class="d-inline">({{ employee.bal_eol }})</strong></mat-option>
-                  <mat-option value="bal_ml">Materinity leave<strong class="d-inline">({{ employee.bal_ml }})</strong></mat-option>
-                  <mat-option value="bal_pl">Priviledged leave<strong class="d-inline">({{ employee.bal_pl }})</strong></mat-option>
-                  <mat-option value="bal_sl">Sick leave<strong class="d-inline">({{ employee.bal_sl }})</strong></mat-option>
+                <mat-select placeholder="Select leave type" formControlName="check2" [(ngModel)]="leave_type" (change)="ifLeavesAreLess(leave_type)" name="leave" [(value)]="selected" :disabled="{{isFirstDateSelected}}">
+                  <mat-option value="cl" >Casual leave<strong class="d-inline">({{ employee.bal_cl }})</strong></mat-option>
+                  <mat-option value="eol">Extra Ordinary leave<strong class="d-inline">({{ employee.bal_eol }})</strong></mat-option>
+                  <mat-option value="ml" *ngIf="employee.bal_ml">Materinity leave<strong class="d-inline">({{ employee.bal_ml }})</strong></mat-option>
+                  <mat-option value="ptl" *ngIf="employee.bal_ptl">Paterinity leave<strong class="d-inline">({{employee.bal_ptl}})</strong></mat-option>
+                  <mat-option value="pl">Priviledged leave<strong class="d-inline">({{ employee.bal_pl }})</strong></mat-option>
+                  <mat-option value="sl">Sick leave<strong class="d-inline">({{ employee.bal_sl }})</strong></mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
@@ -49,17 +50,12 @@
             <ng-template matStepLabel>Reason for leave</ng-template>
             <div class="col-sm-6 col-md-12 float-left pt-4">
               <mat-form-field>
-                <textarea matInput placeholder="Reason for leave..." formControlName="check3" [(ngModel)]="applyLeave.leave_reason" name="leave_reason"></textarea>
+                <textarea matInput placeholder="Reason for leave..." formControlName="check3" [(ngModel)]="leave_reason" name="leave_reason"></textarea>
               </mat-form-field>
             </div>
-            <!-- <div class="col-sm-6 col-md-12 float-left pt-1">
-              <mat-form-field>
-                <input matInput placeholder="Total Applied Dates" disabled formControlName="check4" value="1" />
-              </mat-form-field>
-            </div> -->
             <div class="col-sm-6 col-md-4 float-left mb-3 mt-4">
               <button mat-raised-button color="accent" matStepperPrevious>Back</button>
-              <button matStepperNext mat-raised-button (click)="Applyleave()">Apply</button>
+              <button mat-raised-button (click)="Applyleave(stepper)" matStepperNext>Apply</button>
             </div>
           </form>
         </mat-step>
@@ -73,17 +69,10 @@
                     <h3 class="material-icons">label</h3>
                   </div>
                   <mat-card-title><h4 class="mt-3">Successfully apllied</h4></mat-card-title>
-                  <!-- <mat-card-suntitle>from {{this.firstDate}} to {{this.secondDate}}</mat-card-suntitle> -->
                   <mat-card-subtitle>Status : Pending</mat-card-subtitle>
-                </mat-card-header><!--
-                <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
-                <!-- <mat-card-content>
-                  <p>The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-                    A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally bred for hunting.</p>
-                </mat-card-content> -->
+                </mat-card-header>
                 <mat-card-actions class="pl-3 mt-5">
                   <button mat-raised-button color="accent" matStepperPrevious>Back</button>
-                  <!--<button mat-button (click)="stepper.reset()">Reset</button>-->
                 </mat-card-actions>
               </mat-card>
             </div>
