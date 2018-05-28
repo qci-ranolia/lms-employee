@@ -16,18 +16,18 @@ export class DashboardComponent implements OnInit {
 
   hide : boolean = true
   employee = new Array()
+  leave = new Array()
   myLeaveStatus : any
   
   constructor( private lms: LmsService ) {
     this.lms.emitsload.subscribe( el => this.loader = el )
     this.lms.showLoader()
     
+    this.lms.emitgetEmployees.subscribe( r => this.employee = r )
     this.lms.emitMyZero.subscribe( r => this.hide = false )
-    
-    
-    this.lms.emitgetEmployees.subscribe( r => {
-      this.employee = r
-      // console.log( this.employee )
+    this.lms.emitMyLeaves.subscribe( r => {
+      this.leave = r 
+      console.log(this.leave)
     })
   }
   

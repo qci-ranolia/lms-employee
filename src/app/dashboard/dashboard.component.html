@@ -4,17 +4,16 @@
         <div class="col-sm-12 h78 ovf-y">
             <div class="col-sm-12 p-0 bg-white rad-box">
                 <mat-list>
-                    <div class="" *ngFor="let stat of stats; let i = index">
-                        <mat-list-item>
-                            <mat-chip-list>
-                                <mat-chip>{{i+1}}</mat-chip>
-                            </mat-chip-list>
-                            <div class="col-sm-12"><i class="material-icons text-success">face</i> Your leave from 13/05/2018 to 14/05/2018 is approved !</div>
-                        </mat-list-item>
+                    <mat-list-item *ngFor="let lev of leave; let i = index">
+                        <mat-chip-list>
+                            <mat-chip> {{ i+1 }} </mat-chip>
+                        </mat-chip-list>
+                        <div class="col-sm-12">
+                            <i class="material-icons text-danger">face</i> Your leave from {{lev.date_from}} to {{lev.date_to}} is {{ lev.leave_status }} !
+                        </div>
                         <mat-divider></mat-divider>
-                    </div>
-<!-- 
-                    <mat-list-item>
+                    </mat-list-item>
+                    <!-- <mat-list-item>
                         <mat-chip-list>
                             <mat-chip>2.</mat-chip>
                         </mat-chip-list>
@@ -50,8 +49,9 @@
                             <mat-chip-list>
                                 <mat-chip class="mb-2">Casual Leave : {{employee.bal_cl}}</mat-chip>
                                 <mat-chip class="mb-2">Extra Ordinary Leave : {{employee.bal_eol}}</mat-chip>
-                                <mat-chip class="mb-2">Materinity Leave : {{employee.bal_ml}}</mat-chip>
-                                <mat-chip class="mb-2">Paterinity Leave : {{employee.bal_pl}}</mat-chip>
+                                <mat-chip class="mb-2" *ngIf="employee.gender == 'Female'">Materinity Leave : {{employee.bal_ml}}</mat-chip>
+                                <mat-chip class="mb-2" *ngIf="employee.gender == 'Male'">Paterinity Leave : {{employee.bal_ptl}}</mat-chip>
+                                <mat-chip class="mb-2">Privileged Leave : {{employee.bal_pl}}</mat-chip>
                                 <mat-chip class="mb-2">Sick Leave : {{employee.bal_sl}}</mat-chip>
                             </mat-chip-list>
                         </div>

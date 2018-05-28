@@ -76,12 +76,19 @@ export class LmsService {
   myLeaves(){
     this.api.myLeaves().subscribe( el => {
       // console.log(el)
-      if ( el.success ) this.emitMyLeaves.emit(el)
+      if ( el.success ) this.emitMyLeaves.emit(el.data)
       else {
         if ( el.messages == 'No Application available currently' ) this.emitMyZero.emit(el)
         else this.snackBars( "!Success" , "Try Again" ) 
       }
     }, err => this.snackBars( "API Error" , "Try Again" ))
   }
+
+  /* getLeavedetails(){
+    this.api.GetLeaveDetail().subscribe( el => {
+      if ( el.success ) this.emitGetLeaveDetail.emit( el.data )
+     else console.log( el )
+     }, err => console.log( err ) )
+  } */
   
 }
