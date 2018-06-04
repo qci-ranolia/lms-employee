@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core'
-import { FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { LmsService } from '../lms.service'
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { MatStepperModule } from '@angular/material/stepper';
+import { FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { MatDatepickerInputEvent } from '@angular/material/datepicker'
+import { MatStepperModule } from '@angular/material/stepper'
 import * as moment from 'moment'
 // import * as _ from "lodash"
 
@@ -16,9 +16,8 @@ export class ApplyComponent implements OnInit {
   applyLeave = new Array()
   leave_type : any
   leave_reason : any
-  
   employee = new Array()
-  
+
   isLinear = true
   firstFormGroup : FormGroup
   secondFormGroup : FormGroup
@@ -38,26 +37,23 @@ export class ApplyComponent implements OnInit {
   getDate : any
   
   getDate2 : any
-  fDate:any
-  sDate:any
-  today:any
+  fDate : any
+  sDate : any
+  today : any
   leavedays : any  
   selected : any
-  
   minDate = new Date()
   minDate2 = new Date()
-
+  
   constructor( private lms:LmsService, private _formBuilder: FormBuilder){    
     this.lms.emitsload.subscribe( el => this.loader = el )
     this.lms.showLoader()
-
     this.lms.emitgetEmployees.subscribe( r => {
       this.employee = r
       // console.log(this.employee)
     })
-    
   }
-
+  
   ngOnInit(){
     this.firstFormGroup = this._formBuilder.group({
       check1 : [ '', Validators.required ],
@@ -69,7 +65,7 @@ export class ApplyComponent implements OnInit {
     })
     this.lms.getEmployees()
   }
-
+  
   firstDateEvent( event: MatDatepickerInputEvent<Date> ){
     this.date = event.value.getDate() // Get date
     this.month = event.value.getMonth() // Now get month
@@ -78,7 +74,6 @@ export class ApplyComponent implements OnInit {
     // Get fulldate
     this.firstDate = this.getDate
     this.fDate = this.getDate2
-    
     // enable second datepicker
     this.isFirstDateSelected = false
     // Calculate on the basis of second datepicker if already selected || !selected 
@@ -86,25 +81,18 @@ export class ApplyComponent implements OnInit {
       this.countSundays()
     } else this.leavedays = 1
     this.minDate2 = this.firstDate
-
-
   }
-
   secondDateEvent( event: MatDatepickerInputEvent<Date> ) {
-  
     this.date = event.value.getDate() // Get date
     this.month = event.value.getMonth() // Now get month
     this.year = event.value.getFullYear() // Now get year 
     this.letDateCondition()
-    // Get fulldate
-    
+    // Get fulldate 
     this.secondDate = this.getDate
     this.sDate = this.getDate2
     this.countSundays()
   }
-
   letDateCondition(){
-  
     let d = this.date
     if ( d < 10 ) {
       this.date = '0' + d
@@ -122,33 +110,26 @@ export class ApplyComponent implements OnInit {
     this.getDate = getDate
     this.getDate2 = temp
     this.today = temp
-
   }
-
   countSundays(){
     // Calculate sundays between two days using Moment JS
     var f = moment( this.firstDate ),
     s = moment( this.secondDate ),
-    sunday = 0 // Sunday
-    
+    sunday = 0 // Sunday    
     let result = []
     var current = f.clone()
-    
     while ( current.day(7 + sunday).isBefore(s) ) {
       result.push( current.clone() )
     }
-
     // Calculate leavedays
     let totalDays = s.diff(f, 'days')
     let sundayCount = result.map( m => m ).length
     this.leavedays =  1 + totalDays - sundayCount
-  }
-  
+  }  
   disableSunDay = ( d : Date ) : boolean => {
     const day = d.getDay()
     return day !== 0 // && day !== 6 // Uncomment if saturday is disabled too
   }
-
   ifLeavesAreLess( item ) {
     var a = "bal_"+item,
     b = Object.keys(this.employee),
@@ -160,14 +141,11 @@ export class ApplyComponent implements OnInit {
       }
     }
   }
-
   Applyleave( stepper ) {
     this.date = this.minDate.getDate() // Get date
     this.month = this.minDate.getMonth() // Now get month
-    this.year = this.minDate.getFullYear() // Now get year
-    
+    this.year = this.minDate.getFullYear() // Now get year 
     this.letDateCondition()
-    
     var temp = localStorage.getItem('userName'),
     tmp : any;
     tmp = {

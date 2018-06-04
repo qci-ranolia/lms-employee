@@ -68,7 +68,8 @@ export class LmsService {
       console.log(el)
       if( el.success ) {
         this.emitMyLeaves.emit(el)
-        stepper.next() 
+        this.router.navigate(['/dashboard'])
+        // stepper.next() 
       } else stepper.next() //this.snackBars("! Success" , "Try Again" )
     }, err => this.snackBars("API Error" , "Try Again" ) )
   }
