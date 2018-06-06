@@ -24,7 +24,10 @@ export class DashboardComponent implements OnInit {
     this.lms.showLoader()
     
     this.lms.emitgetEmployees.subscribe( r => this.employee = r )
-    this.lms.emitMyZero.subscribe( r => this.hide = false )
+    this.lms.emitMyZero.subscribe( r => {
+      this.hide = false
+      //console.log(this.hide)
+    })
     this.lms.emitMyLeaves.subscribe( r => {
       this.leave = r 
       console.log(this.leave)
