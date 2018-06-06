@@ -9,8 +9,8 @@ import 'rxjs/add/operator/map'
 
 export class ApiService {
 
-  // URL : string = "http://13.127.13.175:5000/"
-  URL : string = "http://192.168.15.55:5000/"
+  URL : string = "http://13.127.13.175:5000/"
+  // URL : string = "http://192.168.15.55:5000/"
   token : string // Useful in Authentication
   headers : Headers // Useful when backend and frontend have different IP's
   opts : any
