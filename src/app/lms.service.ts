@@ -32,7 +32,7 @@ export class LmsService {
 
   snackBars(message:string,action:string){  
     this.snackBar.open(message,action,{
-      duration:2600,
+      duration : 2800,
     })
   }
 
@@ -49,9 +49,9 @@ export class LmsService {
     this.api.Login( temp ).subscribe( el => {
       console.log( el )
       if ( el.success ) {
-        localStorage.setItem( 'token',el.token )
+        localStorage.setItem( 'token', el.token )
         this.emitLogin.emit()
-      } else this.snackBars("! Success" , "Try Again" ) 
+      } else this.snackBars( el.error , el.success ) 
     }, err => this.snackBars("API Error" , "Try Again" )
    )
   }
