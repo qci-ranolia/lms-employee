@@ -20,9 +20,7 @@ export class LmsService {
   showLoader(){
     this.loader = true
     this.emitsload.emit(this.loader)
-    setTimeout(() => {
-      this.hideLoader()
-    }, 1000 )
+    setTimeout(() => this.hideLoader(), 1000 )
   }
 
   hideLoader(){
@@ -47,11 +45,11 @@ export class LmsService {
     tmp = { qci_id:uname, password:pwd }
     let temp = JSON.stringify( tmp )
     this.api.Login( temp ).subscribe( el => {
-      console.log( el )
+      // console.log( el )
       if ( el.success ) {
         localStorage.setItem( 'token', el.token )
         this.emitLogin.emit()
-      } else this.snackBars( el.error , el.success ) 
+      } else this.snackBars( el.message , el.success ) 
     }, err => this.snackBars("API Error" , "Try Again" )
    )
   }
@@ -65,7 +63,7 @@ export class LmsService {
 
   applyleave( leave : any, stepper : MatStepper ){
     this.api.ApplyLeave( leave ).subscribe( el => {
-      console.log(el)
+      // console.log(el)
       if( el.success ) {
         this.emitMyLeaves.emit(el)
         this.router.navigate(['/dashboard'])

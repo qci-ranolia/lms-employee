@@ -30,7 +30,7 @@ export class DashboardComponent implements OnInit {
     })
     this.lms.emitMyLeaves.subscribe( r => {
       this.leave = r 
-      console.log(this.leave)
+      // console.log(this.leave)
     })
   }
   

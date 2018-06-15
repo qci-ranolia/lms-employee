@@ -50,7 +50,6 @@ export class ApplyComponent implements OnInit {
     this.lms.showLoader()
     this.lms.emitgetEmployees.subscribe( r => {
       this.employee = r
-      // console.log(this.employee)
     })
   }
   
@@ -137,7 +136,7 @@ export class ApplyComponent implements OnInit {
     // console.log(b.length)
     for ( let i = 0; i < b.length; i++ ) {
       if ( a == b[i] ) {
-        if ( this.leavedays > c[i] ) this.lms.snackBars( "Alert", "Total applied days are less than your balance leaves" )
+        if ( this.leavedays > c[i] ) this.lms.snackBars( "Alert", "Total applied days are less than your balance leave" )
       }
     }
   }
@@ -158,10 +157,6 @@ export class ApplyComponent implements OnInit {
       leave_type  : this.leave_type
     }
     this.applyLeave.push( tmp )
-    // console.log(stepper)
-    // console.log(tmp)
-    console.log(this.today)
     this.lms.applyleave( tmp, stepper )
-  }
-  
+  }  
 }
