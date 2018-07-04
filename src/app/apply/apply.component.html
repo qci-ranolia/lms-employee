@@ -1,5 +1,33 @@
 <div class="d-flex justify-content-center">
-  <div class="col-sm-8 pt-2 pb-2">
+  <div class="col-sm-5 pt-2 pb-2">
+    <h5>QCI Calendar</h5>
+    <div class="col-sm-12 p-0 bg-white rad-box">
+      <mat-chip-list>
+        <div class="col-sm-12 p-0">
+          <div class="col-sm-12 p-0">
+            <div class="float-left col-sm-6 pt-2"><strong class="text-info d-inline-block">*</strong> Compulsory Holidays</div>
+            <div class="float-left col-sm-6 pt-2"><strong class="text-muted d-inline-block">*</strong> Restricted Holidays</div>
+          </div>
+          <br />
+          <br />
+          <div *ngIf="!zeroHolidays">
+            <div class="col-sm-6 mt-2 mb-2 float-left" *ngFor="let all of holidays; let i=index;">
+              <div class="mb-3" *ngIf="all.CompulsoryHoliday">
+                <span class="p-2 bg-light">{{i+1}}</span>
+                <strong class="text-info">{{all.CompulsoryHoliday}}<small class="d-block mt-2">{{all.Date}}</small></strong>
+              </div>
+              <div class="mb-3" *ngIf="all.RestrictedHoliday">
+                <span class="p-2 bg-light">{{i+1}}</span>
+                <strong class="text-muted">{{all.RestrictedHoliday}}<small class="d-block mt-2">{{all.Date}}</small></strong>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 mt-4 mb-2 text-center" *ngIf="zeroHolidays">Holidays will be updated soon !</div>
+        </div>
+      </mat-chip-list>
+    </div>
+  </div>
+  <div class="col-sm-7 pt-2 pb-2">
     <h5>Apply for leave</h5>
     <div class="col-sm-12 pl-4 pt-4 pr-4 pb-3 d-inline-block bg-white rad-box">
       <mat-horizontal-stepper [linear]="isLinear" #stepper>

@@ -295,6 +295,7 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("./node_modules/@angular/http/esm5/http.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__("./node_modules/rxjs/_esm5/add/operator/map.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_material__ = __webpack_require__("./node_modules/@angular/material/esm5/material.es5.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -309,18 +310,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 // import { Observable } from 'rxjs'
 
+ // remove from lms service after all promise< resolve,reject> successfully implemented here
 var ApiService = /** @class */ (function () {
-    function ApiService(http, router) {
+    function ApiService(snackBar, http, router) {
+        this.snackBar = snackBar;
         this.http = http;
         this.router = router;
         // URL : string = "http://13.127.13.175:5000/"
         this.URL = "http://192.168.15.55:5000/";
+        this.emitgetHoliday = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["x" /* EventEmitter */]();
         this.token = localStorage.getItem('token'); // If this token available, login using can activate gaurd 
         this.headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Headers */](); // Default headers
         this.headers.append('Authorization', this.token); // ADD/Append your authorized token to Default headers
         this.opts = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["d" /* RequestOptions */](); // how to check if front end have issue or backend, without even using postman!! Am i correct ?
         this.opts.headers = this.headers;
+        this.uid = localStorage.getItem('userName');
     }
+    ApiService.prototype.snackBars = function (message, action) {
+        this.snackBar.open(message, action, {
+            duration: 2600,
+        });
+    };
     ApiService.prototype.Login = function (data) {
         this.uid = data.qci_id;
         return this.http.post(this.URL + 'lms/loginEmp', data).map(function (r) { return r.json(); });
@@ -330,15 +340,34 @@ var ApiService = /** @class */ (function () {
     };
     // HINT : Are we checking the response is a success or not ???
     ApiService.prototype.GetEmployeeDetails = function () {
-        this.uid = localStorage.getItem('userName');
         return this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts).map(function (r) { return r.json(); });
     };
     ApiService.prototype.myLeaves = function () {
         return this.http.get(this.URL + 'lms/applyLeave/' + this.uid, this.opts).map(function (r) { return r.json(); });
     };
+    // Get QCI Calendar
+    ApiService.prototype.getHoliday = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.http.get(_this.URL + 'lms/holiday', _this.opts)
+                .map(function (res) { return res.json(); })
+                .subscribe(function (response) {
+                if (response.success) {
+                    if (response.result.length == 0)
+                        _this.emitgetHoliday.emit("Holidays are not updated");
+                    else
+                        _this.emitgetHoliday.emit(response.result);
+                }
+                else
+                    _this.snackBars(response.message, response.success);
+                resolve(true);
+            }, function (err) { return _this.router.navigate(['/404']); });
+        });
+        // return this.http.get( this.URL+'lms/holiday', this.opts ).map( r => r.json() )
+    };
     ApiService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["C" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */], __WEBPACK_IMPORTED_MODULE_2__angular_router__["a" /* Router */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_4__angular_material__["y" /* MatSnackBar */], __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */], __WEBPACK_IMPORTED_MODULE_2__angular_router__["a" /* Router */]])
     ], ApiService);
     return ApiService;
 }());
@@ -359,6 +388,7 @@ var ApiService = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__nav_nav_component__ = __webpack_require__("./src/app/nav/nav.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__dashboard_dashboard_component__ = __webpack_require__("./src/app/dashboard/dashboard.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__apply_apply_component__ = __webpack_require__("./src/app/apply/apply.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__servererr_servererr_component__ = __webpack_require__("./src/app/servererr/servererr.component.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -374,11 +404,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+
 var routes = [
     { path: '', component: __WEBPACK_IMPORTED_MODULE_4__nav_nav_component__["a" /* NavComponent */], children: [
             { path: 'dashboard', component: __WEBPACK_IMPORTED_MODULE_5__dashboard_dashboard_component__["a" /* DashboardComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_2__auth_service__["a" /* AuthService */]] },
             { path: '', redirectTo: '/dashboard', pathMatch: 'full', canActivate: [__WEBPACK_IMPORTED_MODULE_2__auth_service__["a" /* AuthService */]] },
             { path: 'apply-leave', component: __WEBPACK_IMPORTED_MODULE_6__apply_apply_component__["a" /* ApplyComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_2__auth_service__["a" /* AuthService */]] },
+            { path: '404', component: __WEBPACK_IMPORTED_MODULE_7__servererr_servererr_component__["a" /* ServererrComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_2__auth_service__["a" /* AuthService */]] }
         ] },
     { path: 'login', component: __WEBPACK_IMPORTED_MODULE_3__login_login_component__["a" /* LoginComponent */] },
     { path: '**', redirectTo: '/login' }
@@ -482,12 +514,14 @@ var AppComponent = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__angular_material__ = __webpack_require__("./node_modules/@angular/material/esm5/material.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__apply_apply_component__ = __webpack_require__("./src/app/apply/apply.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__servererr_servererr_component__ = __webpack_require__("./src/app/servererr/servererr.component.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -515,6 +549,7 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_7__dashboard_dashboard_component__["a" /* DashboardComponent */],
                 __WEBPACK_IMPORTED_MODULE_9__login_login_component__["a" /* LoginComponent */],
                 __WEBPACK_IMPORTED_MODULE_14__apply_apply_component__["a" /* ApplyComponent */],
+                __WEBPACK_IMPORTED_MODULE_16__servererr_servererr_component__["a" /* ServererrComponent */],
             ],
             imports: [
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -550,7 +585,7 @@ var AppModule = /** @class */ (function () {
 /***/ "./src/app/apply/apply.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"d-flex justify-content-center\">\n  <div class=\"col-sm-8 pt-2 pb-2\">\n    <h5>Apply for leave</h5>\n    <div class=\"col-sm-12 pl-4 pt-4 pr-4 pb-3 d-inline-block bg-white rad-box\">\n      <mat-horizontal-stepper [linear]=\"isLinear\" #stepper>\n        <mat-step [stepControl]=\"firstFormGroup\">\n          <form [formGroup]=\"firstFormGroup\">\n            <ng-template matStepLabel>Select date and type</ng-template>\n            <div class=\"col-sm-6 col-md-3 float-left pt-4\">\n              <mat-form-field>\n                <input matInput [min]=\"minDate\" [matDatepickerFilter]=\"disableSunDay\" [matDatepicker]=\"firstDate\" placeholder=\"Date from\" (dateInput)=\"firstDateEvent($event)\" formControlName=\"check1\">\n                <mat-datepicker-toggle matSuffix [for]=\"firstDate\"></mat-datepicker-toggle>\n                <mat-datepicker #firstDate></mat-datepicker>\n              </mat-form-field>\n            </div>\n            <div class=\"col-sm-6 col-md-3 float-left pt-4\">\n              <mat-form-field>\n                <input matInput [min]=\"minDate2\" [matDatepickerFilter]=\"disableSunDay\" [matDatepicker]=\"secondDate\" placeholder=\"Date to\" (dateInput)=\"secondDateEvent($event)\" :disabled=\"{{isFirstDateSelected}}\">\n                <mat-datepicker-toggle matSuffix [for]=\"secondDate\"></mat-datepicker-toggle>\n                <mat-datepicker #secondDate></mat-datepicker>\n              </mat-form-field>\n            </div>\n            <div class=\"col-sm-6 col-md-4 float-right pt-4\">\n              <mat-form-field>\n                <mat-select placeholder=\"Select leave type\" formControlName=\"check2\" [(ngModel)]=\"leave_type\" (change)=\"ifLeavesAreLess(leave_type)\" name=\"leave\" [(value)]=\"selected\" :disabled=\"{{isFirstDateSelected}}\">\n                  <mat-option value=\"cl\" >Casual leave<strong class=\"d-inline\">({{ employee.bal_cl }})</strong></mat-option>\n                  <mat-option value=\"eol\">Extra Ordinary leave<strong class=\"d-inline\">({{ employee.bal_eol }})</strong></mat-option>\n                  <mat-option value=\"ml\" *ngIf=\"employee.bal_ml\">Materinity leave<strong class=\"d-inline\">({{ employee.bal_ml }})</strong></mat-option>\n                  <mat-option value=\"ptl\" *ngIf=\"employee.bal_ptl\">Paterinity leave<strong class=\"d-inline\">({{employee.bal_ptl}})</strong></mat-option>\n                  <mat-option value=\"pl\">Priviledged leave<strong class=\"d-inline\">({{ employee.bal_pl }})</strong></mat-option>\n                  <mat-option value=\"sl\">Sick leave<strong class=\"d-inline\">({{ employee.bal_sl }})</strong></mat-option>\n                </mat-select>\n              </mat-form-field>\n            </div>\n            <div class=\"clearfix pt-4\"></div>\n            <div class=\"clearfix pt-1\"></div>\n            <div class=\"col-sm-6 col-md-4 float-left pt-4\">\n              <mat-form-field>\n                <input matInput placeholder=\"Total Applied Dates\" :value=\"{{leavedays}}\" disabled>\n              </mat-form-field>\n            </div>\n            <div class=\"clearfix pt-4\"></div>\n            <div class=\"col-sm-6 col-md-4 float-left mb-3 mt-4\">\n              <button mat-raised-button matStepperNext>Next</button>\n            </div>\n          </form>\n        </mat-step>\n        <mat-step [stepControl]=\"secondFormGroup\" [optional]=\"isOptional\">\n          <form [formGroup]=\"secondFormGroup\">\n            <ng-template matStepLabel>Reason for leave</ng-template>\n            <div class=\"col-sm-6 col-md-12 float-left pt-4\">\n              <mat-form-field>\n                <textarea matInput placeholder=\"Reason for leave...\" formControlName=\"check3\" [(ngModel)]=\"leave_reason\" name=\"leave_reason\"></textarea>\n              </mat-form-field>\n            </div>\n            <div class=\"col-sm-6 col-md-4 float-left mb-3 mt-4\">\n              <button mat-raised-button color=\"accent\" matStepperPrevious>Back</button>\n              <button mat-raised-button (click)=\"Applyleave(stepper)\" matStepperNext>Apply</button>\n            </div>\n          </form>\n        </mat-step>\n        <mat-step>\n          <ng-template matStepLabel>Confirmation</ng-template>\n          <div class=\"d-flex justify-content-center\">\n            <div class=\"col-sm-12 col-md-12 p-0\">\n              <mat-card class=\"example-card\" style=\"box-shadow:none\">\n                <mat-card-header>\n                  <div mat-card-avatar class=\"example-header-image\">\n                    <h3 class=\"material-icons\">label</h3>\n                  </div>\n                  <mat-card-title><h4 class=\"mt-3\">Successfully apllied</h4></mat-card-title>\n                  <mat-card-subtitle>Status : Pending</mat-card-subtitle>\n                </mat-card-header>\n                <mat-card-actions class=\"pl-3 mt-5\">\n                  <button mat-raised-button color=\"accent\" matStepperPrevious>Back</button>\n                </mat-card-actions>\n              </mat-card>\n            </div>\n          </div>\n        </mat-step>\n      </mat-horizontal-stepper>\n    </div>\n  </div>\n</div>\n"
+module.exports = "<div class=\"d-flex justify-content-center\">\n  <div class=\"col-sm-5 pt-2 pb-2\">\n    <h5>QCI Calendar</h5>\n    <div class=\"col-sm-12 p-0 bg-white rad-box\">\n      <mat-chip-list>\n        <div class=\"col-sm-12 p-0\">\n          <div class=\"col-sm-12 p-0\">\n            <div class=\"float-left col-sm-6 pt-2\"><strong class=\"text-info d-inline-block\">*</strong> Compulsory Holidays</div>\n            <div class=\"float-left col-sm-6 pt-2\"><strong class=\"text-muted d-inline-block\">*</strong> Restricted Holidays</div>\n          </div>\n          <br />\n          <br />\n          <div *ngIf=\"!zeroHolidays\">\n            <div class=\"col-sm-6 mt-2 mb-2 float-left\" *ngFor=\"let all of holidays; let i=index;\">\n              <div class=\"mb-3\" *ngIf=\"all.CompulsoryHoliday\">\n                <span class=\"p-2 bg-light\">{{i+1}}</span>\n                <strong class=\"text-info\">{{all.CompulsoryHoliday}}<small class=\"d-block mt-2\">{{all.Date}}</small></strong>\n              </div>\n              <div class=\"mb-3\" *ngIf=\"all.RestrictedHoliday\">\n                <span class=\"p-2 bg-light\">{{i+1}}</span>\n                <strong class=\"text-muted\">{{all.RestrictedHoliday}}<small class=\"d-block mt-2\">{{all.Date}}</small></strong>\n              </div>\n            </div>\n          </div>\n          <div class=\"col-sm-12 mt-4 mb-2 text-center\" *ngIf=\"zeroHolidays\">Holidays will be updated soon !</div>\n        </div>\n      </mat-chip-list>\n    </div>\n  </div>\n  <div class=\"col-sm-7 pt-2 pb-2\">\n    <h5>Apply for leave</h5>\n    <div class=\"col-sm-12 pl-4 pt-4 pr-4 pb-3 d-inline-block bg-white rad-box\">\n      <mat-horizontal-stepper [linear]=\"isLinear\" #stepper>\n        <mat-step [stepControl]=\"firstFormGroup\">\n          <form [formGroup]=\"firstFormGroup\">\n            <ng-template matStepLabel>Select date and type</ng-template>\n            <div class=\"col-sm-6 col-md-3 float-left pt-4\">\n              <mat-form-field>\n                <input matInput [min]=\"minDate\" [matDatepickerFilter]=\"disableSunDay\" [matDatepicker]=\"firstDate\" placeholder=\"Date from\" (dateInput)=\"firstDateEvent($event)\" formControlName=\"check1\">\n                <mat-datepicker-toggle matSuffix [for]=\"firstDate\"></mat-datepicker-toggle>\n                <mat-datepicker #firstDate></mat-datepicker>\n              </mat-form-field>\n            </div>\n            <div class=\"col-sm-6 col-md-3 float-left pt-4\">\n              <mat-form-field>\n                <input matInput [min]=\"minDate2\" [matDatepickerFilter]=\"disableSunDay\" [matDatepicker]=\"secondDate\" placeholder=\"Date to\" (dateInput)=\"secondDateEvent($event)\" :disabled=\"{{isFirstDateSelected}}\">\n                <mat-datepicker-toggle matSuffix [for]=\"secondDate\"></mat-datepicker-toggle>\n                <mat-datepicker #secondDate></mat-datepicker>\n              </mat-form-field>\n            </div>\n            <div class=\"col-sm-6 col-md-4 float-right pt-4\">\n              <mat-form-field>\n                <mat-select placeholder=\"Select leave type\" formControlName=\"check2\" [(ngModel)]=\"leave_type\" (change)=\"ifLeavesAreLess(leave_type)\" name=\"leave\" [(value)]=\"selected\" :disabled=\"{{isFirstDateSelected}}\">\n                  <mat-option value=\"cl\" >Casual leave<strong class=\"d-inline\">({{ employee.bal_cl }})</strong></mat-option>\n                  <mat-option value=\"eol\">Extra Ordinary leave<strong class=\"d-inline\">({{ employee.bal_eol }})</strong></mat-option>\n                  <mat-option value=\"ml\" *ngIf=\"employee.bal_ml\">Materinity leave<strong class=\"d-inline\">({{ employee.bal_ml }})</strong></mat-option>\n                  <mat-option value=\"ptl\" *ngIf=\"employee.bal_ptl\">Paterinity leave<strong class=\"d-inline\">({{employee.bal_ptl}})</strong></mat-option>\n                  <mat-option value=\"pl\">Priviledged leave<strong class=\"d-inline\">({{ employee.bal_pl }})</strong></mat-option>\n                  <mat-option value=\"sl\">Sick leave<strong class=\"d-inline\">({{ employee.bal_sl }})</strong></mat-option>\n                </mat-select>\n              </mat-form-field>\n            </div>\n            <div class=\"clearfix pt-4\"></div>\n            <div class=\"clearfix pt-1\"></div>\n            <div class=\"col-sm-6 col-md-4 float-left pt-4\">\n              <mat-form-field>\n                <input matInput placeholder=\"Total Applied Dates\" :value=\"{{leavedays}}\" disabled>\n              </mat-form-field>\n            </div>\n            <div class=\"clearfix pt-4\"></div>\n            <div class=\"col-sm-6 col-md-4 float-left mb-3 mt-4\">\n              <button mat-raised-button matStepperNext>Next</button>\n            </div>\n          </form>\n        </mat-step>\n        <mat-step [stepControl]=\"secondFormGroup\" [optional]=\"isOptional\">\n          <form [formGroup]=\"secondFormGroup\">\n            <ng-template matStepLabel>Reason for leave</ng-template>\n            <div class=\"col-sm-6 col-md-12 float-left pt-4\">\n              <mat-form-field>\n                <textarea matInput placeholder=\"Reason for leave...\" formControlName=\"check3\" [(ngModel)]=\"leave_reason\" name=\"leave_reason\"></textarea>\n              </mat-form-field>\n            </div>\n            <div class=\"col-sm-6 col-md-4 float-left mb-3 mt-4\">\n              <button mat-raised-button color=\"accent\" matStepperPrevious>Back</button>\n              <button mat-raised-button (click)=\"Applyleave(stepper)\" matStepperNext>Apply</button>\n            </div>\n          </form>\n        </mat-step>\n        <mat-step>\n          <ng-template matStepLabel>Confirmation</ng-template>\n          <div class=\"d-flex justify-content-center\">\n            <div class=\"col-sm-12 col-md-12 p-0\">\n              <mat-card class=\"example-card\" style=\"box-shadow:none\">\n                <mat-card-header>\n                  <div mat-card-avatar class=\"example-header-image\">\n                    <h3 class=\"material-icons\">label</h3>\n                  </div>\n                  <mat-card-title><h4 class=\"mt-3\">Successfully apllied</h4></mat-card-title>\n                  <mat-card-subtitle>Status : Pending</mat-card-subtitle>\n                </mat-card-header>\n                <mat-card-actions class=\"pl-3 mt-5\">\n                  <button mat-raised-button color=\"accent\" matStepperPrevious>Back</button>\n                </mat-card-actions>\n              </mat-card>\n            </div>\n          </div>\n        </mat-step>\n      </mat-horizontal-stepper>\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -568,9 +603,11 @@ module.exports = "button.btn-theme, button.btn-theme:hover {\n  background: #f44
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ApplyComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lms_service__ = __webpack_require__("./src/app/lms.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_moment__ = __webpack_require__("./node_modules/moment/moment.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_moment__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_service__ = __webpack_require__("./src/app/api.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_forms__ = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_moment__ = __webpack_require__("./node_modules/moment/moment.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_moment__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_material__ = __webpack_require__("./node_modules/@angular/material/esm5/material.es5.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -584,55 +621,90 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+// import { MatStepperModule } from "@angular/material/stepper"
+
 // import * as _ from "lodash"
+
 var ApplyComponent = /** @class */ (function () {
-    function ApplyComponent(lms, _formBuilder) {
+    function ApplyComponent(snackBar, api, lms, _formBuilder) {
         var _this = this;
+        this.snackBar = snackBar;
+        this.api = api;
         this.lms = lms;
         this._formBuilder = _formBuilder;
         this.applyLeave = new Array();
         this.employee = new Array();
         this.isLinear = true;
-        this.showUs = false;
+        // showUs = false
         this.loader = false;
         this.isFirstDateSelected = true;
+        this.zeroHolidays = false;
         this.minDate = new Date();
         this.minDate2 = new Date();
+        this.leave = new Array();
         this.disableSunDay = function (d) {
+            console.log(d);
             var day = d.getDay();
             return day !== 0; // && day !== 6 // Uncomment if saturday is disabled too
         };
-        this.lms.emitsload.subscribe(function (el) { return _this.loader = el; });
+        this.unsubLoader = this.lms.emitsload.subscribe(function (el) { return (_this.loader = el); });
         this.lms.showLoader();
-        this.lms.emitgetEmployees.subscribe(function (r) {
-            _this.employee = r;
+        this.unsubGetEmployees = this.lms.emitgetEmployees.subscribe(function (r) { return (_this.employee = r); }); // getEmployees()
+        this.unsubMyLeaves = this.lms.emitMyLeaves.subscribe(function (r) { return (_this.leave = r); });
+        this.unsubGetHoliday = this.api.emitgetHoliday.subscribe(function (el) {
+            if (el == "Holidays are not updated")
+                _this.zeroHolidays = true;
+            else {
+                _this.zeroHolidays = false;
+                setTimeout(function () {
+                    for (var i = 0; i < el.length; i++) {
+                        if (i >= el.length - 2) {
+                            JSON.parse(el[i].data).map(function (el) {
+                                if (el.CompulsoryHoliday)
+                                    _this.compulsory.push(el);
+                                _this.holidays.push(el);
+                            });
+                        }
+                    }
+                    _this.holidays.sort(function (a, b) {
+                        (a = a.Date.split("/").reverse().join("")), (b = b.Date.split("/").reverse().join(""));
+                        return a > b ? 1 : a < b ? -1 : 0;
+                    });
+                }, 350);
+            }
         });
     }
+    ApplyComponent.prototype.snackBars = function (message, action) {
+        this.snackBar.open(message, action, {
+            duration: 3900,
+        });
+    };
     ApplyComponent.prototype.ngOnInit = function () {
+        this.lms.myLeaves();
+        this.api.getHoliday();
         this.firstFormGroup = this._formBuilder.group({
-            check1: ['', __WEBPACK_IMPORTED_MODULE_2__angular_forms__["j" /* Validators */].required],
-            check2: ['', __WEBPACK_IMPORTED_MODULE_2__angular_forms__["j" /* Validators */].required]
+            check1: ["", __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required],
+            check2: ["", __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required]
         });
         this.secondFormGroup = this._formBuilder.group({
-            check3: ['', __WEBPACK_IMPORTED_MODULE_2__angular_forms__["j" /* Validators */].required],
-            check4: ['', __WEBPACK_IMPORTED_MODULE_2__angular_forms__["j" /* Validators */].required]
+            check3: ["", __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required],
+            check4: ["", __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required]
         });
         this.lms.getEmployees();
     };
     ApplyComponent.prototype.firstDateEvent = function (event) {
         this.date = event.value.getDate(); // Get date
         this.month = event.value.getMonth(); // Now get month
-        this.year = event.value.getFullYear(); // Now get year 
-        this.letDateCondition();
+        this.year = event.value.getFullYear(); // Now get year
+        this.letDateConditions();
         // Get fulldate
         this.firstDate = this.getDate;
         this.fDate = this.getDate2;
         // enable second datepicker
         this.isFirstDateSelected = false;
-        // Calculate on the basis of second datepicker if already selected || !selected 
-        if (this.secondDate) {
+        // Calculate on the basis of second datepicker if already selected || !selected
+        if (this.secondDate)
             this.countSundays();
-        }
         else
             this.leavedays = 1;
         this.minDate2 = this.firstDate;
@@ -640,64 +712,73 @@ var ApplyComponent = /** @class */ (function () {
     ApplyComponent.prototype.secondDateEvent = function (event) {
         this.date = event.value.getDate(); // Get date
         this.month = event.value.getMonth(); // Now get month
-        this.year = event.value.getFullYear(); // Now get year 
-        this.letDateCondition();
-        // Get fulldate 
+        this.year = event.value.getFullYear(); // Now get year
+        this.letDateConditions();
+        // Get fulldate
         this.secondDate = this.getDate;
         this.sDate = this.getDate2;
         this.countSundays();
     };
-    ApplyComponent.prototype.letDateCondition = function () {
-        var d = this.date;
-        if (d < 10) {
-            this.date = '0' + d;
-        }
+    ApplyComponent.prototype.letDateConditions = function () {
+        var _this = this;
+        var d = this.date, m = this.month;
+        if (d < 10)
+            this.date = "0" + d;
         else
             this.date = d;
-        var m = this.month;
-        if (m < 10) {
-            m++;
-            this.month = '0' + m;
-        }
-        else {
-            m++;
-            this.month = m;
-        }
-        var getDate = String(this.year + '-' + this.month + '-' + this.date);
-        var temp = String(this.date + '/' + this.month + '/' + this.year);
+        if (m < 10)
+            m++ && (this.month = "0" + m);
+        else
+            m++ && (this.month = m);
+        var getDate = String(this.year + "-" + this.month + "-" + this.date), temp = String(this.date + "/" + this.month + "/" + this.year);
         this.getDate = getDate;
         this.getDate2 = temp;
         this.today = temp;
+        // check if leave dates are already in the current applications of the employee
+        // for loop to create a temp array of all dates
+        for (var i = 0; i < this.leave.length; i++) {
+            if (this.leave[i].leave_status !== "Rejected") {
+                // convert applied date_from in the format DD/MM/YYYY for momentJS for the leave applications
+                var x = this.leave[i].date_from.split("/"), y = x[1] + '/' + x[0] + '/' + x[2], f = __WEBPACK_IMPORTED_MODULE_4_moment__(y), s = this.leave[i].date_to, arr = [];
+                while (f.format("DD/MM/YYYY") < s) {
+                    arr.push(f.format("DD/MM/YYYY"));
+                    f.add(1, 'day');
+                }
+                // All the date array[temp array] of particular application 
+                arr.push(s);
+                arr.filter(function (k) {
+                    // is selected date already in the applied application/s list, if index == 0 :=> we found the selected date in already applied application/s(pending,rejected&approved) dates
+                    if (_this.getDate2.indexOf(k) == 0)
+                        _this.snackBars("Note:", "Your one of previous application has same date");
+                });
+            } // else console.log(this.leave[i].leave_status) // Rejected. Right ??
+        }
     };
+    // echo 65536 | sudo tee -a /proc/sys/fs/inotify/max user watches
     ApplyComponent.prototype.countSundays = function () {
         // Calculate sundays between two days using Moment JS
-        var f = __WEBPACK_IMPORTED_MODULE_3_moment__(this.firstDate), s = __WEBPACK_IMPORTED_MODULE_3_moment__(this.secondDate), sunday = 0; // Sunday    
-        var result = [];
-        var current = f.clone();
-        while (current.day(7 + sunday).isBefore(s)) {
-            result.push(current.clone());
-        }
+        var f = __WEBPACK_IMPORTED_MODULE_4_moment__(this.firstDate), s = __WEBPACK_IMPORTED_MODULE_4_moment__(this.secondDate), sunday = 0, r = [], c = f.clone();
+        while (c.day(7 + sunday).isBefore(s))
+            r.push(c.clone());
         // Calculate leavedays
-        var totalDays = s.diff(f, 'days');
-        var sundayCount = result.map(function (m) { return m; }).length;
-        this.leavedays = 1 + totalDays - sundayCount;
+        var td = s.diff(f, "days");
+        this.leavedays = 1 + td - r.length;
+        this.ifLeavesAreLess(this.ifLAL);
     };
     ApplyComponent.prototype.ifLeavesAreLess = function (item) {
+        this.ifLAL = item;
         var a = "bal_" + item, b = Object.keys(this.employee), c = Object.values(this.employee);
-        // console.log(b.length)
-        for (var i = 0; i < b.length; i++) {
-            if (a == b[i]) {
+        for (var i = 0; i < b.length; i++)
+            if (a == b[i])
                 if (this.leavedays > c[i])
-                    this.lms.snackBars("Alert", "Total applied days are less than your balance leave");
-            }
-        }
+                    this.lms.snackBars("Note:", "Total applied days are less than your balance leave");
     };
     ApplyComponent.prototype.Applyleave = function (stepper) {
         this.date = this.minDate.getDate(); // Get date
         this.month = this.minDate.getMonth(); // Now get month
-        this.year = this.minDate.getFullYear(); // Now get year 
-        this.letDateCondition();
-        var temp = localStorage.getItem('userName'), tmp;
+        this.year = this.minDate.getFullYear(); // Now get year
+        this.letDateConditions();
+        var temp = localStorage.getItem("userName"), tmp;
         tmp = {
             qci_id: temp,
             date_of_apply: this.today,
@@ -710,13 +791,19 @@ var ApplyComponent = /** @class */ (function () {
         this.applyLeave.push(tmp);
         this.lms.applyleave(tmp, stepper);
     };
+    ApplyComponent.prototype.ngOnDestroy = function () {
+        this.unsubLoader.unsubscribe();
+        this.unsubGetEmployees.unsubscribe();
+        this.unsubGetHoliday.unsubscribe();
+        this.unsubMyLeaves.unsubscribe();
+    };
     ApplyComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: 'app-apply',
+            selector: "app-apply",
             template: __webpack_require__("./src/app/apply/apply.component.html"),
             styles: [__webpack_require__("./src/app/apply/apply.component.scss")]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__lms_service__["a" /* LmsService */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["b" /* FormBuilder */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_5__angular_material__["y" /* MatSnackBar */], __WEBPACK_IMPORTED_MODULE_2__api_service__["a" /* ApiService */], __WEBPACK_IMPORTED_MODULE_1__lms_service__["a" /* LmsService */], __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormBuilder */]])
     ], ApplyComponent);
     return ApplyComponent;
 }());
@@ -786,6 +873,7 @@ module.exports = ".today {\n  color: blue; }\n\n.material-icons:hover, .material
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DashboardComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lms_service__ = __webpack_require__("./src/app/lms.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_service__ = __webpack_require__("./src/app/api.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -797,33 +885,60 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
 // import * as moment from 'moment'
 var DashboardComponent = /** @class */ (function () {
-    function DashboardComponent(lms) {
+    function DashboardComponent(lms, api) {
         var _this = this;
         this.lms = lms;
+        this.api = api;
         this.loader = false;
         // public momentDate = moment()
         // public daysArr
         this.hide = true;
         this.employee = new Array();
         this.leave = new Array();
-        this.lms.emitsload.subscribe(function (el) { return _this.loader = el; });
+        this.unsubLoader = this.lms.emitsload.subscribe(function (el) { return _this.loader = el; });
         this.lms.showLoader();
-        this.lms.emitgetEmployees.subscribe(function (r) { return _this.employee = r; });
-        this.lms.emitMyZero.subscribe(function (r) {
-            _this.hide = false;
-            //console.log(this.hide)
+        this.unsubGetEmployees = this.lms.emitgetEmployees.subscribe(function (r) {
+            _this.employee = r;
         });
-        this.lms.emitMyLeaves.subscribe(function (r) {
-            _this.leave = r;
-            // console.log(this.leave)
-        });
+        this.unsubZeroLeaves = this.lms.emitMyZero.subscribe(function (r) { return _this.hide = false; });
+        this.unsubMyLeaves = this.lms.emitMyLeaves.subscribe(function (r) { return _this.leave = r; });
     }
     DashboardComponent.prototype.ngOnInit = function () {
         this.lms.getEmployees();
         this.lms.myLeaves();
         // this.daysArr = this.createCalendar( this.momentDate )
+    };
+    // public todayCheck(day){
+    //   if ( !day ) {
+    //     return false
+    //   }
+    //   return moment().format( "L" ) === day.format 
+    // }
+    // public createCalendar( month ) {
+    //   let firstDay = moment(month).startOf( "M" )
+    //   let days = Array.apply( null, { length: month.daysInMonth() } )
+    //     .map( Number.call, Number )
+    //     .map ( (n) => {
+    //       return moment(firstDay).add( n, 'd' )
+    //     })
+    //     return days
+    // }
+    // public nextMonth() {
+    //   this.momentDate.add(1, 'M' )
+    //   this.daysArr = this.createCalendar( this.momentDate )
+    // }
+    // public previousMonth() {
+    //   this.momentDate.subtract( 1, 'M' )
+    //   this.daysArr = this.createCalendar( this.momentDate )
+    // }
+    DashboardComponent.prototype.ngOnDestroy = function () {
+        this.unsubLoader.unsubscribe();
+        this.unsubGetEmployees.unsubscribe();
+        this.unsubMyLeaves.unsubscribe();
+        this.unsubZeroLeaves.unsubscribe();
     };
     DashboardComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
@@ -831,7 +946,7 @@ var DashboardComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/dashboard/dashboard.component.html"),
             styles: [__webpack_require__("./src/app/dashboard/dashboard.component.scss")]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__lms_service__["a" /* LmsService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__lms_service__["a" /* LmsService */], __WEBPACK_IMPORTED_MODULE_2__api_service__["a" /* ApiService */]])
     ], DashboardComponent);
     return DashboardComponent;
 }());
@@ -908,7 +1023,7 @@ var LmsService = /** @class */ (function () {
             }
             else
                 _this.snackBars(el.message, el.success);
-        }, function (err) { return _this.snackBars("API Error", "Try Again"); });
+        }, function (err) { return _this.router.navigate(['/404']); });
     };
     LmsService.prototype.getEmployees = function () {
         var _this = this;
@@ -917,7 +1032,7 @@ var LmsService = /** @class */ (function () {
                 _this.emitgetEmployees.emit(el.data);
             else
                 _this.snackBars("! Success", "Try Again");
-        }, function (err) { return _this.snackBars("API Error", "Try Again"); });
+        }, function (err) { return _this.router.navigate(['/404']); });
     };
     LmsService.prototype.applyleave = function (leave, stepper) {
         var _this = this;
@@ -930,7 +1045,7 @@ var LmsService = /** @class */ (function () {
             }
             else
                 stepper.next(); //this.snackBars("! Success" , "Try Again" )
-        }, function (err) { return _this.snackBars("API Error", "Try Again"); });
+        }, function (err) { return _this.router.navigate(['/404']); });
     };
     LmsService.prototype.myLeaves = function () {
         var _this = this;
@@ -943,7 +1058,7 @@ var LmsService = /** @class */ (function () {
                 else
                     _this.snackBars("! Success", "Try Again");
             }
-        }, function (err) { return _this.snackBars("API Error", "Try Again"); });
+        }, function (err) { return _this.router.navigate(['/404']); });
     };
     LmsService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["C" /* Injectable */])(),
@@ -1077,6 +1192,63 @@ var NavComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__lms_service__["a" /* LmsService */], __WEBPACK_IMPORTED_MODULE_2__angular_router__["a" /* Router */]])
     ], NavComponent);
     return NavComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/servererr/servererr.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"d-flex justify-content-center\">\n  <div class=\"col-sm-8 pt-4 pb-4 text-center pl-0 pr-0\">\n    <img class=\"rad-box col-lg-8 col-md-12 col-sm-12 p-0\" src=\"../../assets/404.png\" />\n    <h4 style=\"position:relative;top:-8%\"><button mat-raised-button (click)=\"refresh()\">Reload</button></h4>\n  </div>\n</div>"
+
+/***/ }),
+
+/***/ "./src/app/servererr/servererr.component.scss":
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/servererr/servererr.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ServererrComponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__("./node_modules/@angular/common/esm5/common.js");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var ServererrComponent = /** @class */ (function () {
+    function ServererrComponent(location) {
+        this.location = location;
+    }
+    ServererrComponent.prototype.ngOnInit = function () {
+    };
+    ServererrComponent.prototype.refresh = function () {
+        this.location.back();
+        // window.location.reload()
+    };
+    ServererrComponent = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+            selector: 'app-servererr',
+            template: __webpack_require__("./src/app/servererr/servererr.component.html"),
+            styles: [__webpack_require__("./src/app/servererr/servererr.component.scss")]
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_common__["f" /* Location */]])
+    ], ServererrComponent);
+    return ServererrComponent;
 }());
 
 

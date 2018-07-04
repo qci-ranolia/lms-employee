@@ -16,7 +16,8 @@ import { AuthService } from './auth.service'
 
 import { MatAutocompleteModule, MatButtonModule, MatButtonToggleModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatExpansionModule, MatGridListModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatNativeDateModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule, MatRadioModule, MatRippleModule, MatSelectModule, MatSidenavModule, MatSliderModule, MatSlideToggleModule, MatSnackBarModule, MatSortModule, MatTableModule, MatTabsModule, MatToolbarModule, MatTooltipModule, MatStepperModule } from '@angular/material';
 import { ApplyComponent } from './apply/apply.component'
-import { RouterModule } from '@angular/router'
+import { RouterModule } from '@angular/router';
+import { ServererrComponent } from './servererr/servererr.component'
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { RouterModule } from '@angular/router'
     DashboardComponent,
     LoginComponent,
     ApplyComponent,
+    ServererrComponent,
   ],
   imports:[
     BrowserModule,

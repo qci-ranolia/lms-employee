@@ -17,30 +17,30 @@ export class LmsService {
 
   constructor( private api: ApiService, private router:Router, public snackBar: MatSnackBar ) { }
 
-  showLoader(){
+  showLoader() {
     this.loader = true
     this.emitsload.emit(this.loader)
     setTimeout(() => this.hideLoader(), 1000 )
   }
 
-  hideLoader(){
+  hideLoader() {
     this.loader = false
     this.emithload.emit(this.loader)
   }
 
-  snackBars(message:string,action:string){  
-    this.snackBar.open(message,action,{
+  snackBars( message : string, action : string ) {
+    this.snackBar.open( message, action, {
       duration : 2800,
     })
   }
 
   isLogin() {
-    if ( localStorage.getItem('token') ){
+    if ( localStorage.getItem('token') ) {
       this.router.navigate(['./'])
     }
   }
 
-  login( uname : string, pwd : string ){
+  login( uname : string, pwd : string ) {
     let tmp : any
     tmp = { qci_id:uname, password:pwd }
     let temp = JSON.stringify( tmp )
@@ -50,18 +50,17 @@ export class LmsService {
         localStorage.setItem( 'token', el.token )
         this.emitLogin.emit()
       } else this.snackBars( el.message , el.success ) 
-    }, err => this.snackBars("API Error" , "Try Again" )
-   )
-  }
+    }, err => this.router.navigate(['/404'])
+  )}
 
-  getEmployees(){
+  getEmployees() {
     this.api.GetEmployeeDetails().subscribe( el => {
       if ( el.success ) this.emitgetEmployees.emit( el.data )
       else this.snackBars("! Success" , "Try Again" )
-    }, err => this.snackBars( "API Error" , "Try Again" ) )
-  }
+    }, err => this.router.navigate(['/404'])
+  )}
 
-  applyleave( leave : any, stepper : MatStepper ){
+  applyleave( leave : any, stepper : MatStepper ) {
     this.api.ApplyLeave( leave ).subscribe( el => {
       // console.log(el)
       if( el.success ) {
@@ -69,18 +68,18 @@ export class LmsService {
         this.router.navigate(['/dashboard'])
         // stepper.next() 
       } else stepper.next() //this.snackBars("! Success" , "Try Again" )
-    }, err => this.snackBars("API Error" , "Try Again" ) )
-  }
+    }, err => this.router.navigate(['/404'])
+  )}
 
-  myLeaves(){
+  myLeaves() {
     this.api.myLeaves().subscribe( el => {
       if ( el.success ) this.emitMyLeaves.emit( el.data )
       else {
         if ( el.messages == 'No application available currently' ) this.emitMyZero.emit( el )
         else this.snackBars( "! Success" , "Try Again" ) 
       }
-    }, err => this.snackBars( "API Error" , "Try Again" ))
-  }
+    }, err => this.router.navigate(['/404'])
+  )}
 
   /* getLeavedetails(){
     this.api.GetLeaveDetail().subscribe( el => {

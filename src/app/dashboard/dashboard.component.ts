@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, OnDestroy } from '@angular/core'
 import { LmsService } from '../lms.service'
+import { ApiService } from '../api.service'
 // import * as moment from 'moment'
 
 @Component({
@@ -8,30 +9,29 @@ import { LmsService } from '../lms.service'
   styleUrls: ['./dashboard.component.scss']
 })
 
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   loader : boolean = false
-  
   // public momentDate = moment()
   // public daysArr
-
   hide : boolean = true
   employee = new Array()
   leave = new Array()
   myLeaveStatus : any
   
-  constructor( private lms: LmsService ) {
-    this.lms.emitsload.subscribe( el => this.loader = el )
+  unsubMyLeaves : any
+  unsubZeroLeaves : any
+  unsubGetEmployees : any
+  unsubLoader : any
+
+  constructor( private lms: LmsService, private api: ApiService ) {
+    this.unsubLoader = this.lms.emitsload.subscribe( el => this.loader = el )
     this.lms.showLoader()
     
-    this.lms.emitgetEmployees.subscribe( r => this.employee = r )
-    this.lms.emitMyZero.subscribe( r => {
-      this.hide = false
-      //console.log(this.hide)
+    this.unsubGetEmployees = this.lms.emitgetEmployees.subscribe( r => {
+      this.employee = r
     })
-    this.lms.emitMyLeaves.subscribe( r => {
-      this.leave = r 
-      // console.log(this.leave)
-    })
+    this.unsubZeroLeaves = this.lms.emitMyZero.subscribe( r => this.hide = false )
+    this.unsubMyLeaves = this.lms.emitMyLeaves.subscribe( r => this.leave = r )
   }
   
   public ngOnInit() {
@@ -68,4 +68,10 @@ export class DashboardComponent implements OnInit {
   //   this.daysArr = this.createCalendar( this.momentDate )
   // }
   
+  ngOnDestroy() {
+    this.unsubLoader.unsubscribe()
+    this.unsubGetEmployees.unsubscribe()
+    this.unsubMyLeaves.unsubscribe()
+    this.unsubZeroLeaves.unsubscribe()
+  }
 }
