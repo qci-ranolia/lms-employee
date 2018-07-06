@@ -23202,28 +23202,28 @@ form .ng-valid .mat-focused .mat-form-field-label, form .ng-valid .mat-form-fiel
    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12)
 }
 .mat-card-avatar {
-    height:90px !important;
-    width:90px !important;
-    box-shadow:1px 1px 1px 1px #ccc inset !important;
-    line-height:90px;
-    text-align:center;
+    height : 90px !important;
+    width : 90px !important;
+    box-shadow : 1px 1px 1px 1px #ccc inset !important;
+    line-height : 90px;
+    text-align : center
 } .mat-datepicker-content .mat-calendar {
-    height:310px !important;
-    background:rgba(0,0,0,0.03);
+    height : 325px !important;
+    background : rgba( 0, 0, 0, 0.03 )
 } .mat-calendar-header {
-    padding:0 8px 0 8px !important
+    padding : 0 8px 0 8px !important
 } .mat-calendar-controls {
-    margin:0% calc(33% / 7 - 16px) 2%
+    margin : 0% calc(33% / 7 - 16px) 2% !important
 } .mat-calendar-body-label {
-    padding-top:5% !important;
-    padding-bottom:1% !important;
+    padding-top : 5% !important;
+    padding-bottom : 1% !important
 } .mat-calendar-body-cell-content{
-    height:70% !important;
-    border-radius:2px !important;
-    box-shadow:1px 1px 2px 0px #777 !important;
-    background:#fff;
+    height : 70% !important;
+    border-radius : 2px !important;
+    box-shadow : 1px 1px 2px 0px #777 !important;
+    background : #fff
 } .mat-calendar-body-disabled > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
-    color:rgba(0, 0, 0, 0.22) ;
+    color : rgba(0, 0, 0, 0.22)
 } .mat-calendar-body-selected {
     background : #ff4081 !important;
     color : #fff

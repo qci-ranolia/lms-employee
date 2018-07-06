@@ -5,4 +5,17 @@ button.btn-theme, button.btn-theme:hover {
     background:#fafafa !important
 } .hid {
     display:none;
+} .ovf-y {
+    overflow:hidden;
+    overflow-y:hidden
+} .ovf-y:hover {
+    overflow-y : auto
+} strong{
+    font-weight: 400;
+    small {
+        font-weight: 600;
+    }
 }
+/* strong small{
+    font-weight:600;
+} */

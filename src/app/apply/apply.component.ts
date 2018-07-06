@@ -47,8 +47,8 @@ export class ApplyComponent implements OnInit, OnDestroy {
   minDate2 = new Date()
 
   ifLAL: any
-  compulsory: any
-  holidays: any
+  compulsory: any = []
+  holidays: any = new Array()
 
   unsubLoader: any
   unsubGetEmployees: any
@@ -75,12 +75,20 @@ export class ApplyComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           for (let i = 0; i < el.length; i++) {
             if (i >= el.length - 2) {
-              JSON.parse(el[i].data).map(el => {
-                if (el.CompulsoryHoliday) this.compulsory.push(el)
-                this.holidays.push(el)
+              JSON.parse(el[i].data).map(r => {
+                if (r.CompulsoryHoliday) this.compulsory.push(r)
+                this.holidays.push(r)
               })
             }
           }
+          let d = this.date,
+            m = this.month
+          if (d < 10) this.date = "0" + d
+          else this.date = d
+          if (m < 10) m++ && (this.month = "0" + m)
+          else m++ && (this.month = m)
+          var today = String(this.date + "/" + this.month + "/" + this.year)
+          this.holidays.push({ Today: "Today", Date: today })
           this.holidays.sort((a, b) => {
             (a = a.Date.split("/").reverse().join("")), (b = b.Date.split("/").reverse().join(""))
             return a > b ? 1 : a < b ? -1 : 0
@@ -90,6 +98,10 @@ export class ApplyComponent implements OnInit, OnDestroy {
     })
   }
   ngOnInit() {
+    this.date = this.minDate.getDate() // Get date
+    this.month = this.minDate.getMonth() // Now get month
+    this.year = this.minDate.getFullYear() // Now get year
+
     this.lms.myLeaves()
     this.api.getHoliday()
     this.firstFormGroup = this._formBuilder.group({
@@ -110,6 +122,12 @@ export class ApplyComponent implements OnInit, OnDestroy {
     // Get fulldate
     this.firstDate = this.getDate
     this.fDate = this.getDate2
+    let h: any = []
+    this.compulsory.map(e => h.push(e["Date"]))
+    // find if it is holiday
+    h.filter(k => {
+      if (this.fDate.indexOf(k) == 0) this.snackBars("Note:", "Already a holiday")
+    })
     // enable second datepicker
     this.isFirstDateSelected = false
     // Calculate on the basis of second datepicker if already selected || !selected
@@ -125,11 +143,16 @@ export class ApplyComponent implements OnInit, OnDestroy {
     // Get fulldate
     this.secondDate = this.getDate
     this.sDate = this.getDate2
+    let h: any = []
+    this.compulsory.map(e => h.push(e["Date"]))
+    // find if it is holiday
+    h.filter(k => {
+      if (this.sDate.indexOf(k) == 0) this.snackBars("Note:", "Already a holiday")
+    })
     this.countSundays()
   }
   letDateConditions() {
-    let d = this.date,
-      m = this.month
+    let d: number = this.date, m = this.month
     if (d < 10) this.date = "0" + d
     else this.date = d
     if (m < 10) m++ && (this.month = "0" + m)
@@ -173,7 +196,6 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.ifLeavesAreLess(this.ifLAL)
   }
   disableSunDay = (d: Date): boolean => {
-    console.log(d)
     const day = d.getDay()
     return day !== 0 // && day !== 6 // Uncomment if saturday is disabled too
   }
@@ -185,10 +207,8 @@ export class ApplyComponent implements OnInit, OnDestroy {
     for (let i = 0; i < b.length; i++) if (a == b[i]) if (this.leavedays > c[i]) this.lms.snackBars("Note:", "Total applied days are less than your balance leave")
   }
   Applyleave(stepper) {
-    this.date = this.minDate.getDate() // Get date
-    this.month = this.minDate.getMonth() // Now get month
-    this.year = this.minDate.getFullYear() // Now get year
     this.letDateConditions()
+    // if (this.today.length == 11)
     var temp = localStorage.getItem("userName"),
       tmp: any
     tmp = {
