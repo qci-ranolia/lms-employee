@@ -7,8 +7,8 @@ import 'rxjs/add/operator/map'
 import { MatSnackBar } from '@angular/material' // remove from lms service after all promise< resolve,reject> successfully implemented here
 @Injectable()
 export class ApiService {
-  // URL : string = "http://13.127.13.175:5000/"
-  URL: string = "http://192.168.15.55:5000/"
+  URL: string = "http://13.127.13.175:5000/"
+  // URL: string = "http://192.168.15.55:5000/"
   token: string // Useful in Authentication
   headers: Headers // Useful when backend and frontend have different IP's
   opts: any
@@ -23,13 +23,11 @@ export class ApiService {
     this.opts.headers = this.headers
     this.uid = localStorage.getItem('userName')
   }
-
   snackBars(message: string, action: string) {
     this.snackBar.open(message, action, {
       duration: 2600,
     })
   }
-
   Login(data: any) {
     this.uid = data.qci_id
     return this.http.post(this.URL + 'lms/loginEmp', data).map(r => r.json())
@@ -44,7 +42,6 @@ export class ApiService {
   myLeaves() {
     return this.http.get(this.URL + 'lms/applyLeave/' + this.uid, this.opts).map(r => r.json())
   }
-
   // Get QCI Calendar
   getHoliday() {
     return new Promise((resolve) => {
@@ -62,5 +59,4 @@ export class ApiService {
     })
     // return this.http.get( this.URL+'lms/holiday', this.opts ).map( r => r.json() )
   }
-
 }

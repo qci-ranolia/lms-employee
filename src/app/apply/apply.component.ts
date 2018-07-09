@@ -98,10 +98,6 @@ export class ApplyComponent implements OnInit, OnDestroy {
     })
   }
   ngOnInit() {
-    this.date = this.minDate.getDate() // Get date
-    this.month = this.minDate.getMonth() // Now get month
-    this.year = this.minDate.getFullYear() // Now get year
-
     this.lms.myLeaves()
     this.api.getHoliday()
     this.firstFormGroup = this._formBuilder.group({
@@ -207,10 +203,20 @@ export class ApplyComponent implements OnInit, OnDestroy {
     for (let i = 0; i < b.length; i++) if (a == b[i]) if (this.leavedays > c[i]) this.lms.snackBars("Note:", "Total applied days are less than your balance leave")
   }
   Applyleave(stepper) {
-    this.letDateConditions()
-    // if (this.today.length == 11)
+
+    this.date = this.minDate.getDate() // Get date
+    this.month = this.minDate.getMonth() // Now get month
+    this.year = this.minDate.getFullYear() // Now get year
+    // this.letDateConditions()
+    let d: number = this.date, m = this.month
+    if (d < 10) this.date = "0" + d
+    else this.date = d
+    if (m < 10) m++ && (this.month = "0" + m)
+    else m++ && (this.month = m)
+    this.today = String(this.date + "/" + this.month + "/" + this.year)
     var temp = localStorage.getItem("userName"),
       tmp: any
+
     tmp = {
       qci_id: temp,
       date_of_apply: this.today,
