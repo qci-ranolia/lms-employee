@@ -1,10 +1,12 @@
 import { EventEmitter, Injectable } from '@angular/core'
 import { Http, Headers, RequestOptions } from '@angular/http'
-import { HttpErrorResponse, HttpParams, HttpHeaders } from '@angular/common/http'
-import { RouterModule, Routes, Router } from '@angular/router'
+// import { HttpErrorResponse, HttpParams, HttpHeaders } from '@angular/common/http'
+import { Router } from '@angular/router'// RouterModule, Routes, 
 // import { Observable } from 'rxjs'
 import 'rxjs/add/operator/map'
 import { MatSnackBar } from '@angular/material' // remove from lms service after all promise< resolve,reject> successfully implemented here
+import { MatStepper } from '@angular/material'
+
 @Injectable()
 export class ApiService {
   URL: string = "http://13.127.13.175:5000/"
@@ -14,33 +16,88 @@ export class ApiService {
   opts: any
   uid: any
   emitgetHoliday = new EventEmitter<any>()
+  emitgetEmployee = new EventEmitter<any>()
+  emitLogin = new EventEmitter<any>()
+  emitMyLeaves = new EventEmitter<any>()
+  emitMyZero = new EventEmitter<any>()
 
   constructor(public snackBar: MatSnackBar, private http: Http, private router: Router) { //, private router:Router // we will use both imports here. Are we using anywhere in comments only ???
+    this.uid = localStorage.getItem('userName')
     this.token = localStorage.getItem('token') // If this token available, login using can activate gaurd 
     this.headers = new Headers() // Default headers
     this.headers.append('Authorization', this.token) // ADD/Append your authorized token to Default headers
     this.opts = new RequestOptions() // how to check if front end have issue or backend, without even using postman!! Am i correct ?
     this.opts.headers = this.headers
-    this.uid = localStorage.getItem('userName')
   }
   snackBars(message: string, action: string) {
     this.snackBar.open(message, action, {
       duration: 2600,
     })
   }
-  Login(data: any) {
-    this.uid = data.qci_id
-    return this.http.post(this.URL + 'lms/loginEmp', data).map(r => r.json())
+  isLogin() {
+    if (localStorage.getItem('token')) {
+      this.router.navigate(['./'])
+    }
   }
-  ApplyLeave(data: any) {
-    return this.http.post(this.URL + 'lms/applyLeave', data, this.opts).map(r => r.json())
+  login(uname: string, pwd: string) {
+    let tmp: any
+    tmp = { qci_id: uname, password: pwd }
+    let data = JSON.stringify(tmp)
+    return new Promise((resolve) => {
+      this.http.post(this.URL + 'lms/loginEmp', data)
+        .map(res => res.json())
+        .subscribe(response => {
+          if (response.success) {
+            localStorage.setItem('token', response.token)
+            localStorage.setItem('userName',uname)
+            this.uid = uname
+            this.emitLogin.emit()
+          } else this.snackBars(response.message, response.success)
+          resolve(true)
+        }, err => this.router.navigate(['/404']))
+    })
+    // return this.http.post(this.URL + 'lms/loginEmp', data).map(r => r.json())
+  }
+  applyLeave(data: any, stepper: MatStepper) {
+    return new Promise((resolve) => {
+      this.http.post(this.URL + 'lms/applyLeave', data, this.opts)
+        .map(res => res.json())
+        .subscribe(response => {
+          if (response.success) {
+            this.emitMyLeaves.emit(response)
+            this.router.navigate(['/dashboard'])
+          } else stepper.next()
+          resolve(true)
+        }, err => this.router.navigate(['/404']))
+    })
+    // return this.http.post(this.URL + 'lms/applyLeave', data, this.opts).map(r => r.json())
   }
   // HINT : Are we checking the response is a success or not ???
-  GetEmployeeDetails() {
-    return this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts).map(r => r.json())
+  getEmployees() {
+    return new Promise((resolve) => {
+      this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts)
+        .map(res => res.json())
+        .subscribe(response => {
+          if (response.success) this.emitgetEmployee.emit(response.data)
+          else this.snackBars(response.message, response.success)
+          resolve(true)
+        }, err => this.router.navigate(['/404']))
+    })
+    // return this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts).map(r => r.json())
   }
   myLeaves() {
-    return this.http.get(this.URL + 'lms/applyLeave/' + this.uid, this.opts).map(r => r.json())
+    return new Promise((resolve) => {
+      this.http.get(this.URL + 'lms/applyLeave/' + this.uid, this.opts)
+        .map(res => res.json())
+        .subscribe(response => {
+          if (response.success) this.emitMyLeaves.emit(response.data)
+          else {
+            if (response.messages == 'No application available currently') this.emitMyZero.emit(response)
+            else this.snackBars("! Success", "Try Again")
+          }
+          resolve(true)
+        }, err => this.router.navigate(['/404']))
+    })
   }
   // Get QCI Calendar
   getHoliday() {
@@ -48,7 +105,6 @@ export class ApiService {
       this.http.get(this.URL + 'lms/holiday', this.opts)
         .map(res => res.json())
         .subscribe(response => {
-          // console.log(response)
           if (response.success) {
             if (response.result.length == 0) this.emitgetHoliday.emit("Holidays are not updated")
             else this.emitgetHoliday.emit(response.result)
@@ -57,6 +113,5 @@ export class ApiService {
           resolve(true)
         }, err => this.router.navigate(['/404']))
     })
-    // return this.http.get( this.URL+'lms/holiday', this.opts ).map( r => r.json() )
   }
 }

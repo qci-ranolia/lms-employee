@@ -51,7 +51,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
   holidays: any = new Array()
 
   unsubLoader: any
-  unsubGetEmployees: any
+  unsubGetEmployee: any
   unsubGetHoliday: any
   unsubMyLeaves: any
 
@@ -66,8 +66,8 @@ export class ApplyComponent implements OnInit, OnDestroy {
   constructor(public snackBar: MatSnackBar, private api: ApiService, private lms: LmsService, private _formBuilder: FormBuilder) {
     this.unsubLoader = this.lms.emitsload.subscribe(el => (this.loader = el))
     this.lms.showLoader()
-    this.unsubGetEmployees = this.lms.emitgetEmployees.subscribe(r => (this.employee = r)) // getEmployees()
-    this.unsubMyLeaves = this.lms.emitMyLeaves.subscribe(r => (this.leave = r))
+    this.unsubGetEmployee = this.api.emitgetEmployee.subscribe(r => (this.employee = r)) // getEmployees()
+    this.unsubMyLeaves = this.api.emitMyLeaves.subscribe(r => (this.leave = r))
     this.unsubGetHoliday = this.api.emitgetHoliday.subscribe(el => {
       if (el == "Holidays are not updated") this.zeroHolidays = true
       else {
@@ -98,7 +98,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     })
   }
   ngOnInit() {
-    this.lms.myLeaves()
+    this.api.myLeaves()
     this.api.getHoliday()
     this.firstFormGroup = this._formBuilder.group({
       check1: ["", Validators.required],
@@ -108,7 +108,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
       check3: ["", Validators.required],
       check4: ["", Validators.required]
     })
-    this.lms.getEmployees()
+    this.api.getEmployees()
   }
   firstDateEvent(event: MatDatepickerInputEvent<Date>) {
     this.date = event.value.getDate() // Get date
@@ -227,11 +227,11 @@ export class ApplyComponent implements OnInit, OnDestroy {
       leave_type: this.leave_type
     }
     this.applyLeave.push(tmp)
-    this.lms.applyleave(tmp, stepper)
+    this.api.applyLeave(tmp, stepper)
   }
   ngOnDestroy() {
     this.unsubLoader.unsubscribe()
-    this.unsubGetEmployees.unsubscribe()
+    this.unsubGetEmployee.unsubscribe()
     this.unsubGetHoliday.unsubscribe()
     this.unsubMyLeaves.unsubscribe()
   }

@@ -307,7 +307,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
-
+// import { HttpErrorResponse, HttpParams, HttpHeaders } from '@angular/common/http'
+ // RouterModule, Routes, 
 // import { Observable } from 'rxjs'
 
  // remove from lms service after all promise< resolve,reject> successfully implemented here
@@ -318,31 +319,99 @@ var ApiService = /** @class */ (function () {
         this.router = router;
         this.URL = "http://13.127.13.175:5000/";
         this.emitgetHoliday = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["x" /* EventEmitter */]();
+        this.emitgetEmployee = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["x" /* EventEmitter */]();
+        this.emitLogin = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["x" /* EventEmitter */]();
+        this.emitMyLeaves = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["x" /* EventEmitter */]();
+        this.emitMyZero = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["x" /* EventEmitter */]();
+        this.uid = localStorage.getItem('userName');
         this.token = localStorage.getItem('token'); // If this token available, login using can activate gaurd 
         this.headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Headers */](); // Default headers
         this.headers.append('Authorization', this.token); // ADD/Append your authorized token to Default headers
         this.opts = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["d" /* RequestOptions */](); // how to check if front end have issue or backend, without even using postman!! Am i correct ?
         this.opts.headers = this.headers;
-        this.uid = localStorage.getItem('userName');
     }
     ApiService.prototype.snackBars = function (message, action) {
         this.snackBar.open(message, action, {
             duration: 2600,
         });
     };
-    ApiService.prototype.Login = function (data) {
-        this.uid = data.qci_id;
-        return this.http.post(this.URL + 'lms/loginEmp', data).map(function (r) { return r.json(); });
+    ApiService.prototype.isLogin = function () {
+        if (localStorage.getItem('token')) {
+            this.router.navigate(['./']);
+        }
     };
-    ApiService.prototype.ApplyLeave = function (data) {
-        return this.http.post(this.URL + 'lms/applyLeave', data, this.opts).map(function (r) { return r.json(); });
+    ApiService.prototype.login = function (uname, pwd) {
+        var _this = this;
+        var tmp;
+        tmp = { qci_id: uname, password: pwd };
+        var data = JSON.stringify(tmp);
+        return new Promise(function (resolve) {
+            _this.http.post(_this.URL + 'lms/loginEmp', data)
+                .map(function (res) { return res.json(); })
+                .subscribe(function (response) {
+                if (response.success) {
+                    localStorage.setItem('token', response.token);
+                    localStorage.setItem('userName', uname);
+                    _this.uid = uname;
+                    _this.emitLogin.emit();
+                }
+                else
+                    _this.snackBars(response.message, response.success);
+                resolve(true);
+            }, function (err) { return _this.router.navigate(['/404']); });
+        });
+        // return this.http.post(this.URL + 'lms/loginEmp', data).map(r => r.json())
+    };
+    ApiService.prototype.applyLeave = function (data, stepper) {
+        var _this = this;
+        return new Promise(function (resolve) {
+            _this.http.post(_this.URL + 'lms/applyLeave', data, _this.opts)
+                .map(function (res) { return res.json(); })
+                .subscribe(function (response) {
+                if (response.success) {
+                    _this.emitMyLeaves.emit(response);
+                    _this.router.navigate(['/dashboard']);
+                }
+                else
+                    stepper.next();
+                resolve(true);
+            }, function (err) { return _this.router.navigate(['/404']); });
+        });
+        // return this.http.post(this.URL + 'lms/applyLeave', data, this.opts).map(r => r.json())
     };
     // HINT : Are we checking the response is a success or not ???
-    ApiService.prototype.GetEmployeeDetails = function () {
-        return this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts).map(function (r) { return r.json(); });
+    ApiService.prototype.getEmployees = function () {
+        var _this = this;
+        return new Promise(function (resolve) {
+            _this.http.get(_this.URL + 'lms/addEmployee/' + _this.uid, _this.opts)
+                .map(function (res) { return res.json(); })
+                .subscribe(function (response) {
+                if (response.success)
+                    _this.emitgetEmployee.emit(response.data);
+                else
+                    _this.snackBars(response.message, response.success);
+                resolve(true);
+            }, function (err) { return _this.router.navigate(['/404']); });
+        });
+        // return this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts).map(r => r.json())
     };
     ApiService.prototype.myLeaves = function () {
-        return this.http.get(this.URL + 'lms/applyLeave/' + this.uid, this.opts).map(function (r) { return r.json(); });
+        var _this = this;
+        return new Promise(function (resolve) {
+            _this.http.get(_this.URL + 'lms/applyLeave/' + _this.uid, _this.opts)
+                .map(function (res) { return res.json(); })
+                .subscribe(function (response) {
+                if (response.success)
+                    _this.emitMyLeaves.emit(response.data);
+                else {
+                    if (response.messages == 'No application available currently')
+                        _this.emitMyZero.emit(response);
+                    else
+                        _this.snackBars("! Success", "Try Again");
+                }
+                resolve(true);
+            }, function (err) { return _this.router.navigate(['/404']); });
+        });
     };
     // Get QCI Calendar
     ApiService.prototype.getHoliday = function () {
@@ -351,7 +420,6 @@ var ApiService = /** @class */ (function () {
             _this.http.get(_this.URL + 'lms/holiday', _this.opts)
                 .map(function (res) { return res.json(); })
                 .subscribe(function (response) {
-                // console.log(response)
                 if (response.success) {
                     if (response.result.length == 0)
                         _this.emitgetHoliday.emit("Holidays are not updated");
@@ -363,7 +431,6 @@ var ApiService = /** @class */ (function () {
                 resolve(true);
             }, function (err) { return _this.router.navigate(['/404']); });
         });
-        // return this.http.get( this.URL+'lms/holiday', this.opts ).map( r => r.json() )
     };
     ApiService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["C" /* Injectable */])(),
@@ -650,8 +717,8 @@ var ApplyComponent = /** @class */ (function () {
         };
         this.unsubLoader = this.lms.emitsload.subscribe(function (el) { return (_this.loader = el); });
         this.lms.showLoader();
-        this.unsubGetEmployees = this.lms.emitgetEmployees.subscribe(function (r) { return (_this.employee = r); }); // getEmployees()
-        this.unsubMyLeaves = this.lms.emitMyLeaves.subscribe(function (r) { return (_this.leave = r); });
+        this.unsubGetEmployee = this.api.emitgetEmployee.subscribe(function (r) { return (_this.employee = r); }); // getEmployees()
+        this.unsubMyLeaves = this.api.emitMyLeaves.subscribe(function (r) { return (_this.leave = r); });
         this.unsubGetHoliday = this.api.emitgetHoliday.subscribe(function (el) {
             if (el == "Holidays are not updated")
                 _this.zeroHolidays = true;
@@ -692,7 +759,7 @@ var ApplyComponent = /** @class */ (function () {
         });
     };
     ApplyComponent.prototype.ngOnInit = function () {
-        this.lms.myLeaves();
+        this.api.myLeaves();
         this.api.getHoliday();
         this.firstFormGroup = this._formBuilder.group({
             check1: ["", __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required],
@@ -702,7 +769,7 @@ var ApplyComponent = /** @class */ (function () {
             check3: ["", __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required],
             check4: ["", __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required]
         });
-        this.lms.getEmployees();
+        this.api.getEmployees();
     };
     ApplyComponent.prototype.firstDateEvent = function (event) {
         var _this = this;
@@ -827,11 +894,11 @@ var ApplyComponent = /** @class */ (function () {
             leave_type: this.leave_type
         };
         this.applyLeave.push(tmp);
-        this.lms.applyleave(tmp, stepper);
+        this.api.applyLeave(tmp, stepper);
     };
     ApplyComponent.prototype.ngOnDestroy = function () {
         this.unsubLoader.unsubscribe();
-        this.unsubGetEmployees.unsubscribe();
+        this.unsubGetEmployee.unsubscribe();
         this.unsubGetHoliday.unsubscribe();
         this.unsubMyLeaves.unsubscribe();
     };
@@ -911,6 +978,7 @@ module.exports = ".today {\n  color: blue; }\n\n.material-icons:hover, .material
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DashboardComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lms_service__ = __webpack_require__("./src/app/lms.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_service__ = __webpack_require__("./src/app/api.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -922,12 +990,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
-// import { ApiService } from '../api.service'
+
 // import * as moment from 'moment'
 var DashboardComponent = /** @class */ (function () {
-    function DashboardComponent(lms) {
+    function DashboardComponent(lms, api) {
         var _this = this;
         this.lms = lms;
+        this.api = api;
         this.loader = false;
         // public momentDate = moment()
         // public daysArr
@@ -937,28 +1006,13 @@ var DashboardComponent = /** @class */ (function () {
         this.leaveRejected = new Array();
         this.unsubLoader = this.lms.emitsload.subscribe(function (el) { return _this.loader = el; });
         this.lms.showLoader();
-        this.unsubGetEmployees = this.lms.emitgetEmployees.subscribe(function (r) { return _this.employee = r; });
+        this.unsubGetEmployees = this.api.emitgetEmployee.subscribe(function (r) { return _this.employee = r; });
         this.unsubZeroLeaves = this.lms.emitMyZero.subscribe(function (r) { return _this.hide = false; });
-        this.unsubMyLeaves = this.lms.emitMyLeaves.subscribe(function (r) {
-            _this.leave = r;
-            // console.log(r)
-            /* for (let i=0; i < r.length; i++ ){
-              switch (r[i].leave_status) {
-                case "Approved!!":
-                  this.leave.push(r[i])
-                  break
-                case "Rejected":
-                  this.leaveRejected.push(r[i])
-                break
-                case "Pending":
-                  this.leave.push(r[i])
-              }
-            } */
-        });
+        this.unsubMyLeaves = this.api.emitMyLeaves.subscribe(function (r) { return _this.leave = r; });
     }
     DashboardComponent.prototype.ngOnInit = function () {
-        this.lms.getEmployees();
-        this.lms.myLeaves();
+        this.api.getEmployees();
+        this.api.myLeaves();
     };
     DashboardComponent.prototype.ngOnDestroy = function () {
         this.unsubLoader.unsubscribe();
@@ -972,7 +1026,7 @@ var DashboardComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/dashboard/dashboard.component.html"),
             styles: [__webpack_require__("./src/app/dashboard/dashboard.component.scss")]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__lms_service__["a" /* LmsService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__lms_service__["a" /* LmsService */], __WEBPACK_IMPORTED_MODULE_2__api_service__["a" /* ApiService */]])
     ], DashboardComponent);
     return DashboardComponent;
 }());
@@ -1031,60 +1085,15 @@ var LmsService = /** @class */ (function () {
             duration: 2800,
         });
     };
-    LmsService.prototype.isLogin = function () {
-        if (localStorage.getItem('token')) {
-            this.router.navigate(['./']);
-        }
-    };
-    LmsService.prototype.login = function (uname, pwd) {
-        var _this = this;
-        var tmp;
-        tmp = { qci_id: uname, password: pwd };
-        var temp = JSON.stringify(tmp);
-        this.api.Login(temp).subscribe(function (el) {
-            // console.log( el )
-            if (el.success) {
-                localStorage.setItem('token', el.token);
-                _this.emitLogin.emit();
-            }
-            else
-                _this.snackBars(el.message, el.success);
-        }, function (err) { return _this.router.navigate(['/404']); });
-    };
-    LmsService.prototype.getEmployees = function () {
-        var _this = this;
-        this.api.GetEmployeeDetails().subscribe(function (el) {
-            if (el.success)
-                _this.emitgetEmployees.emit(el.data);
-            else
-                _this.snackBars("! Success", "Try Again");
-        }, function (err) { return _this.router.navigate(['/404']); });
-    };
-    LmsService.prototype.applyleave = function (leave, stepper) {
-        var _this = this;
-        console.log(leave);
-        this.api.ApplyLeave(leave).subscribe(function (el) {
-            console.log(el);
-            if (el.success) {
-                _this.emitMyLeaves.emit(el);
-                _this.router.navigate(['/dashboard']);
-            }
-            else
-                stepper.next(); // this.snackBars("! Success", "Try Again")
-        }, function (err) { return _this.router.navigate(['/404']); });
-    };
     LmsService.prototype.myLeaves = function () {
-        var _this = this;
-        this.api.myLeaves().subscribe(function (el) {
-            if (el.success)
-                _this.emitMyLeaves.emit(el.data);
-            else {
-                if (el.messages == 'No application available currently')
-                    _this.emitMyZero.emit(el);
-                else
-                    _this.snackBars("! Success", "Try Again");
-            }
-        }, function (err) { return _this.router.navigate(['/404']); });
+        this.api.myLeaves(); /* .subscribe(el => {
+          if (el.success) this.emitMyLeaves.emit(el.data)
+          else {
+            if (el.messages == 'No application available currently') this.emitMyZero.emit(el)
+            else this.snackBars("! Success", "Try Again")
+          }
+        }, err => this.router.navigate(['/404'])
+        ) */
     };
     LmsService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["C" /* Injectable */])(),
@@ -1118,7 +1127,8 @@ module.exports = ".bg-white {\n  -webkit-box-shadow: 0px 11px 20px -10px #aaa;\n
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lms_service__ = __webpack_require__("./src/app/lms.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_service__ = __webpack_require__("./src/app/api.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1131,19 +1141,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var LoginComponent = /** @class */ (function () {
-    function LoginComponent(lms, router) {
+    function LoginComponent(lms, api, router) {
         var _this = this;
         this.lms = lms;
+        this.api = api;
         this.router = router;
-        this.lms.isLogin();
-        this.lms.emitLogin.subscribe(function (res) { return _this.router.navigate(['/']); });
+        this.api.isLogin();
+        this.unsubLogin = this.api.emitLogin.subscribe(function (res) { return _this.router.navigate(['/']); });
     }
-    LoginComponent.prototype.ngOnInit = function () {
-    };
+    LoginComponent.prototype.ngOnInit = function () { };
     LoginComponent.prototype.isLogin = function () {
-        this.lms.login(this.uname, this.pwd);
-        localStorage.setItem('userName', this.uname);
+        this.api.login(this.uname, this.pwd);
+    };
+    LoginComponent.prototype.ngOnDestroy = function () {
+        this.unsubLogin.unsubscribe();
     };
     LoginComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
@@ -1151,7 +1164,7 @@ var LoginComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/login/login.component.html"),
             styles: [__webpack_require__("./src/app/login/login.component.scss")]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__lms_service__["a" /* LmsService */], __WEBPACK_IMPORTED_MODULE_2__angular_router__["a" /* Router */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__lms_service__["a" /* LmsService */], __WEBPACK_IMPORTED_MODULE_2__api_service__["a" /* ApiService */], __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */]])
     ], LoginComponent);
     return LoginComponent;
 }());
