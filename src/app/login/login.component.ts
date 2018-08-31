@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
-import { LmsService } from '../lms.service'
 import { ApiService } from '../api.service'
 import { Router } from '@angular/router'
 
@@ -15,7 +14,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   pwd : any
   unsubLogin : any
 
-  constructor(private lms:LmsService,private api:ApiService, private router:Router){
+  constructor(private api:ApiService, private router:Router){
     this.api.isLogin()
     this.unsubLogin = this.api.emitLogin.subscribe( (res) => this.router.navigate(['/']) )
   }
@@ -26,7 +25,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.api.login(this.uname,this.pwd)
   }
   ngOnDestroy() {
-    this.unsubLogin.unsubscribe()
+    // this.unsubLogin.unsubscribe()
   }
 
 }

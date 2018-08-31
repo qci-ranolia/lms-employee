@@ -1,8 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core'
 import { Http, Headers, RequestOptions } from '@angular/http'
-// import { HttpErrorResponse, HttpParams, HttpHeaders } from '@angular/common/http'
-import { Router } from '@angular/router'// RouterModule, Routes, 
-// import { Observable } from 'rxjs'
+import { Router } from '@angular/router'
 import 'rxjs/add/operator/map'
 import { MatSnackBar } from '@angular/material' // remove from lms service after all promise< resolve,reject> successfully implemented here
 import { MatStepper } from '@angular/material'
@@ -49,14 +47,13 @@ export class ApiService {
         .subscribe(response => {
           if (response.success) {
             localStorage.setItem('token', response.token)
-            localStorage.setItem('userName',uname)
+            localStorage.setItem('userName', uname)
             this.uid = uname
             this.emitLogin.emit()
           } else this.snackBars(response.message, response.success)
           resolve(true)
         }, err => this.router.navigate(['/404']))
     })
-    // return this.http.post(this.URL + 'lms/loginEmp', data).map(r => r.json())
   }
   applyLeave(data: any, stepper: MatStepper) {
     return new Promise((resolve) => {
@@ -70,20 +67,19 @@ export class ApiService {
           resolve(true)
         }, err => this.router.navigate(['/404']))
     })
-    // return this.http.post(this.URL + 'lms/applyLeave', data, this.opts).map(r => r.json())
   }
   // HINT : Are we checking the response is a success or not ???
-  getEmployees() {
+  getEmployee() {
     return new Promise((resolve) => {
       this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts)
         .map(res => res.json())
-        .subscribe(response => {
+        .subscribe( response => {
+          // console.log(response)
           if (response.success) this.emitgetEmployee.emit(response.data)
           else this.snackBars(response.message, response.success)
           resolve(true)
         }, err => this.router.navigate(['/404']))
     })
-    // return this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts).map(r => r.json())
   }
   myLeaves() {
     return new Promise((resolve) => {

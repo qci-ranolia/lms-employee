@@ -71,22 +71,22 @@
                 <mat-select placeholder="Select leave type" formControlName="check2" [(ngModel)]="leave_type" (change)="ifLeavesAreLess(leave_type)"
                   name="leave" [(value)]="selected" :disabled="{{isFirstDateSelected}}">
                   <mat-option value="cl">Casual leave
-                    <strong class="d-inline">({{ employee.bal_cl }})</strong>
+                    <strong class="d-inline">({{employee.bal_cl}})</strong>
                   </mat-option>
                   <mat-option value="eol">Extra Ordinary leave
-                    <strong class="d-inline">({{ employee.bal_eol }})</strong>
+                    <strong class="d-inline">({{employee.bal_eol}})</strong>
                   </mat-option>
                   <mat-option value="ml" *ngIf="employee.bal_ml">Materinity leave
-                    <strong class="d-inline">({{ employee.bal_ml }})</strong>
+                    <strong class="d-inline">({{employee.bal_ml}})</strong>
                   </mat-option>
                   <mat-option value="ptl" *ngIf="employee.bal_ptl">Paterinity leave
                     <strong class="d-inline">({{employee.bal_ptl}})</strong>
                   </mat-option>
                   <mat-option value="pl">Priviledged leave
-                    <strong class="d-inline">({{ employee.bal_pl }})</strong>
+                    <strong class="d-inline">({{employee.bal_pl}})</strong>
                   </mat-option>
                   <mat-option value="sl">Sick leave
-                    <strong class="d-inline">({{ employee.bal_sl }})</strong>
+                    <strong class="d-inline">({{employee.bal_sl}})</strong>
                   </mat-option>
                 </mat-select>
               </mat-form-field>
@@ -98,9 +98,13 @@
                 <input matInput placeholder="Total Applied Dates" :value="{{leavedays}}" disabled>
               </mat-form-field>
             </div>
+            <div class="col-sm-6 col-md-4 float-left pt-2">
+              <br />
+              <mat-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="isHalfDay" (click)="halfDay()" [disabled]="disabled">Half one day!</mat-checkbox>
+            </div>
             <div class="clearfix pt-4"></div>
             <div class="col-sm-6 col-md-4 float-left mb-3 mt-4">
-              <button mat-raised-button matStepperNext>Next</button>
+              <button mat-raised-button matStepperNext [disabled]=dis>Next</button>
             </div>
           </form>
         </mat-step>
