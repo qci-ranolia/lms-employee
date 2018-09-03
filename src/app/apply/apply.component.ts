@@ -59,6 +59,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
   dis: any = false
   isHalfDay: any = false
   disabled: any = true
+  showHalfDay: any = false
 
   tDate: any
   snackBars(message: string, action: string) {
@@ -197,19 +198,18 @@ export class ApplyComponent implements OnInit, OnDestroy {
       r = [], c = f.clone()
     while (c.day(7 + sunday).isBefore(s)) r.push(c.clone())
     // calculate for casual leave
-    let hh : any = []
-    this.compulsory.map( e => hh.push(e["Date"]))
-    console.log(hh)
-    let temp = []
-    while (this.firstDate < this.secondDate) temp.push(f.format("DD/MM/YYYY")) && f.add(1, "day")
-    console.log(temp)
+    // let hh : any = []
+    // this.compulsory.map( e => hh.push(e["Date"]))
+    // console.log(hh)
+    // let temp = []
+    // while (this.firstDate < this.secondDate) temp.push(f.format("DD/MM/YYYY")) && f.add(1, "day")
+    // console.log(temp)
 
     // hh.filter(k => {
     //   // console.log(k)
     //   if (this.sDate.indexOf(k) == 0) this.snackBars("Note:", "Already a holiday")
     // })
-    
-    
+        
     // Calculate leavedays
     let td: number = s.diff(f, "days")
     this.leavedays = 1 + td - r.length
@@ -238,25 +238,32 @@ export class ApplyComponent implements OnInit, OnDestroy {
       // holidays will not be counted
       // Exclude Holidays 
         this.disabled = false
+        this.showHalfDay = true
         if (this.leavedays > 5 ) this.api.snackBars("Note:", "Casual leaves must be less than 5")
         break
       case "eol":
+        this.showHalfDay = false
         // holidays will be counted
         console.log("eol")
         break
       case "ml":
+        this.showHalfDay = false
         // holidays will be counted
         console.log("ml")
         break
       case "ptl":
+        this.showHalfDay = false
         // holidays will be counted
         console.log("ptl")
         break
       case "pl":
+        this.showHalfDay = false
         // holidays will be counted
         console.log("pl")
         break
       case "sl":
+        this.disabled = false
+        this.showHalfDay = true
         // holidays will be counted
         console.log("sl")
     } 

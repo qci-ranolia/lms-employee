@@ -98,7 +98,7 @@
                 <input matInput placeholder="Total Applied Dates" :value="{{leavedays}}" disabled>
               </mat-form-field>
             </div>
-            <div class="col-sm-6 col-md-4 float-left pt-2">
+            <div class="col-sm-6 col-md-4 float-left pt-2" *ngIf="showHalfDay">
               <br />
               <mat-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="isHalfDay" (click)="halfDay()" [disabled]="disabled">Half one day!</mat-checkbox>
             </div>
