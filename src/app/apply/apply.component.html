@@ -52,16 +52,16 @@
             <ng-template matStepLabel>Select date and type</ng-template>
             <div class="col-sm-6 col-md-3 float-left pt-3">
               <mat-form-field>
-                <input matInput [min]="minDate" [matDatepickerFilter]="disableSunDay" [matDatepicker]="firstDate" placeholder="Date from"
-                  (dateInput)="firstDateEvent($event)" formControlName="check1">
+                <input matInput [min]="minDate" [matDatepickerFilter]="disableSunDay" [matDatepicker]="firstDate"
+                  placeholder="Date from" (dateInput)="firstDateEvent($event)" formControlName="check1">
                 <mat-datepicker-toggle matSuffix [for]="firstDate"></mat-datepicker-toggle>
                 <mat-datepicker #firstDate></mat-datepicker>
               </mat-form-field>
             </div>
             <div class="col-sm-6 col-md-3 float-left pt-3">
               <mat-form-field>
-                <input matInput [min]="minDate2" [matDatepickerFilter]="disableSunDay" [matDatepicker]="secondDate" placeholder="Date to"
-                  (dateInput)="secondDateEvent($event)" :disabled="{{isFirstDateSelected}}">
+                <input matInput [min]="minDate2" [matDatepickerFilter]="disableSunDay" [matDatepicker]="secondDate"
+                  placeholder="Date to" (dateInput)="secondDateEvent($event)" :disabled="{{isFirstDateSelected}}">
                 <mat-datepicker-toggle matSuffix [for]="secondDate"></mat-datepicker-toggle>
                 <mat-datepicker #secondDate></mat-datepicker>
               </mat-form-field>
@@ -73,9 +73,7 @@
                   <mat-option value="cl">Casual leave
                     <strong class="d-inline">({{employee.bal_cl}})</strong>
                   </mat-option>
-                  <mat-option value="eol">Extra Ordinary leave
-                    <strong class="d-inline">({{employee.bal_eol}})</strong>
-                  </mat-option>
+                  <mat-option value="eol">Extra Ordinary leave</mat-option>
                   <mat-option value="ml" *ngIf="employee.bal_ml">Materinity leave
                     <strong class="d-inline">({{employee.bal_ml}})</strong>
                   </mat-option>
@@ -100,7 +98,8 @@
             </div>
             <div class="col-sm-6 col-md-4 float-left pt-2" *ngIf="showHalfDay">
               <br />
-              <mat-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="isHalfDay" (click)="halfDay()" [disabled]="disabled">Half one day!</mat-checkbox>
+              <mat-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="isHalfDay" (click)="halfDay()" [disabled]="disabled">Half
+                one day!</mat-checkbox>
             </div>
             <div class="clearfix pt-4"></div>
             <div class="col-sm-6 col-md-4 float-left mb-3 mt-4">
@@ -113,7 +112,8 @@
             <ng-template matStepLabel>Reason for leave</ng-template>
             <div class="col-sm-6 col-md-12 float-left pt-3">
               <mat-form-field>
-                <textarea matInput placeholder="Reason for leave..." formControlName="check3" [(ngModel)]="leave_reason" name="leave_reason"></textarea>
+                <textarea matInput placeholder="Reason for leave..." formControlName="check3" [(ngModel)]="leave_reason"
+                  name="leave_reason" rows="5" cols="40"></textarea>
               </mat-form-field>
             </div>
             <div class="col-sm-6 col-md-4 float-left mb-3 mt-4">

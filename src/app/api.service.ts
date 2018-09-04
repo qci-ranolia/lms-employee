@@ -7,8 +7,8 @@ import { MatStepper } from '@angular/material'
 
 @Injectable()
 export class ApiService {
-  URL : string = "http://13.127.13.175:5000/"
-  // URL: string = "http://192.168.15.55:5000/"
+  // URL : string = "http://13.127.13.175:5000/"
+  URL: string = "http://192.168.15.55:5000/"
   token: string // Useful in Authentication
   headers: Headers // Useful when backend and frontend have different IP's
   opts: any
@@ -45,6 +45,7 @@ export class ApiService {
       this.http.post(this.URL + 'lms/loginEmp', data)
         .map(res => res.json())
         .subscribe(response => {
+          // console.log(response)
           if (response.success) {
             localStorage.setItem('token', response.token)
             localStorage.setItem('userName', uname)
@@ -73,7 +74,7 @@ export class ApiService {
     return new Promise((resolve) => {
       this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts)
         .map(res => res.json())
-        .subscribe( response => {
+        .subscribe(response => {
           // console.log(response)
           if (response.success) this.emitgetEmployee.emit(response.data)
           else this.snackBars(response.message, response.success)
@@ -86,6 +87,7 @@ export class ApiService {
       this.http.get(this.URL + 'lms/applyLeave/' + this.uid, this.opts)
         .map(res => res.json())
         .subscribe(response => {
+          // console.log(response)
           if (response.success) this.emitMyLeaves.emit(response.data)
           else {
             if (response.messages == 'No application available currently') this.emitMyZero.emit(response)

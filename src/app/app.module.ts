@@ -18,10 +18,10 @@ import { MatAutocompleteModule, MatButtonModule, MatButtonToggleModule, MatCardM
 import { ApplyComponent } from './apply/apply.component'
 import { RouterModule } from '@angular/router';
 import { ServererrComponent } from './servererr/servererr.component'
-
+import { routes } from './app-routing.module'
 
 @NgModule({
-  declarations:[
+  declarations: [
     AppComponent,
     NavComponent,
     DashboardComponent,
@@ -29,28 +29,26 @@ import { ServererrComponent } from './servererr/servererr.component'
     ApplyComponent,
     ServererrComponent,
   ],
-  imports:[
+  imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
     AppRoutingModule,
-    BrowserAnimationsModule,MatAutocompleteModule, MatButtonModule, MatButtonToggleModule,
+    BrowserAnimationsModule, MatAutocompleteModule, MatButtonModule, MatButtonToggleModule,
     MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule,
-    MatDialogModule, MatExpansionModule, MatGridListModule, MatIconModule,MatStepperModule,
+    MatDialogModule, MatExpansionModule, MatGridListModule, MatIconModule, MatStepperModule,
     MatInputModule, MatListModule, MatMenuModule, MatNativeDateModule,
     MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule, MatRadioModule,
     MatRippleModule, MatSelectModule, MatSidenavModule, MatSliderModule,
     MatSlideToggleModule, MatSnackBarModule, MatSortModule, MatTableModule,
     MatTabsModule, MatToolbarModule, MatTooltipModule,
-    RouterModule.forRoot([
-      { path: 'login', component: LoginComponent }
-    ])
+    RouterModule.forRoot(routes, { useHash: true })
   ],
-  providers:[ LmsService, ApiService, AuthService ],
-  bootstrap:[
+  providers: [LmsService, ApiService, AuthService],
+  bootstrap: [
     AppComponent
   ]
 })
 
-export class AppModule {}
+export class AppModule { }

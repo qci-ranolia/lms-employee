@@ -28,12 +28,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.unsubGetEmployees = this.api.emitgetEmployee.subscribe(r => {
       this.employee = r
-      console.log(this.employee)
+      // console.log(this.employee)
     })
-    this.unsubZeroLeaves = this.lms.emitMyZero.subscribe(r => this.hide = false)
+    this.unsubZeroLeaves = this.api.emitMyZero.subscribe(r => {
+      this.hide = false
+      // console.log(r)
+    })
     this.unsubMyLeaves = this.api.emitMyLeaves.subscribe(r => {
       this.leave = r
-      console.log(this.leave)
+      // console.log(this.leave)
     })
   }
   public ngOnInit() {
