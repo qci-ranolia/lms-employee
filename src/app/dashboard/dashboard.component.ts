@@ -12,7 +12,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   loader: boolean = false
 
   hide: boolean = true
-  employee = new Array()
+  employee = new Object()
   leave = new Array()
   leaveRejected = new Array()
   myLeaveStatus: any
