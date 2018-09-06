@@ -29,6 +29,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.lms.showLoader()
 
     this.unsubGetEmployees = this.api.emitgetEmployee.subscribe(r => {
+      console.log(r)
       this.employee = r
     })
     this.unsubZeroLeaves = this.api.emitMyZero.subscribe(r => {

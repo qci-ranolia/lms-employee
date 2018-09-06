@@ -76,7 +76,7 @@ export class ApiService {
       this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts)
         .map(res => res.json())
         .subscribe(response => {
-          // console.log(response)
+          console.log(response)
           if (response.success) this.emitgetEmployee.emit(response.data)
           else this.snackBars(response.message, response.success)
           resolve(true)

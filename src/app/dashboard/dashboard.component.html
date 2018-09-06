@@ -40,27 +40,27 @@
               <div class="d-inline-block col-sm-12 p-0">
                 <div class="mb-2 col-sm-3 float-left p-0">
                   <strong class="text-muted">Casual Leave
-                    <small class="d-block mb-2"><strong>{{ employee.bal_cl }}</strong>/{{totalLeave.total_cl}}</small>
+                    <small class="d-block mb-2"><strong>{{ employee.bal_cl }}</strong>/{{employee.total_cl}}</small>
                   </strong>
                 </div>
                 <div class="mb-2 col-sm-3 float-left p-0">
                   <strong class="text-muted">Sick Leave
-                    <small class="d-block mb-2"><strong>{{ employee.bal_sl }}</strong>/{{totalLeave.total_sl}}</small>
+                    <small class="d-block mb-2"><strong>{{ employee.bal_sl }}</strong>/{{employee.total_sl}}</small>
                   </strong>
                 </div>
                 <div class="mb-2 col-sm-3 float-left p-0" *ngIf="employee.gender == 'Female'">
                   <strong class="text-muted">Materinity Leave
-                    <small class="d-block mb-2"><strong>{{ employee.bal_ml }}</strong>/{{totalLeave.total_ml}}</small>
+                    <small class="d-block mb-2"><strong>{{ employee.bal_ml }}</strong>/{{employee.total_ml}}</small>
                   </strong>
                 </div>
                 <div class="mb-2 col-sm-3 float-left p-0" *ngIf="employee.gender == 'Male'">
                   <strong class="text-muted">Paterinity Leave
-                    <small class="d-block mb-2"><strong>{{ employee.bal_ptl }}</strong>/{{totalLeave.total_ptl}}</small>
+                    <small class="d-block mb-2"><strong>{{ employee.bal_ptl }}</strong>/{{employee.total_ptl}}</small>
                   </strong>
                 </div>
                 <div class="mb-2 col-sm-3 float-left p-0">
                   <strong class="text-muted">Privileged Leave
-                    <small class="d-block mb-2"><strong>{{ employee.bal_pl }}</strong>/{{totalLeave.total_pl}}</small>
+                    <small class="d-block mb-2"><strong>{{ employee.bal_pl }}</strong>/{{employee.total_pl}}</small>
                   </strong>
                 </div>
               </div>
