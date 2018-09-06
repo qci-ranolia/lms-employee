@@ -18,6 +18,7 @@ export class ApiService {
   emitLogin = new EventEmitter<any>()
   emitMyLeaves = new EventEmitter<any>()
   emitMyZero = new EventEmitter<any>()
+  emitTotalLeave = new EventEmitter<any>()
 
   constructor(public snackBar: MatSnackBar, private http: Http, private router: Router) { //, private router:Router // we will use both imports here. Are we using anywhere in comments only ???
     this.uid = localStorage.getItem('userName')
@@ -108,6 +109,17 @@ export class ApiService {
             else this.emitgetHoliday.emit(response.result)
           }
           else this.snackBars(response.message, response.success)
+          resolve(true)
+        }, err => this.router.navigate(['/404']))
+    })
+  }
+  tleave() {
+    return new Promise((resolve) => {
+      this.http.get(this.URL + 'lms/tleave', this.opts)
+        .map(res => res.json())
+        .subscribe(response => {
+          if (response.success) this.emitTotalLeave.emit(response.result)
+          else this.snackBars("response.message", "response.success")
           resolve(true)
         }, err => this.router.navigate(['/404']))
     })

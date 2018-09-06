@@ -16,11 +16,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   leave = new Array()
   leaveRejected = new Array()
   myLeaveStatus: any
+  totalLeave = new Array
 
   unsubMyLeaves: any
   unsubZeroLeaves: any
   unsubGetEmployees: any
   unsubLoader: any
+  unsubTotalLeaves: any
 
   constructor(private lms: LmsService, private api: ApiService) {
     this.unsubLoader = this.lms.emitsload.subscribe(el => this.loader = el)
@@ -28,20 +30,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.unsubGetEmployees = this.api.emitgetEmployee.subscribe(r => {
       this.employee = r
-      // console.log(this.employee)
     })
     this.unsubZeroLeaves = this.api.emitMyZero.subscribe(r => {
       this.hide = false
-      // console.log(r)
     })
     this.unsubMyLeaves = this.api.emitMyLeaves.subscribe(r => {
       this.leave = r
-      // console.log(this.leave)
+    })
+    this.unsubTotalLeaves = this.api.emitTotalLeave.subscribe(r => {
+      this.totalLeave = r[0]
     })
   }
   public ngOnInit() {
     this.api.getEmployee()
     this.api.myLeaves()
+    this.api.tleave()
   }
   ngOnDestroy() {
     this.unsubLoader.unsubscribe()
