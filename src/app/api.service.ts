@@ -76,7 +76,7 @@ export class ApiService {
       this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts)
         .map(res => res.json())
         .subscribe(response => {
-          console.log(response)
+          // console.log(response)
           if (response.success) this.emitgetEmployee.emit(response.data)
           else this.snackBars(response.message, response.success)
           resolve(true)
@@ -113,7 +113,7 @@ export class ApiService {
         }, err => this.router.navigate(['/404']))
     })
   }
-  tleave() {
+  /* tleave() {
     return new Promise((resolve) => {
       this.http.get(this.URL + 'lms/tleave', this.opts)
         .map(res => res.json())
@@ -123,5 +123,15 @@ export class ApiService {
           resolve(true)
         }, err => this.router.navigate(['/404']))
     })
-  }
+  } *//* tleave() {
+    return new Promise((resolve) => {
+      this.http.get(this.URL + 'lms/tleave', this.opts)
+        .map(res => res.json())
+        .subscribe(response => {
+          if (response.success) this.emitTotalLeave.emit(response.result)
+          else this.snackBars("response.message", "response.success")
+          resolve(true)
+        }, err => this.router.navigate(['/404']))
+    })
+  } */
 }
