@@ -70,21 +70,11 @@
               <mat-form-field>
                 <mat-select placeholder="Select leave type" formControlName="check2" [(ngModel)]="leave_type" (change)="ifLeavesAreLess(leave_type)"
                   name="leave" [(value)]="selected" :disabled="{{isFirstDateSelected}}">
-                  <mat-option value="cl">Casual leave
-                    <strong class="d-inline">({{employee.bal_cl}})</strong>
-                  </mat-option>
-                  <mat-option value="eol">Extra Ordinary leave</mat-option>
-                  <mat-option value="ml" *ngIf="employee.bal_ml">Materinity leave
-                    <strong class="d-inline">({{employee.bal_ml}})</strong>
-                  </mat-option>
-                  <mat-option value="ptl" *ngIf="employee.bal_ptl">Paterinity leave
-                    <strong class="d-inline">({{employee.bal_ptl}})</strong>
-                  </mat-option>
-                  <mat-option value="pl">Priviledged leave
-                    <strong class="d-inline">({{employee.bal_pl}})</strong>
-                  </mat-option>
-                  <mat-option value="sl">Sick leave
-                    <strong class="d-inline">({{employee.bal_sl}})</strong>
+                  <mat-option *ngFor="let type of employee._type" :value="{{type.leave_type}}">
+                    <span *ngIf="type.leave_type == 'CL'">Casual Leave</span>
+                    <span *ngIf="type.leave_type == 'SL'">Sick Leave</span>
+                    <span *ngIf="type.leave_type == 'PL'">Privileged Leave</span>
+                    <strong class="d-inline">({{type.bal_leave}})</strong>
                   </mat-option>
                 </mat-select>
               </mat-form-field>
@@ -98,7 +88,7 @@
             </div>
             <div class="col-sm-6 col-md-4 float-left pt-2" *ngIf="showHalfDay">
               <br />
-              <mat-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="isHalfDay" (click)="halfDay()" [disabled]="disabled">Half one day!</mat-checkbox>
+              <mat-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="isHalfDay" (click)="halfDay()" [disabled]="disabled">Take a half day!</mat-checkbox>
             </div>
             <div class="clearfix pt-4"></div>
             <div class="col-sm-6 col-md-4 float-left mb-3 mt-4">

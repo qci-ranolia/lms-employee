@@ -28,45 +28,90 @@
       <div class="col-sm-12 p-0 bg-white rad-box">
         <mat-card class="example-card" style="box-shadow:none;">
           <mat-card-header>
-            <div mat-card-avatar class="example-header-image">{{employee.qci_id}}</div>
-            <mat-card-title>{{employee.name}}</mat-card-title>
-            <mat-card-subtitle>{{employee.email}}&nbsp;(
-              <strong>{{employee.designation}}</strong>)</mat-card-subtitle>
-            <mat-card-subtitle>{{employee.type_of_employee}}</mat-card-subtitle>
+            <div mat-card-avatar class="example-header-image mr-3">{{employee.ID_code}}</div>
+            <mat-card-title class="mt-3">{{employee.Officials}}</mat-card-title>
+            <mat-card-subtitle>{{employee.Email_ID}}&nbsp;(
+              <strong>{{employee.Nature_of_Appointment}}</strong>)</mat-card-subtitle>
+            <!-- <mat-card-subtitle>{{employee.type_of_employee}}</mat-card-subtitle> -->
           </mat-card-header>
           <mat-card-content>
+            <br />
             <strong class="mb-3">Leave Balance:</strong>
             <div>
               <div class="d-inline-block col-sm-12 p-0">
-                <div class="mb-2 col-sm-3 float-left p-0">
-                  <strong class="text-muted">Casual Leave
-                    <small class="d-block mb-2"><strong>{{ employee.bal_cl }}</strong>/{{employee.total_cl}}</small>
-                  </strong>
-                </div>
-                <div class="mb-2 col-sm-3 float-left p-0">
-                  <strong class="text-muted">Sick Leave
-                    <small class="d-block mb-2"><strong>{{ employee.bal_sl }}</strong>/{{employee.total_sl}}</small>
-                  </strong>
-                </div>
-                <div class="mb-2 col-sm-3 float-left p-0" *ngIf="employee.gender == 'Female'">
-                  <strong class="text-muted">Materinity Leave
-                    <small class="d-block mb-2"><strong>{{ employee.bal_ml }}</strong>/{{employee.total_ml}}</small>
-                  </strong>
-                </div>
-                <div class="mb-2 col-sm-3 float-left p-0" *ngIf="employee.gender == 'Male'">
-                  <strong class="text-muted">Paterinity Leave
-                    <small class="d-block mb-2"><strong>{{ employee.bal_ptl }}</strong>/{{employee.total_ptl}}</small>
-                  </strong>
-                </div>
-                <div class="mb-2 col-sm-3 float-left p-0">
-                  <strong class="text-muted">Privileged Leave
-                    <small class="d-block mb-2"><strong>{{ employee.bal_pl }}</strong>/{{employee.total_pl}}</small>
+                <div class="mb-2 col-sm-3 float-left p-0" *ngFor="let type of employee._type; let j = index">
+                  <strong class="text-muted">{{ type.leave_type }}
+                    <small class="d-block mb-2"><strong>{{ type.bal_leave }}</strong>/{{ type.total_leave }}</small>
                   </strong>
                 </div>
               </div>
             </div>
           </mat-card-content>
         </mat-card>
+        <!-- <table id="table_id" class="table table-striped" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              <th class="wd-6">QCID</th>
+              <th class="wd-14">Employee's Info</th>
+              <th class="wd-14">Reporting Manager</th>
+
+              <th class="bs" :matTooltip="Type Of Leave">TOL</th>
+              <th class="bs" :matTooltip="Opening Balance">OB</th>
+              <th class="bs" :matTooltip="Credit in advance for the year">CA</th>
+              <th class="bs" :matTooltip="Total Leave">TL</th>
+
+              <th class="ss" :matTooltip="January">Jan</th>
+              <th class="ss" :matTooltip="February">Feb</th>
+              <th class="ss" :matTooltip="March">Mar</th>
+              <th class="ss" :matTooltip="April">Apr</th>
+              <th class="ss" :matTooltip="May">May</th>
+              <th class="ss" :matTooltip="June">Jun</th>
+              <th class="ss" :matTooltip="July">Jul</th>
+              <th class="ss" :matTooltip="August">Aug</th>
+              <th class="ss" :matTooltip="September">Sep</th>
+              <th class="ss" :matTooltip="October">Oct</th>
+              <th class="ss" :matTooltip="November">Nov</th>
+              <th class="ss" :matTooltip="December">Dec</th>
+
+              <th class="bs" :matTooltip="Availed Leave">AL</th>
+              <th class="bs" :matTooltip="Closing Balance">CB</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let emp of emplCSV; let i = index">
+              <td class="wd-6">{{emp.ID_code}}</td>
+              <td class="wd-14">
+                <strong :matTooltip="{{emp['Email-ID']}}">{{emp["Officials"]}}</strong><br />
+                <small>{{emp.Nature_of_Appointment}}</small><small class="text-primary">( {{emp["QCI/Board"]}} )</small>
+              </td>
+              <td class="wd-14">
+                <small>{{emp["Reporting_Officer"]}}</small>
+                <small>{{emp["RO-Email-ID"]}}</small>
+              </td>
+
+              <td class="bs">{{emp.leave_type}}</td>
+              <td class="bs">{{emp["Opening_bal(1jan18)"]}}</td>
+              <td class="bs">{{emp["Credit_in_advance_for_the_year"]}}</td>
+              <td class="bs">{{emp["total_leave"]}}</td>
+
+              <td class="ss">{{emp.Jan}}</td>
+              <td class="ss">{{emp.Feb}}</td>
+              <td class="ss">{{emp.Mar}}</td>
+              <td class="ss">{{emp.Apr}}</td>
+              <td class="ss">{{emp.May}}</td>
+              <td class="ss">{{emp.Jun}}</td>
+              <td class="ss">{{emp.Jul}}</td>
+              <td class="ss">{{emp.Aug}}</td>
+              <td class="ss">{{emp.Sep}}</td>
+              <td class="ss">{{emp.Oct}}</td>
+              <td class="ss">{{emp.Nov}}</td>
+              <td class="ss">{{emp.Dec}}</td>
+
+              <td class="bs">1</td>
+              <td class="bs">{{emp.bal_leave}}</td>
+            </tr>
+          </tbody>
+        </table> -->
       </div>
     </div>
   </div>

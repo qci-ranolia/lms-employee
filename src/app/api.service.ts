@@ -7,8 +7,9 @@ import { MatStepper } from '@angular/material'
 
 @Injectable()
 export class ApiService {
-  URL: string = "http://13.127.13.175:5000/"
-  // URL: string = "http://192.168.15.55:5000/"
+  // URL: string = "http://13.127.13.175:5000/"
+  URL: string = "http://192.168.15.55:5000/"
+
   token: string // Useful in Authentication
   headers: Headers // Useful when backend and frontend have different IP's
   opts: any
@@ -19,6 +20,7 @@ export class ApiService {
   emitMyLeaves = new EventEmitter<any>()
   emitMyZero = new EventEmitter<any>()
   emitTotalLeave = new EventEmitter<any>()
+  emitgetEmpCSV = new EventEmitter<any>()
 
   constructor(public snackBar: MatSnackBar, private http: Http, private router: Router) { //, private router:Router // we will use both imports here. Are we using anywhere in comments only ???
     this.uid = localStorage.getItem('userName')
@@ -38,10 +40,11 @@ export class ApiService {
       this.router.navigate(['./'])
     }
   }
-  login(uname: string, pwd: string) {
+  login( uname: string, pwd: string) {
     let tmp: any
-    tmp = { qci_id: uname, password: pwd }
+    tmp = { qci_id:uname, password:pwd }
     let data = JSON.stringify(tmp)
+    // console.log(data)
     return new Promise((resolve) => {
       this.http.post(this.URL + 'lms/loginEmp', data)
         .map(res => res.json())
@@ -72,13 +75,29 @@ export class ApiService {
   }
   // HINT : Are we checking the response is a success or not ???
   getEmployee() {
+    // console.log(this.uid)
     return new Promise((resolve) => {
-      this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts)
+      this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts)//lms/addEmployee/
         .map(res => res.json())
         .subscribe(response => {
           // console.log(response)
           if (response.success) this.emitgetEmployee.emit(response.data)
-          else this.snackBars(response.message, response.success)
+          else this.snackBars('add employee', 'Try again')
+          resolve(true)
+        }, err => this.router.navigate(['/404']))
+    })
+  }
+  // Get QCI Employee from CSV
+  getEmployeeCSV() {
+    return new Promise((resolve) => {
+      this.http.get(this.URL + 'lms/addPEmp', this.opts)
+        .map(res => res.json())
+        .subscribe(response => {
+          if (response.success) {
+            if (response.message.length == 0) console.log("No employee file uploaded yet!")
+            else this.emitgetEmpCSV.emit(response.message)
+          }
+          else this.snackBars("csv", 'Try Again')
           resolve(true)
         }, err => this.router.navigate(['/404']))
     })
@@ -88,11 +107,10 @@ export class ApiService {
       this.http.get(this.URL + 'lms/applyLeave/' + this.uid, this.opts)
         .map(res => res.json())
         .subscribe(response => {
-          // console.log(response)
           if (response.success) this.emitMyLeaves.emit(response.data)
           else {
             if (response.messages == 'No application available currently') this.emitMyZero.emit(response)
-            else this.snackBars("! Success", "Try Again")
+            else this.snackBars("apply leave", "Try Again")
           }
           resolve(true)
         }, err => this.router.navigate(['/404']))
@@ -108,7 +126,7 @@ export class ApiService {
             if (response.result.length == 0) this.emitgetHoliday.emit("Holidays are not updated")
             else this.emitgetHoliday.emit(response.result)
           }
-          else this.snackBars(response.message, response.success)
+          else this.snackBars("holiday", "try again")
           resolve(true)
         }, err => this.router.navigate(['/404']))
     })

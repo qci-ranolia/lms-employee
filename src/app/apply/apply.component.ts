@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms"
 import { MatDatepickerInputEvent } from "@angular/material/datepicker"
 import * as moment from "moment"
 import { MatSnackBar } from '@angular/material'
+declare var $
 
 @Component({
   selector: "app-apply",
@@ -62,6 +63,9 @@ export class ApplyComponent implements OnInit, OnDestroy {
   showHalfDay: any = false
 
   tDate: any
+
+  test : any
+
   snackBars(message: string, action: string) {
     this.snackBar.open(message, action, {
       duration: 3000,
@@ -72,7 +76,9 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.unsubLoader = this.lms.emitsload.subscribe(el => (this.loader = el))
     this.lms.showLoader()
 
-    this.unsubGetEmployee = this.api.emitgetEmployee.subscribe(r => (this.employee = r)) // getEmployees()
+    this.unsubGetEmployee = this.api.emitgetEmployee.subscribe(r => {
+      this.employee = r
+    }) // getEmployees()
     this.unsubMyLeaves = this.api.emitMyLeaves.subscribe(r => (this.leave = r))
     this.unsubGetHoliday = this.api.emitgetHoliday.subscribe(el => {
       if (el == "Holidays are not updated") this.zeroHolidays = true
@@ -234,38 +240,40 @@ export class ApplyComponent implements OnInit, OnDestroy {
         }
     }
     switch (item){
-      case "cl":
-      // holidays will not be counted
-      // Exclude Holidays 
+      case "CL":
+        // holidays will not be counted
+        // Exclude Holidays 
         this.disabled = false
         this.showHalfDay = true
         if (this.leavedays > 5 ) this.api.snackBars("Note:", "Casual leaves must be less than 5")
         break
-      case "eol":
+      case "EOL":
         this.showHalfDay = false
         // holidays will be counted
-        console.log("eol")
         break
-      case "ml":
+      case "ML":
         this.showHalfDay = false
         // holidays will be counted
-        console.log("ml")
         break
-      case "ptl":
+      case "PTL":
         this.showHalfDay = false
         // holidays will be counted
-        console.log("ptl")
         break
-      case "pl":
+      case "PL":
         this.showHalfDay = false
+        // var regEx = new RegExp('^(\d{0.4})+\.\d{0,1}?$')
+        // this.test = regEx.test(this.leavedays)
+        // var tr = '' + this.leavedays
+        // if (tr.search('.') == true ){
+        //   console.log(true)
+        // } else console.log(false)
+        // 
         // holidays will be counted
-        console.log("pl")
         break
-      case "sl":
+      case "SL":
         this.disabled = false
         this.showHalfDay = true
         // holidays will be counted
-        console.log("sl")
     } 
   }
   halfDay(){
