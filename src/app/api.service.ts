@@ -41,6 +41,7 @@ export class ApiService {
     }
   }
   login( uname: string, pwd: string) {
+    localStorage.setItem('userName', uname)
     let tmp: any
     tmp = { qci_id:uname, password:pwd }
     let data = JSON.stringify(tmp)
@@ -51,7 +52,6 @@ export class ApiService {
           // console.log(response)
           if (response.success) {
             localStorage.setItem('token', response.token)
-            localStorage.setItem('userName', uname)
             this.uid = uname
             this.emitLogin.emit()
           } else this.snackBars(response.message, response.success)
