@@ -44,7 +44,6 @@ export class ApiService {
     let tmp: any
     tmp = { qci_id:uname, password:pwd }
     let data = JSON.stringify(tmp)
-    // console.log(data)
     return new Promise((resolve) => {
       this.http.post(this.URL + 'lms/loginEmp', data)
         .map(res => res.json())
@@ -60,11 +59,13 @@ export class ApiService {
         }, err => this.router.navigate(['/404']))
     })
   }
-  applyLeave(data: any, stepper: MatStepper) {
+  applyLeave(data : any, stepper: MatStepper) {
+    console.log(data)
     return new Promise((resolve) => {
       this.http.post(this.URL + 'lms/applyLeave', data, this.opts)
         .map(res => res.json())
         .subscribe(response => {
+          console.log(response)
           if (response.success) {
             this.emitMyLeaves.emit(response)
             this.router.navigate(['/dashboard'])
@@ -80,7 +81,6 @@ export class ApiService {
       this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts)//lms/addEmployee/
         .map(res => res.json())
         .subscribe(response => {
-          // console.log(response)
           if (response.success) this.emitgetEmployee.emit(response.data)
           else this.snackBars('add employee', 'Try again')
           resolve(true)
@@ -107,6 +107,7 @@ export class ApiService {
       this.http.get(this.URL + 'lms/applyLeave/' + this.uid, this.opts)
         .map(res => res.json())
         .subscribe(response => {
+          console.log(response)
           if (response.success) this.emitMyLeaves.emit(response.data)
           else {
             if (response.messages == 'No application available currently') this.emitMyZero.emit(response)

@@ -32,6 +32,9 @@ export class ApplyComponent implements OnInit, OnDestroy {
 
   firstDate: any
   secondDate: any
+  sundays: any
+  extraDays:any
+  dayList: any
 
   date: any
   month: any
@@ -56,7 +59,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
   unsubGetHoliday: any
   unsubMyLeaves: any
 
-  leave = new Array() 
+  leave = new Array()
   dis: any = false
   isHalfDay: any = false
   disabled: any = true
@@ -64,7 +67,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
 
   tDate: any
 
-  test : any
+  test: any
 
   snackBars(message: string, action: string) {
     this.snackBar.open(message, action, {
@@ -126,7 +129,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     })
     this.api.getEmployee()
   }
-  firstDateEvent(event:MatDatepickerInputEvent<Date>){
+  firstDateEvent(event: MatDatepickerInputEvent<Date>) {
     this.date = event.value.getDate() // Get date
     this.month = event.value.getMonth() // Now get month
     this.year = event.value.getFullYear() // Now get year
@@ -134,6 +137,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     // Get fulldate
     this.firstDate = this.getDate
     this.fDate = this.getDate2
+    var a = this.getDate2
     let h: any = []
     this.compulsory.map(e => h.push(e["Date"]))
     // find if it is a holiday
@@ -147,7 +151,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     else this.leavedays = 1
     this.minDate2 = this.firstDate
   }
-  secondDateEvent(event:MatDatepickerInputEvent<Date>){
+  secondDateEvent(event: MatDatepickerInputEvent<Date>) {
     this.date = event.value.getDate() // Get date
     this.month = event.value.getMonth() // Now get month
     this.year = event.value.getFullYear() // Now get year
@@ -155,8 +159,9 @@ export class ApplyComponent implements OnInit, OnDestroy {
     // Get fulldate
     this.secondDate = this.getDate
     this.sDate = this.getDate2
-    let h : any = []
-    this.compulsory.map( e => h.push(e["Date"]))
+    var a = this.getDate2
+    let h: any = []
+    this.compulsory.map(e => h.push(e["Date"]))
     // Find if it is a holiday
     h.filter(k => {
       // console.log(k)
@@ -168,7 +173,8 @@ export class ApplyComponent implements OnInit, OnDestroy {
     let d: number = this.date, m = this.month
     if (d < 10) this.date = "0" + d
     else this.date = d
-    if (m < 10) m++ && (this.month = "0" + m)
+
+    if (m < 9) m++ && (this.month = "0" + m)
     else m++ && (this.month = m)
     var getDate = String(this.year + "-" + this.month + "-" + this.date),
       temp = String(this.date + "/" + this.month + "/" + this.year)
@@ -183,7 +189,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
         var x = this.leave[i].date_from.split("/"), y = x[1] + '/' + x[0] + '/' + x[2],
           f = moment(y), s = this.leave[i].date_to,
           arr = []
-        while (f.format("DD/MM/YYYY") < s){
+        while (f.format("DD/MM/YYYY") < s) {
           arr.push(f.format("DD/MM/YYYY"))
           f.add(1, 'day')
         }
@@ -203,19 +209,27 @@ export class ApplyComponent implements OnInit, OnDestroy {
       sunday = 0,
       r = [], c = f.clone()
     while (c.day(7 + sunday).isBefore(s)) r.push(c.clone())
-    // calculate for casual leave
-    // let hh : any = []
-    // this.compulsory.map( e => hh.push(e["Date"]))
-    // console.log(hh)
-    // let temp = []
-    // while (this.firstDate < this.secondDate) temp.push(f.format("DD/MM/YYYY")) && f.add(1, "day")
-    // console.log(temp)
-
-    // hh.filter(k => {
-    //   // console.log(k)
-    //   if (this.sDate.indexOf(k) == 0) this.snackBars("Note:", "Already a holiday")
+    this.sundays = r
+    // console.log(r)
+    
+    // calculate leave days list
+    let temp = [], h = []
+    while (f < s) {
+      temp.push(f.format("DD/MM/YYYY"))
+      f.add(1, "day")
+    }
+    temp.push(s)
+    f = moment(this.firstDate)
+    this.dayList = temp
+    
+    // var x = h.concat(r).sort((a, b) => {
+    //   console.log(a)
+    //   console.log(b)
+    //   a = a.split("/").reverse().join(""), b = b.split("/").reverse().join("")
+    //   return a > b ? 1 : a < b ? -1 : 0
     // })
-        
+    // console.log(x)
+
     // Calculate leavedays
     let td: number = s.diff(f, "days")
     this.leavedays = 1 + td - r.length
@@ -239,28 +253,48 @@ export class ApplyComponent implements OnInit, OnDestroy {
           this.dis = false
         }
     }
-    switch (item){
+    switch (item) {
       case "CL":
         // holidays will not be counted
-        // Exclude Holidays 
+        // Exclude Holidays
+        if (this.extraDays) {
+          this.leavedays -= this.extraDays
+          this.extraDays == 0
+        }
         this.disabled = false
         this.showHalfDay = true
-        if (this.leavedays > 5 ) this.api.snackBars("Note:", "Casual leaves must be less than 5")
+        if (this.leavedays > 5) this.api.snackBars("Note:", "Casual leaves must be less than 5")
         break
       case "EOL":
+        if (this.extraDays) {
+          this.leavedays -= this.extraDays
+          this.extraDays == 0
+        } 
         this.showHalfDay = false
         // holidays will be counted
         break
       case "ML":
+        if (this.extraDays) {
+          this.leavedays -= this.extraDays
+          this.extraDays == 0
+        }
         this.showHalfDay = false
         // holidays will be counted
         break
       case "PTL":
+        if (this.extraDays) {
+          this.leavedays -= this.extraDays
+          this.extraDays == 0
+        }
         this.showHalfDay = false
         // holidays will be counted
         break
       case "PL":
         this.showHalfDay = false
+        if (this.sundays.length>0) {
+          this.extraDays = this.sundays.length
+          this.leavedays += this.sundays.length 
+        }
         // var regEx = new RegExp('^(\d{0.4})+\.\d{0,1}?$')
         // this.test = regEx.test(this.leavedays)
         // var tr = '' + this.leavedays
@@ -271,14 +305,18 @@ export class ApplyComponent implements OnInit, OnDestroy {
         // holidays will be counted
         break
       case "SL":
+        if (this.extraDays) {
+          this.leavedays -= this.extraDays
+          this.extraDays == 0
+        }
         this.disabled = false
         this.showHalfDay = true
-        // holidays will be counted
-    } 
+      // holidays will be counted
+    }
   }
-  halfDay(){
-    if(this.leavedays || !this.disabled){
-      if(!this.isHalfDay) this.leavedays = this.leavedays - 0.5
+  halfDay() {
+    if (this.leavedays || !this.disabled) {
+      if (!this.isHalfDay) this.leavedays = this.leavedays - 0.5
       else this.leavedays = this.leavedays + 0.5
     }
   }
@@ -290,17 +328,18 @@ export class ApplyComponent implements OnInit, OnDestroy {
     let d: number = this.date, m = this.month
     if (d < 10) this.date = "0" + d
     else this.date = d
-    if (m < 10) m++ && (this.month = "0" + m)
+    if (m < 9) m++ && (this.month = "0" + m)
     else m++ && (this.month = m)
     this.today = String(this.date + "/" + this.month + "/" + this.year)
     var temp = localStorage.getItem("userName"),
       tmp: any
     tmp = {
-      qci_id: temp,
+      ID_code: temp,
       date_of_apply: this.today,
       days: this.leavedays,
       date_from: this.fDate,
       date_to: this.sDate,
+      day_list:this.dayList,
       leave_reason: this.leave_reason,
       leave_type: this.leave_type
     }
