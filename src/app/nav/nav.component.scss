@@ -6,6 +6,10 @@
     height:100%;
     line-height:300%;
     display:inline-block;
+    &.active{
+        box-sizing: border-box;
+        border-bottom: 3px solid #fff;    
+    }
 } .mat-toolbar-multiple-rows,
     .mat-toolbar-row {
     min-height:44px;

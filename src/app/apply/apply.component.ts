@@ -100,7 +100,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
             m = this.month
           if (d < 10) this.date = "0" + d
           else this.date = d
-          if (m < 10) m++ && (this.month = "0" + m)
+          if (m < 9) m++ && (this.month = "0" + m)
           else m++ && (this.month = m)
           var today = String(this.date + "/" + this.month + "/" + this.year)
           this.holidays.push({ Today: "Today", Date: today })
