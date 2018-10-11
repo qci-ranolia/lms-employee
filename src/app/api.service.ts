@@ -37,7 +37,9 @@ export class ApiService {
   }
   isLogin() {
     if (localStorage.getItem('token')) {
-      this.router.navigate(['./'])
+      setTimeout(() => {
+        this.router.navigate(['./'])
+      }, 500)
     }
   }
   login(uname: string, pwd: string) {
