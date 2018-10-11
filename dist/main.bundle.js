@@ -342,7 +342,6 @@ var ApiService = /** @class */ (function () {
     };
     ApiService.prototype.login = function (uname, pwd) {
         var _this = this;
-        localStorage.setItem('userName', uname);
         var tmp;
         tmp = { qci_id: uname, password: pwd };
         var data = JSON.stringify(tmp);
@@ -350,7 +349,7 @@ var ApiService = /** @class */ (function () {
             _this.http.post(_this.URL + 'lms/loginEmp', data)
                 .map(function (res) { return res.json(); })
                 .subscribe(function (response) {
-                console.log(response);
+                // console.log(response)
                 if (response.success) {
                     localStorage.setItem('token', response.token);
                     _this.uid = uname;
@@ -369,7 +368,7 @@ var ApiService = /** @class */ (function () {
             _this.http.post(_this.URL + 'lms/applyLeave', data, _this.opts)
                 .map(function (res) { return res.json(); })
                 .subscribe(function (response) {
-                console.log(response);
+                // console.log(response)
                 if (response.success) {
                     _this.emitMyLeaves.emit(response);
                     _this.router.navigate(['/dashboard']);
@@ -421,7 +420,7 @@ var ApiService = /** @class */ (function () {
             _this.http.get(_this.URL + 'lms/applyLeave/' + _this.uid, _this.opts)
                 .map(function (res) { return res.json(); })
                 .subscribe(function (response) {
-                console.log(response);
+                // console.log(response)
                 if (response.success)
                     _this.emitMyLeaves.emit(response.data);
                 else {
@@ -896,9 +895,10 @@ var ApplyComponent = /** @class */ (function () {
             temp.push(f.format("DD/MM/YYYY"));
             f.add(1, "day");
         }
-        temp.push(s);
+        // temp.push(s)
         f = __WEBPACK_IMPORTED_MODULE_4_moment__(this.firstDate);
         this.dayList = temp;
+        console.log(this.dayList);
         // var x = h.concat(r).sort((a, b) => {
         //   console.log(a)
         //   console.log(b)
@@ -1292,6 +1292,7 @@ var LoginComponent = /** @class */ (function () {
     }
     LoginComponent.prototype.ngOnInit = function () { };
     LoginComponent.prototype.isLogin = function () {
+        localStorage.setItem('userName', this.uname);
         this.api.login(this.uname, this.pwd);
     };
     LoginComponent.prototype.ngOnDestroy = function () {

@@ -218,9 +218,10 @@ export class ApplyComponent implements OnInit, OnDestroy {
       temp.push(f.format("DD/MM/YYYY"))
       f.add(1, "day")
     }
-    temp.push(s)
+    // temp.push(s)
     f = moment(this.firstDate)
     this.dayList = temp
+    console.log(this.dayList)
     
     // var x = h.concat(r).sort((a, b) => {
     //   console.log(a)

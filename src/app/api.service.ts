@@ -40,16 +40,15 @@ export class ApiService {
       this.router.navigate(['./'])
     }
   }
-  login( uname: string, pwd: string) {
-    localStorage.setItem('userName', uname)
+  login(uname: string, pwd: string) {
     let tmp: any
-    tmp = { qci_id:uname, password:pwd }
+    tmp = { qci_id: uname, password: pwd }
     let data = JSON.stringify(tmp)
     return new Promise((resolve) => {
       this.http.post(this.URL + 'lms/loginEmp', data)
         .map(res => res.json())
         .subscribe(response => {
-          console.log(response)
+          // console.log(response)
           if (response.success) {
             localStorage.setItem('token', response.token)
             this.uid = uname
@@ -59,13 +58,13 @@ export class ApiService {
         }, err => this.router.navigate(['/404']))
     })
   }
-  applyLeave(data : any, stepper: MatStepper) {
+  applyLeave(data: any, stepper: MatStepper) {
     console.log(data)
     return new Promise((resolve) => {
       this.http.post(this.URL + 'lms/applyLeave', data, this.opts)
         .map(res => res.json())
         .subscribe(response => {
-          console.log(response)
+          // console.log(response)
           if (response.success) {
             this.emitMyLeaves.emit(response)
             this.router.navigate(['/dashboard'])
@@ -107,7 +106,7 @@ export class ApiService {
       this.http.get(this.URL + 'lms/applyLeave/' + this.uid, this.opts)
         .map(res => res.json())
         .subscribe(response => {
-          console.log(response)
+          // console.log(response)
           if (response.success) this.emitMyLeaves.emit(response.data)
           else {
             if (response.messages == 'No application available currently') this.emitMyZero.emit(response)
@@ -132,15 +131,4 @@ export class ApiService {
         }, err => this.router.navigate(['/404']))
     })
   }
-  /* tleave() {
-    return new Promise((resolve) => {
-      this.http.get(this.URL + 'lms/tleave', this.opts)
-        .map(res => res.json())
-        .subscribe(response => {
-          if (response.success) this.emitTotalLeave.emit(response.result)
-          else this.snackBars("response.message", "response.success")
-          resolve(true)
-        }, err => this.router.navigate(['/404']))
-    })
-  } */
 }
