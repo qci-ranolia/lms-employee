@@ -37,9 +37,7 @@ export class ApiService {
   }
   isLogin() {
     if (localStorage.getItem('token')) {
-      setTimeout(() => {
         this.router.navigate(['./'])
-      }, 500)
     }
   }
   login(uname: string, pwd: string) {
@@ -50,23 +48,23 @@ export class ApiService {
       this.http.post(this.URL + 'lms/loginEmp', data)
         .map(res => res.json())
         .subscribe(response => {
-          // console.log(response)
           if (response.success) {
             localStorage.setItem('token', response.token)
             this.uid = uname
-            this.emitLogin.emit()
+            setTimeout(() => {
+              this.emitLogin.emit()
+            }, 100)
           } else this.snackBars(response.message, response.success)
           resolve(true)
         }, err => this.router.navigate(['/404']))
     })
   }
   applyLeave(data: any, stepper: MatStepper) {
-    console.log(data)
     return new Promise((resolve) => {
       this.http.post(this.URL + 'lms/applyLeave', data, this.opts)
         .map(res => res.json())
         .subscribe(response => {
-          // console.log(response)
+          console.log(response)
           if (response.success) {
             this.emitMyLeaves.emit(response)
             this.router.navigate(['/dashboard'])
@@ -77,7 +75,6 @@ export class ApiService {
   }
   // HINT : Are we checking the response is a success or not ???
   getEmployee() {
-    // console.log(this.uid)
     return new Promise((resolve) => {
       this.http.get(this.URL + 'lms/addEmployee/' + this.uid, this.opts)//lms/addEmployee/
         .map(res => res.json())
@@ -108,7 +105,6 @@ export class ApiService {
       this.http.get(this.URL + 'lms/applyLeave/' + this.uid, this.opts)
         .map(res => res.json())
         .subscribe(response => {
-          // console.log(response)
           if (response.success) this.emitMyLeaves.emit(response.data)
           else {
             if (response.messages == 'No application available currently') this.emitMyZero.emit(response)
