@@ -140,7 +140,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     // Get fulldate
     this.firstDate = this.getDate
     this.fDate = this.getDate2
-    var a = this.getDate2
+    // var a = this.getDate2
     let h: any = []
     this.compulsory.map(e => h.push(e["Date"]))
     // find if it is a holiday
@@ -163,12 +163,11 @@ export class ApplyComponent implements OnInit, OnDestroy {
     // Get fulldate
     this.secondDate = this.getDate
     this.sDate = this.getDate2
-    var a = this.getDate2
+    // var a = this.getDate2
     let h: any = []
     this.compulsory.map(e => h.push(e["Date"]))
     // Find if it is a holiday
     h.filter(k => {
-      // console.log(k)
       if (this.sDate.indexOf(k) == 0) this.snackBars("Note:", "Already a holiday")
     })
     this.countSundays()
@@ -178,9 +177,9 @@ export class ApplyComponent implements OnInit, OnDestroy {
     let d: number = this.date, m = this.month
     if (d < 10) this.date = "0" + d
     else this.date = d
-
     if (m < 9) m++ && (this.month = "0" + m)
     else m++ && (this.month = m)
+
     var getDate = String(this.year + "-" + this.month + "-" + this.date),
       temp = String(this.date + "/" + this.month + "/" + this.year)
     this.getDate = getDate
@@ -247,21 +246,21 @@ export class ApplyComponent implements OnInit, OnDestroy {
     var a = "bal_" + item,
       b = Object.keys(this.employee),
       c = Object.values(this.employee)
-    
-    // JSON changed have to rework for this loop or change above variables
-    // for (let i = 0; i < b.length; i++) {
-    //   if (a == b[i])
-    //     if (this.leavedays > c[i]) {
-    //       this.api.snackBars("Note:", "Total applied days are less than your balance leave")
-    //       this.dis = true
-    //     } else {
-    //       this.dis = false
-    //     }
-    // }
+      // JSON changed have to rework for this loop or change above variables
+      // for (let i = 0; i < b.length; i++) {
+      //   if (a == b[i])
+      //     if (this.leavedays > c[i]) {
+      //       this.api.snackBars("Note:", "Total applied days are less than your balance leave")
+      //       this.dis = true
+      //     } else {
+      //       this.dis = false
+      //     }
+      // }
+    // More functionality added here, not the right name of a function ;-p
     if ( item == "CL" ){
-      if ( this.condition == true){
+      if ( this.condition == true ){
         if ( this.showHalfDay == false && this.isHalfDay == true ) this.leavedays -= 0.5
-        if (this.sundaySaturday > 0) {
+        if ( this.sundaySaturday > 0 ) {
           this.condition = false
           this.leavedays -= this.sundaySaturday*2
           this.sundaySaturday == 0
@@ -271,7 +270,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
       this.disabled = false
       if ( this.leavedays > 5 ) this.api.snackBars("Note:", "Casual leaves must be less than 5")
     }
-    else if ( item == "SL" || item == "PL" || item == "EOL" || item == "ML" || item == "PTL")
+    else if ( item == "SL" || item == "PL" || item == "EOL" || item == "ML" || item == "PTL" )
     {
       if ( this.showHalfDay == true && this.isHalfDay == true ) this.leavedays += 0.5
       if ( this.condition == false && this.sDate ){
@@ -283,16 +282,16 @@ export class ApplyComponent implements OnInit, OnDestroy {
       }
       this.showHalfDay = false
     }
-  } 
+  }
 
 
   halfDay() {
-    if (this.leavedays || !this.disabled){
-      if (!this.isHalfDay) this.leavedays -= 0.5
+    if ( this.leavedays || !this.disabled ){
+      if ( !this.isHalfDay ) this.leavedays -= 0.5
       else this.leavedays += 0.5
     }
   }
-
+  
   Applyleave(stepper) {
     this.date = this.minDate.getDate() // Get date
     this.month = this.minDate.getMonth() // Now get month
