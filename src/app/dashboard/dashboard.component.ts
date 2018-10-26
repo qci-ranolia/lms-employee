@@ -20,12 +20,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   totalLeave = new Array
   emplCSV = new Object()
 
+  cmn: any
+  application: any
+  case: any
+  restHide: any
+
   unsubMyLeaves: any
   unsubZeroLeaves: any
   unsubGetEmployees: any
   unsubLoader: any
   unsubTotalLeaves: any
   unsubGetEmpCSV: any
+  unsubEmployeeOnLeave: any
 
   constructor(private lms: LmsService, private api: ApiService) {
     this.unsubLoader = this.lms.emitsload.subscribe(el => this.loader = el)
@@ -48,34 +54,45 @@ export class DashboardComponent implements OnInit, OnDestroy {
       })
     }, 800)
     this.unsubGetEmpCSV = this.api.emitgetEmpCSV.subscribe(e => {
-      // console.log(e)
-      // for ( let i = 1; i < e.length; i++ ) {
-      //   if ( e[i-1].ID_code == e[i].ID_code ){
-      //     let jack = []
-      //     jack.push(e[i-1],e[i])
-      //     switch (e[i-1].leave_type) {
-      //       case "CL":
-      //       // let a = e[i-1].slice(0,9)
-      //       // let b = e[i-1].slice(9,26)
-      //       // console.log(a)
-      //       // console.log(b)
-      //       break
-      //       case "SL":
-
-      //     }
-      //     if (e[i].leave_type == 'PL'){
-
-      //     }
-      //   }
-      // }
+      for ( let i = 1; i < e.length; i++ ) {
+        console.log(e[i])
+      }
       this.emplCSV = e
     })
+
+    this.unsubEmployeeOnLeave = this.api.emitEOL.subscribe( el => {
+      this.cmn.push(el)
+      this.simplyfiData()
+      this.application = this.cmn[this.cmn.length - 1]
+      this.case = this.application
+    })
+  
   }
+  
   public ngOnInit() {
     this.api.getEmployee()
     this.api.myLeaves()
     this.api.getEmployeeCSV()
+
+    // team applications
+    this.api.getEOL()
   }
+  
+  simplyfiData() {
+    if (!(this.cmn.length > 0)) this.restHide = false
+    else {
+      this.restHide = true
+      var i = this.cmn.length - 1
+      for (var j = 0; j < this.cmn[i].length; j++) {
+        this.cmn[i][j].info.map(r => {
+          delete this.cmn[i][j].info[0].application_id
+          var t = Object.assign(this.cmn[i][j], r)
+          delete this.cmn[i][j].info
+        })
+      }
+    }
+  }
+
   ngOnDestroy() {
     this.unsubLoader.unsubscribe()
     this.unsubGetEmployees.unsubscribe()
@@ -83,4 +100,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.unsubZeroLeaves.unsubscribe()
     this.unsubGetEmpCSV.unsubscribe()
   }
+  
 } 
