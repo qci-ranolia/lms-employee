@@ -23115,15 +23115,14 @@ label {
 .docs-body {
     background-color: #fff
 }
-.mat-tab-body, .mat-tab-body.mat-tab-body-active {
+/* .mat-tab-body, .mat-tab-body.mat-tab-body-active {
     flex-grow:0 !important;
     right:-25% !important;
     margin:11px auto 10px;
     left:inherit !important;
     max-width:50%;
     width:100%;
-    //box-shadow:10px 10px 5px 0px #ccc
-}.mat-tab-label-content{
+} */ .mat-tab-label-content{
     height:100%;
     width:100%;
 }.mat-tab-label{
@@ -23180,6 +23179,8 @@ mat-tab-header {
     border-radius:10px;
 } .h78 {
     height:78vh
+} .h52 {
+    height:52vh
 } .ovf-y {
     overflow:hidden;
     overflow-y:auto
@@ -23227,4 +23228,7 @@ form .ng-valid .mat-focused .mat-form-field-label, form .ng-valid .mat-form-fiel
 } .mat-calendar-body-selected {
     background : #ff4081 !important;
     color : #fff
+} .mat-tab-label{
+    height:36px !important;
+    line-height:34px;
 }

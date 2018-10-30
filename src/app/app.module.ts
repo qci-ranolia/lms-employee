@@ -19,6 +19,7 @@ import { ApplyComponent } from './apply/apply.component'
 import { RouterModule } from '@angular/router';
 import { ServererrComponent } from './servererr/servererr.component'
 import { routes } from './app-routing.module'
+import { DatePipe } from '@angular/common'
 
 @NgModule({
   declarations: [
@@ -45,7 +46,7 @@ import { routes } from './app-routing.module'
     MatTabsModule, MatToolbarModule, MatTooltipModule,
     RouterModule.forRoot(routes, { useHash: true })
   ],
-  providers: [LmsService, ApiService, AuthService],
+  providers: [LmsService, ApiService, AuthService, DatePipe],
   bootstrap: [
     AppComponent
   ]
