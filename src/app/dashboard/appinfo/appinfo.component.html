@@ -1,0 +1,151 @@
+<mat-list class="pt-0 pb-3">
+  <mat-list-item class="mb-3">
+    <div class="col-sm-6">
+      <strong class="text-muted">
+        <small class="d-block">Name( QCI ID )</small>
+      </strong>
+      <small class="d-block">{{dialogData.name}}( {{dialogData.qci_id}} )</small>
+    </div>
+    <div class="col-sm-6">
+      <strong class="text-muted">
+        <small class="d-block">Application ID</small>
+      </strong>
+      <small class="d-block">{{dialogData.application_id}}</small>
+    </div>
+  </mat-list-item>
+  <mat-list-item class="mb-3">
+    <div class="col-sm-6">
+      <strong class="text-muted">
+        <small class="d-block">Email</small>
+      </strong>
+      <small class="d-block">{{dialogData.email_id}}</small>
+    </div>
+  </mat-list-item>
+  <mat-progress-bar class="clearfix pos-abs" mode="indeterminate" *ngIf="proBar"></mat-progress-bar>
+</mat-list>
+<mat-divider></mat-divider>
+<mat-list class="pt-0" *ngIf="!(dialogData.event == 'edit' || dialogData.event == 'decline')">
+  <mat-list-item class="mt-2 mb-3">
+    <div class="col-sm-4 bg-light">
+      <strong class="text-muted">
+        <small class="d-block">Leave reason</small>
+      </strong>
+    </div>
+    <div class="col-sm-8 snpdl">
+      <small class="d-block" :matTooltip="{{dialogData.leave_reason}}">{{dialogData.leave_reason}}</small>
+    </div>
+  </mat-list-item>
+  <mat-list-item class="mt-2 mb-3">
+    <div class="col-sm-4 bg-light">
+      <strong class="text-muted">
+        <small class="d-block">Leave Status</small>
+      </strong>
+    </div>
+    <div class="col-sm-8 snpdl">
+      <small class="d-block">{{dialogData.leave_status}}</small>
+    </div>
+  </mat-list-item>
+</mat-list>
+<mat-divider *ngIf="!(dialogData.event == 'edit' || dialogData.event == 'decline')"></mat-divider>
+<div *ngIf="dialogData.event=='info'">
+  <mat-list class="pt-0" *ngIf="dialogData.leave_status == 'Pending'">
+    <mat-list-item class="pos-rel pt-4">
+      <button mat-raised-button color="accent" mat-dialog-close>Close</button>&nbsp;&nbsp;&nbsp;
+      <button mat-raised-button (click)="acceptApp(dialogData.application_id, dialogData.qci_id)">Accept</button>&nbsp;&nbsp;&nbsp;
+      <!-- <button mat-raised-button (click)="edit(this.dialogData.event='edit')">Edit</button>&nbsp;&nbsp;&nbsp; -->
+      <button mat-raised-button (click)="todecline(this.dialogData.event='decline')">Decline</button>
+    </mat-list-item>
+  </mat-list>
+</div>
+<div *ngIf="dialogData.event == 'edit'">
+  <mat-list class="pt-0" *ngIf="dialogData.leave_status == 'Pending'">
+    <mat-list-item class="mt-4 mb-1">
+      <div class="col-sm-12">
+        <form [formGroup]="secondFormGroup" class="mt-4">
+          <mat-form-field>
+            <textarea matInput placeholder="Reason for a change..." formControlName="check3" [(ngModel)]="reason_for_change"
+              name="leave_reason"></textarea>
+            <!--this[dialogData.leave_reason]-->
+          </mat-form-field>
+        </form>
+      </div>
+    </mat-list-item>
+  </mat-list>
+  <form [formGroup]="firstFormGroup" class="d-inline-block mb-0 col-sm-12 p-0">
+    <div class="col-sm-6 col-md-4 float-left pt-2">
+      <mat-form-field>
+        <input matInput [min]="minDate" [matDatepickerFilter]="disableSunDay" [matDatepicker]="firstDate" :placeholder="{{dialogData.date_from}}"
+          (dateInput)="firstDateEvent($event)" formControlName="check1">
+        <mat-datepicker-toggle matSuffix [for]="firstDate"></mat-datepicker-toggle>
+        <mat-datepicker #firstDate></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="col-sm-6 col-md-4 float-left pt-2">
+      <mat-form-field>
+        <input matInput [min]="minDate2" [matDatepickerFilter]="disableSunDay" [matDatepicker]="secondDate"
+          :placeholder="{{dialogData.date_to}}" (dateInput)="secondDateEvent($event)" :disabled="{{isFirstDateSelected}}">
+        <mat-datepicker-toggle matSuffix [for]="secondDate"></mat-datepicker-toggle>
+        <mat-datepicker #secondDate></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="col-sm-6 col-md-4 float-right pt-2">
+      <mat-form-field>
+        <mat-select placeholder="Select leave type" formControlName="check2" [(ngModel)]="leave_type" (change)="ifLeavesAreLess(leave_type)"
+          name="leave" [(value)]="selected" :disabled="{{isFirstDateSelected}}">
+          <mat-option *ngIf="employee.cl" :value="cl">
+            <span>Casual Leave ({{employee.cl.bal}})</span>
+          </mat-option>
+          <mat-option *ngIf="employee.sl" :value="sl">
+            <span>Sick Leave ({{employee.sl.bal}})</span>
+          </mat-option>
+          <mat-option *ngIf="employee.pl" :value="pl">
+            <span>Privileged Leave ({{employee.pl.bal}})</span>
+          </mat-option>
+          <mat-option *ngIf="employee.ml && employee.ml.bal !== 0" :value="ml">
+            <span>Maternity Leave ({{employee.ml.bal}})</span>
+          </mat-option>
+          <mat-option *ngIf="employee.ptl && employee.ptl.bal !== 0" :value="ptl">
+            <span>Paternity Leave ({{employee.ptl.bal}})</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="clearfix pt-4"></div>
+    <div class="clearfix pt-1"></div>
+    <div class="col-sm-6 col-md-4 float-left pt-3">
+      <mat-form-field>
+        <input matInput placeholder="Total Applied Dates" :value="{{leavedays}}" disabled>
+      </mat-form-field>
+    </div>
+  </form>
+  <mat-divider></mat-divider>
+  <mat-list class="pt-0">
+    <mat-list-item class="pos-rel pt-2">
+      <button mat-raised-button color="accent" mat-dialog-close>Close</button>&nbsp;&nbsp;&nbsp;
+      <button mat-raised-button (click)="modify(dialogData)" [disabled]=dis>Modify</button>
+      <mat-progress-bar class="clearfix pos-abs" mode="indeterminate" *ngIf="proBar"></mat-progress-bar>
+    </mat-list-item>
+  </mat-list>
+</div>
+<div *ngIf="dialogData.event == 'accept'">
+  <mat-list class="pt-0" *ngIf="dialogData.leave_status == 'Pending'">
+    <mat-list-item class="pos-rel pt-4">
+      <button mat-raised-button color="accent" mat-dialog-close>Close</button>&nbsp;&nbsp;&nbsp;
+      <button mat-raised-button (click)="acceptApp(dialogData.application_id, dialogData.qci_id)">Accept</button>
+    </mat-list-item>
+  </mat-list>
+</div>
+<div *ngIf="dialogData.event == 'decline'">
+  <mat-list class="pt-0" *ngIf="dialogData.leave_status == 'Pending'">
+    <mat-list-item class="mt-5 mb-5">
+      <mat-form-field class="col-sm-12">
+        <textarea matInput placeholder="Reason for cancel" [(ngModel)]="decline_reason" name="Decline Reason"></textarea>
+      </mat-form-field>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+    <mat-list-item class="pos-rel pt-4">
+      <button mat-raised-button color="accent" mat-dialog-close>Close</button>&nbsp;&nbsp;&nbsp;
+      <button mat-raised-button (click)="declineApp(decline_reason, dialogData.application_id, dialogData.leave_type)">Decline</button>
+    </mat-list-item>
+  </mat-list>
+</div>

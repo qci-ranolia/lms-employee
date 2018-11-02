@@ -1,5 +1,6 @@
 import { MatTabChangeEvent, MatDialog } from '@angular/material'
 import { Component, OnInit, OnDestroy } from '@angular/core'
+import { AppinfoComponent } from "./appinfo/appinfo.component"
 import { ApiService } from '../api.service'
 import { LmsService } from '../lms.service'
 import { DatePipe } from '@angular/common'
@@ -41,6 +42,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   table: any
   toggle: boolean = false
   edit: boolean = false
+  ro: boolean = false
   approvedLeave: any
   cancelledLeave: any
 
@@ -65,13 +67,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
   unsubApprovedOwn: any
   unsubCancelledOthers: any
   unsubCancelledOwn: any
-  constructor(private lms: LmsService, private api: ApiService, public datepipe: DatePipe, public dialog: MatDialog) {
-    this.unsubLoader = this.lms.emitsload.subscribe(el => this.loader = el)
+  constructor( private lms:LmsService, private api:ApiService, public datepipe:DatePipe, public dialog:MatDialog ){
+    this.unsubLoader = this.lms.emitsload.subscribe( el => this.loader = el )
     this.lms.showLoader()
 
-    this.unsubGetEmployees = this.api.emitgetEmployee.subscribe(r => this.employee = r )
-    this.unsubZeroLeaves = this.api.emitMyZero.subscribe(r => this.hide = false)
-    this.unsubMyLeaves = this.api.emitMyLeaves.subscribe(r => this.leave = r)
+    this.unsubGetEmployees = this.api.emitgetEmployee.subscribe( r => {
+      this.employee = r
+      var lt = Object.keys(r)
+      var rt = Object.values(r)
+      for (let i = 22; i < lt.length; i++ ){
+        if (lt[i] == 'role') {
+          if ( rt[i][0] == 'reporting_officer') {
+            this.ro = true
+          }
+        } 
+      }
+    })
+    this.unsubZeroLeaves = this.api.emitMyZero.subscribe( r => this.hide = false )
+    this.unsubMyLeaves = this.api.emitMyLeaves.subscribe( r => this.leave = r )
 
     setTimeout(() => {
       $(function () {
@@ -85,7 +98,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }, 800)
     
     // Do you really need this API to work with this small app???
-    this.unsubGetEmpCSV = this.api.emitgetEmpCSV.subscribe( e => {
+    /* this.unsubGetEmpCSV = this.api.emitgetEmpCSV.subscribe( e => {
       this.emplCSV = e
       let i: any, j: any, k: any
       for ( i = 0; i < this.emplCSV.length; i++ ) {
@@ -100,43 +113,44 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.employeeLeave.push(this.temp1)
         this.temp1 = []
       }
-    })
+    }) */
+
     // if pending leave
-    this.unsubInputOthers = this.api.emitInputOthers.subscribe( el =>{
-      // this.cmn = el
-      console.log(el)
-      console.log(el.length)
-      // this.restHide = true
-      // var i = this.cmn.length - 1
-      // for (var j = 0; j < this.cmn[i].length; j++) {
-      //   this.cmn[i][j].info.map(r => {
-      //     delete this.cmn[i][j].info[0].application_id
-      //     var t = Object.assign(this.cmn[i][j], r)
-      //     delete this.cmn[i][j].info
-      //   })
-      // }
+    this.unsubInputOthers = this.api.emitInputOthers.subscribe( el => {
+      if ( this.ro == true ){
+        this.cmn = el[0]
+        this.simplyfiData()
+        this.application = this.cmn
+        this.case = this.application
+      }
     })
     this.unsubInputOwn = this.api.emitInputOwn.subscribe( el => {
-      console.log(el)
-      console.log(el.length)
+      // this.cmn = el[0]
+      // this.simplyfiData()
     })
     // if approved leave
     this.unsubApprovedOthers = this.api.emitApprovedOthers.subscribe( el => {
-      console.log(el)
-      console.log(el.length)
+      if ( this.ro == true ){
+        this.cmn = el[0]
+        this.simplyfiData()
+        this.approvedLeave = this.cmn
+      }
     })
     this.unsubApprovedOwn = this.api.emitApprovedOwn.subscribe( el => {
-      console.log(el)
-      console.log(el.length)
+      // this.cmn = el[0]
+      // this.simplyfiData()
     })
     // if cancelled leave
     this.unsubCancelledOthers = this.api.emitCancelledOthers.subscribe( el => {
-      console.log(el)
-      console.log(el.length)
+      if ( this.ro == true ){
+        this.cmn = el[0]
+        this.simplyfiData()
+        this.cancelledLeave = this.cmn
+      }
     })
     this.unsubCancelledOwn = this.api.emitCancelledOwn.subscribe( el => {
-      console.log(el)
-      console.log(el.length)
+      // this.cmn = el[0]
+      // this.simplyfiData()
     })
 
     this.unsubAcceptedApplication = this.api.emitMyApplication.subscribe( el => {
@@ -151,34 +165,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.api.cancelledLeave()
       }
     })
-
   }
   
   public ngOnInit() {
     this.api.getEmployee()
     this.api.myLeaves()
-    this.api.getEmployeeCSV()
+    // Do you really need this here ??
+    // this.api.getEmployeeCSV()
     // team applications
     this.api.getEOL()
-   
     this.api.approvedLeave()
     this.api.cancelledLeave()
   }
 
-  // simplyfiData() {
-  //   if (!(this.cmn.length > 0)) this.restHide = false
-  //   else {
-  //     this.restHide = true
-  //     var i = this.cmn.length - 1
-  //     for (var j = 0; j < this.cmn[i].length; j++) {
-  //       this.cmn[i][j].info.map(r => {
-  //         delete this.cmn[i][j].info[0].application_id
-  //         var t = Object.assign(this.cmn[i][j], r)
-  //         delete this.cmn[i][j].info
-  //       })
-  //     }
-  //   }
-  // }
+  simplyfiData() {
+    if (!(this.cmn.length > 0)) this.restHide = false
+    else {
+      this.restHide = true
+      var i = this.cmn.length
+      for (var j = 0; j < i; j++) {
+        this.cmn[j].info.map(r => {
+          // delete this.cmn[j].info[0].application_id
+          var t = Object.assign(this.cmn[j], r)
+          delete this.cmn[j].info
+        })
+      }
+    }
+  }
 
   whichApplication($event: MatTabChangeEvent) {
     switch ($event.index) {
@@ -216,33 +229,34 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.case = this.cancelledLeave
     }
   }
+
+
+  appInfo(application_id, qci_id, leave_type) {
+    localStorage.setItem('qci_id', qci_id)
+    let event = 'info'
+    this.openApplicationModal(application_id, event, leave_type)
+  } appAccept(application_id, qci_id, leave_type) {
+    localStorage.setItem('qci_id', qci_id)
+    let event = 'accept'
+    this.openApplicationModal(application_id, event, leave_type)
+  } appEdit(application_id, qci_id, leave_type) {
+    localStorage.setItem('qci_id', qci_id)
+    let event = 'edit'
+    this.openApplicationModal(application_id, event, leave_type)
+  } appCancel(application_id, qci_id, leave_type) {
+    localStorage.setItem('qci_id', qci_id)
+    let event = 'decline'
+    this.openApplicationModal(application_id, event, leave_type)
+  }
   // commen dialog for all the application related queries
-  public openApplicationModal(application_id, event) {
+  public openApplicationModal(application_id, event, leave_type) {
     var item = this.case.find(it => it.application_id == application_id) // linear search
     item.event = event
-   /*  this.dialog.open(AppinfoComponent, {
+    this.dialog.open(AppinfoComponent, {
       width:"60%",
       height:"75%",
       data:item
-    }) */
-  }
-
-  appInfo(application_id, qci_id) {
-    localStorage.setItem('qci_id', qci_id)
-    let event = 'info'
-    this.openApplicationModal(application_id, event)
-  } appAccept(application_id, qci_id) {
-    localStorage.setItem('qci_id', qci_id)
-    let event = 'accept'
-    this.openApplicationModal(application_id, event)
-  } appEdit(application_id, qci_id) {
-    localStorage.setItem('qci_id', qci_id)
-    let event = 'edit'
-    this.openApplicationModal(application_id, event)
-  } appCancel(application_id, qci_id) {
-    localStorage.setItem('qci_id', qci_id)
-    let event = 'decline'
-    this.openApplicationModal(application_id, event)
+    })
   }
 
   toggler() {
@@ -258,7 +272,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.api.leaveForApproval(tmp)
     this.api.getEOL()
   }
-
   // decline leave application
   declineApp(dec_reason, app_ids) {
     this.dis = true
@@ -273,14 +286,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.api.getEOL()
     }
   }
-
   ngOnDestroy() {
     this.unsubLoader.unsubscribe()
     this.unsubGetEmployees.unsubscribe()
     this.unsubMyLeaves.unsubscribe()
     this.unsubZeroLeaves.unsubscribe()
-    this.unsubGetEmpCSV.unsubscribe()
-
+    // Do we really need this unsubscribe here ??
+    // this.unsubGetEmpCSV.unsubscribe()
     // new unsubscribes
     this.unsubInputOthers.unsubscribe()
     this.unsubInputOwn.unsubscribe()
@@ -288,7 +300,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.unsubApprovedOwn.unsubscribe()
     this.unsubCancelledOthers.unsubscribe()
     this.unsubCancelledOwn.unsubscribe()
-
     localStorage.removeItem('qci_id')
   }
 

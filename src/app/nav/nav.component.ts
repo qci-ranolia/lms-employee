@@ -20,6 +20,8 @@ export class NavComponent implements OnInit {
 
   logout() {
     localStorage.removeItem('token')
+    localStorage.removeItem('userName')
+    localStorage.removeItem('qci_id')
     this.lms.showLoader()
     this.router.navigate(['/login'])
   }

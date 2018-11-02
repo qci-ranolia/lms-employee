@@ -14,62 +14,21 @@ declare var $
 })
 
 export class ApplyComponent implements OnInit, OnDestroy {
-  applyLeave = new Array()
-  leave_type: any
-  leave_reason: any
-  employee = new Array()
-
-  isLinear = true
-  firstFormGroup: FormGroup
-  secondFormGroup: FormGroup
-
-  selectedValue: string
-  // showUs = false
-  loader: boolean = false
-  isFirstDateSelected: boolean = true
-  zeroHolidays: boolean = false
-
-  firstDate: any
-  secondDate: any
-  sundays: any
-  sundaySaturday:any
-  dayList: any
-  condition: boolean = false
   
-  date: any
-  month: any
-  year: any
-  getDate: any
-
-  getDate2: any
-  fDate: any
-  sDate: any
-  today: any
-  leavedays: any
-  selected: any
-  minDate = new Date()
-  minDate2 = new Date()
-
+  firstFormGroup: FormGroup; secondFormGroup: FormGroup
+  minDate = new Date(); minDate2 = new Date()
+  isLinear: boolean = true; loader: boolean = false; isFirstDateSelected: boolean = true; zeroHolidays: boolean = false
+  condition: boolean = false; dis: any = false; isHalfDay: boolean = false
+  disabled: boolean = true; showHalfDay: boolean = false
+  selectedValue: string  
+  getDate2: any; fDate: any; sDate: any; today: any; leavedays: any; selected: any; tDate:any; test:any
+  firstDate: any; secondDate: any; sundays: any; sundaySaturday:any; dayList: any
+  date: any; month: any; year: any; getDate: any;leave_type: any; leave_reason: any
   ifLAL: any
-  compulsory: any = []
-  holidays: any = new Array()
+  compulsory: any = []; applyLeave = new Array(); employee = new Array(); holidays: any = new Array(); leave = new Array()
+  unsubLoader: any; unsubGetEmployee: any; unsubGetHoliday: any; unsubMyLeaves: any
 
-  unsubLoader: any
-  unsubGetEmployee: any
-  unsubGetHoliday: any
-  unsubMyLeaves: any
-
-  leave = new Array()
-  dis: any = false
-  isHalfDay: any = false
-  disabled: any = true
-  showHalfDay: any = false
-
-  tDate:any
-
-  test:any
-
-  snackBars( message: string, action: string ){
+  snackBars(message:string,action:string){
     this.snackBar.open(message, action,{
       duration: 3000,
     })
@@ -81,7 +40,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
 
     this.unsubGetEmployee = this.api.emitgetEmployee.subscribe(r => {
       this.employee = r
-    }) // getEmployees()
+    })
     this.unsubMyLeaves = this.api.emitMyLeaves.subscribe(r => (this.leave = r))
     this.unsubGetHoliday = this.api.emitgetHoliday.subscribe(el => {
       if (el == "Holidays are not updated") this.zeroHolidays = true
@@ -112,7 +71,6 @@ export class ApplyComponent implements OnInit, OnDestroy {
       }
     })
   }
-
   ngOnInit() {
     this.tDate = this.minDate.getDate() // Get date
     this.month = this.minDate.getMonth() // Now get month
@@ -130,8 +88,6 @@ export class ApplyComponent implements OnInit, OnDestroy {
     })
     this.api.getEmployee()
   }
-
-
   firstDateEvent(event: MatDatepickerInputEvent<Date>) {
     this.date = event.value.getDate() // Get date
     this.month = event.value.getMonth() // Now get month
@@ -154,7 +110,6 @@ export class ApplyComponent implements OnInit, OnDestroy {
     else this.leavedays = 1
     this.minDate2 = this.firstDate
   }
-
   secondDateEvent(event: MatDatepickerInputEvent<Date>) {
     this.date = event.value.getDate() // Get date
     this.month = event.value.getMonth() // Now get month
@@ -172,7 +127,6 @@ export class ApplyComponent implements OnInit, OnDestroy {
     })
     this.countSundays()
   }
-
   letDateConditions() {
     let d: number = this.date, m = this.month
     if (d < 10) this.date = "0" + d
@@ -206,11 +160,9 @@ export class ApplyComponent implements OnInit, OnDestroy {
       } // else console.log(this.leave[i].leave_status) // Rejected. Right ??
     }
   }
-
-
   // echo 65536 | sudo tee -a /proc/sys/fs/inotify/max user watches
   countSundays() {
-    // As well anything you can do with dates here
+    // As well anything you can do with dates
     // Calculate sundays/saturday between two days using Moment JS
     var f = moment(this.firstDate), s = moment(this.secondDate),
       sunday = 0,
@@ -222,7 +174,9 @@ export class ApplyComponent implements OnInit, OnDestroy {
       temp.push(f.format("DD/MM/YYYY"))
       f.add(1, "day")
     }
+    temp.push(s.format("DD/MM/YYYY"))
     this.dayList = temp
+    
     // After running while(f<s) loop, reset firstdate to initial. Comment next line to see the effect
     f = moment(this.firstDate)
     // Find all sunday/'s
@@ -235,12 +189,10 @@ export class ApplyComponent implements OnInit, OnDestroy {
       this.ifLeavesAreLess(this.ifLAL)
     }
   }
-
   disableSunDay = (d: Date): boolean => {
     const day = d.getDay()
     return day !== 0 && day !== 6 // Uncomment if saturday is disabled too
   }
-
   ifLeavesAreLess(item) {
     this.ifLAL = item
     var a = "bal_" + item,
@@ -257,7 +209,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
       //     }
       // }
     // More functionality added here, not the right name of a function ;-p
-    if ( item == "CL" ){
+    if ( item == "cl" ){
       if ( this.condition == true ){
         if ( this.showHalfDay == false && this.isHalfDay == true ) this.leavedays -= 0.5
         if ( this.sundaySaturday > 0 ) {
@@ -270,10 +222,10 @@ export class ApplyComponent implements OnInit, OnDestroy {
       this.disabled = false
       if ( this.leavedays > 5 ) this.api.snackBars("Note:", "Casual leaves must be less than 5")
     }
-    else if ( item == "SL" || item == "PL" || item == "EOL" || item == "ML" || item == "PTL" )
+    else if ( item == "sl" || item == "pl" || item == "eol" || item == "ml" || item == "ptl" )
     {
       if ( this.showHalfDay == true && this.isHalfDay == true ) this.leavedays += 0.5
-      if ( this.condition == false && this.sDate ){
+      if ( this.condition == false && this.sDate ) {
         if ( this.sundays.length > 0 ) {
           this.condition = true
           this.sundaySaturday = this.sundays.length
@@ -283,15 +235,12 @@ export class ApplyComponent implements OnInit, OnDestroy {
       this.showHalfDay = false
     }
   }
-
-
   halfDay() {
     if ( this.leavedays || !this.disabled ){
       if ( !this.isHalfDay ) this.leavedays -= 0.5
       else this.leavedays += 0.5
     }
   }
-  
   Applyleave(stepper) {
     this.date = this.minDate.getDate() // Get date
     this.month = this.minDate.getMonth() // Now get month
@@ -305,12 +254,14 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.today = String(this.date + "/" + this.month + "/" + this.year)
     var temp = localStorage.getItem("userName"),
       tmp: any
+    if ( this.leave_type == 'cl' && this.isHalfDay == true ){ }
+    console.log(this.dayList)
     tmp = {
-      ID_code: temp,
+      qci_id: temp,
       date_of_apply: this.today,
-      days: this.leavedays,
+      days:this.leavedays,
       date_from: this.fDate,
-      date_to: this.sDate,
+      date_to:this.sDate,
       day_list:this.dayList,
       leave_reason: this.leave_reason,
       leave_type: this.leave_type
@@ -318,7 +269,6 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.applyLeave.push(tmp)
     this.api.applyLeave(tmp, stepper)
   }
-  
   ngOnDestroy() {
     this.unsubLoader.unsubscribe()
     this.unsubGetEmployee.unsubscribe()

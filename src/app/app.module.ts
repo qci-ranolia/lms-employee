@@ -19,7 +19,8 @@ import { ApplyComponent } from './apply/apply.component'
 import { RouterModule } from '@angular/router';
 import { ServererrComponent } from './servererr/servererr.component'
 import { routes } from './app-routing.module'
-import { DatePipe } from '@angular/common'
+import { DatePipe } from '@angular/common';
+import { AppinfoComponent } from './dashboard/appinfo/appinfo.component'
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { DatePipe } from '@angular/common'
     LoginComponent,
     ApplyComponent,
     ServererrComponent,
+    AppinfoComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,6 +47,9 @@ import { DatePipe } from '@angular/common'
     MatSlideToggleModule, MatSnackBarModule, MatSortModule, MatTableModule,
     MatTabsModule, MatToolbarModule, MatTooltipModule,
     RouterModule.forRoot(routes, { useHash: true })
+  ],
+  entryComponents: [
+    AppinfoComponent
   ],
   providers: [LmsService, ApiService, AuthService, DatePipe],
   bootstrap: [

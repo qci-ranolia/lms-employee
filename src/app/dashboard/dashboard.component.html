@@ -1,5 +1,5 @@
-<div class="col-sm-12 p-0 justify-content-center">
-  <div class="col-sm-5 float-left p-0" *ngIf="hide">
+<div class="col-sm-12 p-0 d-flex justify-content-center">
+  <div class="col-sm-4 float-left p-0" *ngIf="hide">
     <h5 class="col-sm-12">Application Status</h5>
     <div class="col-sm-12 h78 ovf-y">
       <div class="col-sm-12 p-0 bg-white rad-box">
@@ -15,7 +15,7 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-7 float-left p-0">
+  <div class="col-sm-8 float-left p-0">
     <h5 class="col-sm-12">Profile Status</h5>
     <div class="col-sm-12"><!-- h78 ovf-y-->
       <div class="col-sm-12 p-0 bg-white rad-box">
@@ -29,8 +29,8 @@
         </mat-card>
       </div>
     </div><br />
-    <h5 class="col-sm-12">Team Application's Status</h5>
-    <div class="col-sm-12"><!-- h78 ovf-y-->
+    <h5 class="col-sm-12" *ngIf="ro">Team Application's Status</h5>
+    <div class="col-sm-12" *ngIf="ro"><!-- h78 ovf-y-->
       <div class="col-sm-12 p-0 bg-white rad-box h52 ovf-y">
         <mat-tab-group (selectedTabChange)="whichApplication($event)">
           <mat-tab label="New Applications">
@@ -44,13 +44,13 @@
                     <th class="wd-15">Leave Type</th>
                     <th class="wd-16">Date Applied</th>
                     <th class="wd-16">Application Date</th>
-                    <th class="modify">Actions</th>
+                    <!-- <th class="modify">Actions</th> -->
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let app of application; let i = index;">
                     <td class="wd-7">
-                      <a href="javascript:void(0)" class="text-primary" (click)="appInfo(app.application_id, app.qci_id)">
+                      <a href="javascript:void(0)" class="text-primary" (click)="appInfo(app.application_id, app.qci_id, app.leave_type)">
                         <u>{{app.application_id | slice:0:12 }}</u>
                       </a>
                     </td>
@@ -63,11 +63,11 @@
                     <td>{{app.leave_type}}</td>
                     <td class="wd-16">{{app.date_from}}-{{app.date_to}}</td>
                     <td class="wd-16">{{app.date_of_apply}}</td>
-                    <td class="modify">
-                      <i class="fa fa-check" aria-hidden="true" (click)="appAccept(app.application_id, app.qci_id)"></i>
-                      <i class="fa fa-times" aria-hidden="true" (click)="appCancel(app.application_id, app.qci_id)"></i>
+                    <!-- <td class="modify">
+                      <i class="fa fa-check" aria-hidden="true" (click)="appAccept(app.application_id, app.qci_id, app.leave_type)"></i>
+                      <i class="fa fa-times" aria-hidden="true" (click)="appCancel(app.application_id, app.qci_id, app.leave_type)"></i>
                       <mat-icon class="mat-icon material-icons pos-rel" role="img" aria-hidden="true">more_vert</mat-icon>
-                    </td>
+                    </td> -->
                   </tr>
                 </tbody>
               </table>
@@ -84,13 +84,13 @@
                     <th class="wd-15">Leave Type</th>
                     <th class="wd-16">Date Applied</th>
                     <th class="wd-16">Application Date</th>
-                    <th class="modify">Actions</th>
+                    <!-- <th class="modify">Actions</th> -->
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let approve of approvedLeave; let i = index;">
                     <td class="wd-7">
-                      <a href="javascript:void(0)" class="text-primary" (click)="appInfo(approve.application_id, approve.qci_id)">
+                      <a href="javascript:void(0)" class="text-primary" (click)="appInfo(approve.application_id, approve.qci_id, approve.leave_type)">
                         <u>{{approve.application_id | slice:0:12 }}</u>
                       </a>
                     </td>
@@ -103,9 +103,9 @@
                     <td class="wd-15">{{approve.leave_type}}</td>
                     <td class="wd-16">{{approve.date_from}}-{{approve.date_to}}</td>
                     <td class="wd-16">{{approve.date_of_apply}}</td>
-                    <td class="modify">
+                    <!-- <td class="modify">
                       <small>No Actions</small>
-                    </td>
+                    </td> -->
                   </tr>
                 </tbody>
               </table>
@@ -122,13 +122,13 @@
                     <th class="wd-15">Leave Type</th>
                     <th class="wd-16">Date Applied</th>
                     <th class="wd-16">Application Date</th>
-                    <th class="modify">Actions</th>
+                    <!-- <th class="modify">Actions</th> -->
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let cancel of cancelledLeave ; let i = index;">
                     <td class="wd-7">
-                      <a href="javascript:void(0)" class="text-primary" (click)="appInfo(cancel.application_id, cancel.qci_id)">
+                      <a href="javascript:void(0)" class="text-primary" (click)="appInfo(cancel.application_id, cancel.qci_id, cancel.leave_type)">
                         <u>{{cancel.application_id | slice:0:12 }}</u>
                       </a>
                     </td>
@@ -141,9 +141,9 @@
                     <td class="wd-15">{{cancel['leave_type']}}</td>
                     <td class="wd-16">{{cancel.date_from}}-{{cancel.date_to}}</td>
                     <td class="wd-16">{{cancel.date_of_apply}}</td>
-                    <td class="modify">
+                    <!-- <td class="modify">
                       <small>No Actions</small>
-                    </td>
+                    </td> -->
                   </tr>
                 </tbody>
               </table>
