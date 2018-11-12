@@ -23,9 +23,9 @@ export class ApplyComponent implements OnInit, OnDestroy {
   selectedValue: string  
   getDate2: any; fDate: any; sDate: any; today: any; leavedays: any; selected: any; tDate:any; test:any
   firstDate: any; secondDate: any; sundays: any; sundaySaturday:any; dayList: any
-  date: any; month: any; year: any; getDate: any;leave_type: any; leave_reason: any
-  ifLAL: any
-  compulsory: any = []; applyLeave = new Array(); employee = new Array(); holidays: any = new Array(); leave = new Array()
+  date: any; month: any; year: any; getDate: any; leave_type: any; leave_reason: any
+  ifLAL: any; toggleHalf: any; 
+  compulsory: any = []; restricted: any = []; compulsoryDates: any = []; restrictedDates: any = []; rdm : any = []; cdm : any = []; applyLeave = new Array(); employee = new Array(); holidays: any = new Array(); leave = new Array()
   unsubLoader: any; unsubGetEmployee: any; unsubGetHoliday: any; unsubMyLeaves: any
 
   snackBars(message:string,action:string){
@@ -40,6 +40,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
 
     this.unsubGetEmployee = this.api.emitgetEmployee.subscribe(r => {
       this.employee = r
+      console.log(this.employee)
     })
     this.unsubMyLeaves = this.api.emitMyLeaves.subscribe(r => (this.leave = r))
     this.unsubGetHoliday = this.api.emitgetHoliday.subscribe(el => {
@@ -50,11 +51,14 @@ export class ApplyComponent implements OnInit, OnDestroy {
           for (let i = 0; i < el.length; i++) {
             if (i >= el.length - 2) {
               JSON.parse(el[i].data).map(r => {
+                if (r.RestrictedHoliday) this.restricted.push(r)
                 if (r.CompulsoryHoliday) this.compulsory.push(r)
                 this.holidays.push(r)
               })
             }
           }
+          this.compulsory.map(e => this.compulsoryDates.push(e["Date"]))
+          this.restricted.map(e => this.restrictedDates.push(e["Date"]))
           let d = this.tDate,
             m = this.month
           if (d < 10) this.date = "0" + d
@@ -97,11 +101,12 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.firstDate = this.getDate
     this.fDate = this.getDate2
     // var a = this.getDate2
-    let h: any = []
-    this.compulsory.map(e => h.push(e["Date"]))
     // find if it is a holiday
-    h.filter(k => {
+    this.compulsoryDates.filter(k => {
       if (this.fDate.indexOf(k) == 0) this.snackBars("Note:", "Already a holiday")
+    })
+    this.restrictedDates.filter(l => {
+      if (this.fDate.indexOf(l) == 0) this.snackBars("Note:", "Its a restricted holiday")
     })
     // enable second datepicker
     this.isFirstDateSelected = false
@@ -119,11 +124,12 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.secondDate = this.getDate
     this.sDate = this.getDate2
     // var a = this.getDate2
-    let h: any = []
-    this.compulsory.map(e => h.push(e["Date"]))
     // Find if it is a holiday
-    h.filter(k => {
-      if (this.sDate.indexOf(k) == 0) this.snackBars("Note:", "Already a holiday")
+    this.compulsoryDates.filter(k => {
+      if (this.fDate.indexOf(k) == 0) this.snackBars("Note:", "Already a holiday")
+    })
+    this.restrictedDates.filter(l => {
+      if (this.fDate.indexOf(l) == 0) this.snackBars("Note:", "Its a restricted holiday")
     })
     this.countSundays()
   }
@@ -155,8 +161,12 @@ export class ApplyComponent implements OnInit, OnDestroy {
         arr.push(s)
         arr.filter(k => {
           // is selected date already in the applied application/s list, if index == 0 :=> we found the selected date in already applied application/s(pending,rejected&approved) dates
-          if (this.getDate2.indexOf(k) == 0) this.snackBars("Note:", "Your one of previous application has same date")
+          if ( this.getDate2.indexOf(k) == 0 ) this.snackBars( "Note:", "Your one of previous application has same date" )
         })
+        // arr.filter(k => {
+        //   if ( this.restricted.Date.indexOf(k) == 0 ) this.snackBars( "Note:", "Restricted Holiday" )
+        // })
+        
       } // else console.log(this.leave[i].leave_status) // Rejected. Right ??
     }
   }
@@ -198,6 +208,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     var a = "bal_" + item,
       b = Object.keys(this.employee),
       c = Object.values(this.employee)
+      
       // JSON changed have to rework for this loop or change above variables
       // for (let i = 0; i < b.length; i++) {
       //   if (a == b[i])
@@ -210,21 +221,53 @@ export class ApplyComponent implements OnInit, OnDestroy {
       // }
     // More functionality added here, not the right name of a function ;-p
     if ( item == "cl" ){
+      // Common test case A, when compulsory holiday or restricted holidays lies between two selected dates
+      for ( let i = 0; i < this.dayList.length; i++ ){
+        this.compulsoryDates.filter(k => {
+          if (this.dayList[i].indexOf(k) == 0) {
+            this.cdm.push(this.dayList[i])
+          }
+        })
+        this.restrictedDates.filter(l => {
+          if (this.dayList[i].indexOf(l) == 0) {
+            this.rdm.push(this.dayList[i])
+          }
+        })      
+      }
+      // test case B, when user plays with web app
       if ( this.condition == true ){
+        // test case 2, when no sunday lies between two selected dates
         if ( this.showHalfDay == false && this.isHalfDay == true ) this.leavedays -= 0.5
+        // test case 3, when sunday lies between two selected dates
         if ( this.sundaySaturday > 0 ) {
           this.condition = false
           this.leavedays -= this.sundaySaturday*2
           this.sundaySaturday == 0
         }
       }
+      this.leavedays -= this.cdm.length
+      this.leavedays -= this.rdm.length
       this.showHalfDay = true
       this.disabled = false
       if ( this.leavedays > 5 ) this.api.snackBars("Note:", "Casual leaves must be less than 5")
     }
-    else if ( item == "sl" || item == "pl" || item == "eol" || item == "ml" || item == "ptl" )
-    {
-      if ( this.showHalfDay == true && this.isHalfDay == true ) this.leavedays += 0.5
+    else if ( item == "sl" || item == "pl" || item == "eol" || item == "ml" || item == "ptl" ||  item == "rh" ||  item == "od" ) {
+      // case 1
+      if ( this.cdm.length ) {
+        this.leavedays += this.cdm.length
+        this.cdm.length = 0
+      }
+      if ( this.rdm.length ) {
+        this.leavedays += this.rdm.length
+        this.rdm.length = 0 
+      }
+      // case 2
+      if ( this.showHalfDay == true && this.isHalfDay == true ) {
+        this.leavedays += 0.5
+        // document.getElementById('checkbox').click()
+        // console.log(this.isHalfDay)
+      }
+      // case 3
       if ( this.condition == false && this.sDate ) {
         if ( this.sundays.length > 0 ) {
           this.condition = true
@@ -255,7 +298,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     var temp = localStorage.getItem("userName"),
       tmp: any
     if ( this.leave_type == 'cl' && this.isHalfDay == true ){ }
-    console.log(this.dayList)
+    // console.log(this.dayList)
     tmp = {
       qci_id: temp,
       date_of_apply: this.today,
@@ -267,7 +310,8 @@ export class ApplyComponent implements OnInit, OnDestroy {
       leave_type: this.leave_type
     }
     this.applyLeave.push(tmp)
-    this.api.applyLeave(tmp, stepper)
+    console.log(tmp)
+    // this.api.applyLeave(tmp, stepper)
   }
   ngOnDestroy() {
     this.unsubLoader.unsubscribe()

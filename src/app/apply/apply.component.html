@@ -85,6 +85,12 @@
                   <mat-option *ngIf="employee.ptl && employee.ptl.bal !== 0" :value="ptl">
                     <span>Paternity Leave ({{employee.ptl.bal}})</span>
                   </mat-option>
+                  <mat-option *ngIf="employee.rh" :value="rh">
+                    <span>Restricted Holiday ({{employee.rh.bal}})</span>
+                  </mat-option>
+                  <mat-option *ngIf="!employee.od" :value="od">
+                    <span>On Duty</span>
+                  </mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
@@ -97,7 +103,7 @@
             </div>
             <div class="col-sm-4 col-md-4 float-left pt-2" *ngIf="showHalfDay">
               <br />
-              <mat-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="isHalfDay" (click)="halfDay()" [disabled]="disabled">Take a half day!</mat-checkbox>
+              <mat-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="isHalfDay" (click)="halfDay()" id="checkbox" [disabled]="disabled">Take a half day!</mat-checkbox>
             </div><!-- 
             <div class="col-sm-4 col-md-4 float-left pt-2" *ngIf="showHalfDay">
               <br />
@@ -143,7 +149,7 @@
                   <mat-card-subtitle>Status : Pending</mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-actions class="pl-3 mt-5">
-                  <button mat-raised-button color="accent" matStepperPrevious>Back</button>
+                  <button mat-raised-button color="accent"  matStepperPrevious>Back</button>
                 </mat-card-actions>
               </mat-card>
             </div>
