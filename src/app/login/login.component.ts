@@ -23,12 +23,6 @@ export class LoginComponent implements OnInit {
   
   ngOnInit() {
     this.api.isLogin()
-    this.unsubLogin = this.api.emitLogin.subscribe((res) => {
-      this.router.navigate(['/'])
-      setTimeout(() => {
-        this.router.navigate(['/'])
-      }, 200)
-    })
   }
 
 }

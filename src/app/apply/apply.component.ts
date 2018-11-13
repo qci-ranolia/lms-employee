@@ -159,24 +159,24 @@ export class ApplyComponent implements OnInit, OnDestroy {
   // echo 65536 | sudo tee -a /proc/sys/fs/inotify/max user watches
   countSundays() {
     // As well anything you can do with dates
-    
-    // Calculate sundays/saturday between two days using Moment JS
+    // Calculate sundays/saturday between two days using MomentJS
     var f = moment(this.firstDate), s = moment(this.secondDate),
       sunday = 0,
       r = [], c = f.clone(),
       temp = []
     // calculate leave days list
     // Find all dates between two dates and push them in an array
-    while ( f < s ) {
+    while ( f < s || f == s ) {
       temp.push(f.format("DD/MM/YYYY"))
       f.add(1, "day")
     }
-    temp.push(s.format("DD/MM/YYYY"))
+    if ( f != s ) {
+      console.log('d')
+      temp.push(s.format("DD/MM/YYYY"))
+    }
     this.dayList = temp
-    
     // After running while(f<s) loop, reset firstdate to initial. Comment next line to see the effect
     f = moment(this.fDate)
-    
     // Find all sunday/'s
     while (c.day(7 + sunday).isBefore(s)) r.push(c.clone())
     this.sundays = r
@@ -213,7 +213,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
         this.restrictedDates.filter(l => {
           if (this.dayList[i].indexOf(l) == 0) {
             this.rdm.push(this.dayList[i])
-            this.leavedays -= this.rdm.length
+            // this.leavedays -= this.rdm.length
             this.rdm.length = 0
           }
         })      
@@ -282,5 +282,4 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.unsubGetHoliday.unsubscribe()
     this.unsubMyLeaves.unsubscribe()
   }
-
 }

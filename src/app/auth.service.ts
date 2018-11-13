@@ -5,7 +5,7 @@ import { Router, CanActivate } from '@angular/router'
 export class AuthService implements CanActivate {
   constructor(private router: Router) { }
   canActivate() {
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('token') != null) {
       return true
     }
     this.router.navigate(['/login'])

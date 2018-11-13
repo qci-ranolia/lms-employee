@@ -6,8 +6,8 @@ import 'rxjs/add/operator/map'
 
 @Injectable()
 export class ApiService {
-  URL: string = "http://13.127.13.175:5000/"
-  // URL: string = "http://192.168.15.219:5000/"
+  // URL: string = "http://13.127.13.175:5000/"
+  URL: string = "http://192.168.15.219:5000/"
 
   token: string // Useful in Authentication
   headers: Headers // Useful when backend and frontend have different IP's
@@ -49,12 +49,12 @@ export class ApiService {
       duration:2600,
     })
   }
-  isLogin() {
-    if (localStorage.getItem('token')) {
+  isLogin(){
+    if ( localStorage.getItem('token') != null ){
       this.router.navigate(['./'])
     }
   }
-  login(uname: string, pwd: string) {
+  login(uname:string, pwd:string){
     this.uid = uname
     let tmp: any
     tmp = { qci_id: uname, password: pwd }
@@ -62,11 +62,10 @@ export class ApiService {
     return new Promise((resolve) => {
       this.http.post(this.URL + 'lms/loginEmp', data)
       .map(res => res.json())
-      
       .subscribe(response => {
         if (response.success) {
           localStorage.setItem('token', response.token)
-          this.emitLogin.emit()
+          this.router.navigate(['/'])
         } else this.snackBars(response.message, response.success)
         resolve(true)
       }, err => this.router.navigate(['/404']))
@@ -84,11 +83,7 @@ export class ApiService {
           this.emitMyLeaves.emit(response)
           this.router.navigate(['/dashboard'])
         }
-        else if ( response == 'Wrong Token' ){
-            setTimeout(() => {
-                this.router.navigate(['/'])
-            }, 400 )
-        } else stepper.next()
+        else stepper.next()
         resolve(true)
       }, err => this.router.navigate(['/404']))
     })
@@ -100,11 +95,7 @@ export class ApiService {
       .map(res => res.json())
       .subscribe(response => {
         if (response.success) this.emitgetEmployee.emit(response.data)
-        else if ( response == 'Wrong Token' ){
-          setTimeout(() => {
-              this.router.navigate(['/'])
-          }, 400 )
-        } else this.snackBars('add employee', 'Try again')
+        else this.snackBars('add employee', 'Try again')
         resolve(true)
       }, err => this.router.navigate(['/404']))
     })
@@ -119,11 +110,7 @@ export class ApiService {
           if (response.message.length == 0) console.log("No employee file uploaded yet!")
           else this.emitgetEmpCSV.emit(response.message)
         }
-        else if ( response == 'Wrong Token' ){
-          setTimeout(() => {
-              this.router.navigate(['/'])
-          }, 400 )
-        } else this.snackBars("csv", 'Try Again')
+        else this.snackBars("csv", 'Try Again')
         resolve(true)
       }, err => this.router.navigate(['/404']))
     })
@@ -134,11 +121,7 @@ export class ApiService {
       .map(res => res.json())
       .subscribe(response => {
         if (response.success) this.emitMyLeaves.emit(response.data)
-        else if ( response == 'Wrong Token' ){
-          setTimeout(() => {
-              this.router.navigate(['/'])
-          }, 400 )
-        } else {
+        else {
           if (response.messages == 'No application available currently') this.emitMyZero.emit(response)
           else this.snackBars("apply leave", "Try Again")
         }
@@ -155,11 +138,6 @@ export class ApiService {
         if (response.success) {
           if (response.result.length == 0) this.emitgetHoliday.emit("Holidays are not updated")
           else this.emitgetHoliday.emit(response.result)
-        }
-        else if ( response == 'Wrong Token' ){
-          setTimeout(() => {
-              this.router.navigate(['/'])
-          }, 400 )
         } else this.snackBars("holiday", "try again")
         resolve(true)
       }, err => this.router.navigate(['/404']))
@@ -175,10 +153,6 @@ export class ApiService {
         if (response.success) {
           this.emitInputOthers.emit(response.data_others)
           this.emitInputOwn.emit(response.data_own)
-        }else if ( response == 'Wrong Token' ){
-          setTimeout(() => {
-              this.router.navigate(['/'])
-          }, 400 )
         } else this.snackBars("Input", response.success)
         resolve(true)
       }, err => this.router.navigate(['/404']))
@@ -193,11 +167,6 @@ export class ApiService {
         if (response.success) {
           this.emitApprovedOthers.emit(response.data_others)
           this.emitApprovedOwn.emit(response.data_own)
-          // this.emitApprovedApplication.emit(response.data)
-        }else if ( response == 'Wrong Token' ){
-          setTimeout(() => {
-              this.router.navigate(['/'])
-          }, 400 )
         } else this.snackBars("Output1", response.success)
         resolve(true)
       }, err => this.router.navigate(['/404']))
@@ -212,11 +181,6 @@ export class ApiService {
         if (response.success) {
           this.emitCancelledOthers.emit(response.data_others)
           this.emitCancelledOwn.emit(response.data_own)
-          // this.emitCancelledApplication.emit(response.data)
-        } else if ( response == 'Wrong Token' ){
-          setTimeout(() => {
-              this.router.navigate(['/'])
-          }, 400 )
         } else this.snackBars("Output2", response.success)
         resolve(true)
       }, err => this.router.navigate(['/404']))
@@ -233,10 +197,6 @@ export class ApiService {
           this.emitMyApplication.emit(response)
           this.snackBars("Application approved", "Successfully")
           // does not refresh after response
-        } else if ( response == 'Wrong Token' ){
-          setTimeout(() => {
-              this.router.navigate(['/'])
-          }, 400 )
         } else this.snackBars("Approve Leave", response.success)
         resolve(true)
       }, err => this.router.navigate(['/404']))
@@ -251,10 +211,6 @@ export class ApiService {
         if (response.success) {
           this.emitMyApplication.emit(response)
           this.snackBars("Application declined", "Successfully")
-        } else if ( response == 'Wrong Token' ){
-          setTimeout(() => {
-              this.router.navigate(['/'])
-          }, 400 )
         } else this.snackBars("Decline Leave", response.success)
         resolve(true)
       }, err => this.router.navigate(['/404']))
