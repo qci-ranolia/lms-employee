@@ -52,18 +52,18 @@
             <ng-template matStepLabel>Select date and type</ng-template>
             <div class="col-sm-6 col-md-3 float-left pt-3">
               <mat-form-field>
-                <input matInput [min]="minDate" [matDatepickerFilter]="disableSunDay" [matDatepicker]="firstDate"
+                <input matInput [min]="minDate" [matDatepickerFilter]="disableSunDay" [matDatepicker]="fDate"
                   placeholder="Date from" (dateInput)="firstDateEvent($event)" formControlName="check1">
-                <mat-datepicker-toggle matSuffix [for]="firstDate"></mat-datepicker-toggle>
-                <mat-datepicker #firstDate></mat-datepicker>
+                <mat-datepicker-toggle matSuffix [for]="fDate"></mat-datepicker-toggle>
+                <mat-datepicker #fDate></mat-datepicker>
               </mat-form-field>
             </div>
             <div class="col-sm-6 col-md-3 float-left pt-3">
               <mat-form-field>
-                <input matInput [min]="minDate2" [matDatepickerFilter]="disableSunDay" [matDatepicker]="secondDate"
+                <input matInput [min]="minDate2" [matDatepickerFilter]="disableSunDay" [matDatepicker]="sDate"
                   placeholder="Date to" (dateInput)="secondDateEvent($event)" :disabled="{{isFirstDateSelected}}">
-                <mat-datepicker-toggle matSuffix [for]="secondDate"></mat-datepicker-toggle>
-                <mat-datepicker #secondDate></mat-datepicker>
+                <mat-datepicker-toggle matSuffix [for]="sDate"></mat-datepicker-toggle>
+                <mat-datepicker #sDate></mat-datepicker>
               </mat-form-field>
             </div>
             <div class="col-sm-6 col-md-4 float-right pt-3">

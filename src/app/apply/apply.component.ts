@@ -40,7 +40,6 @@ export class ApplyComponent implements OnInit, OnDestroy {
 
     this.unsubGetEmployee = this.api.emitgetEmployee.subscribe(r => {
       this.employee = r
-      console.log(this.employee)
     })
     this.unsubMyLeaves = this.api.emitMyLeaves.subscribe(r => (this.leave = r))
     this.unsubGetHoliday = this.api.emitgetHoliday.subscribe(el => {
@@ -65,8 +64,8 @@ export class ApplyComponent implements OnInit, OnDestroy {
           else this.date = d
           if (m < 9) m++ && (this.month = "0" + m)
           else m++ && (this.month = m)
-          var today = String(this.date + "/" + this.month + "/" + this.year)
-          this.holidays.push({ Today: "Today", Date: today })
+          this.today = String(this.date + "/" + this.month + "/" + this.year)
+          this.holidays.push({ Today: "Today", Date: this.today })
           this.holidays.sort((a, b) => {
             (a = a.Date.split("/").reverse().join("")), (b = b.Date.split("/").reverse().join(""))
             return a > b ? 1 : a < b ? -1 : 0
@@ -97,22 +96,15 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.month = event.value.getMonth() // Now get month
     this.year = event.value.getFullYear() // Now get year
     this.letDateConditions()
-    // Get fulldate
-    this.firstDate = this.getDate
-    this.fDate = this.getDate2
-    // var a = this.getDate2
-    // find if it is a holiday
-    this.compulsoryDates.filter(k => {
-      if (this.fDate.indexOf(k) == 0) this.snackBars("Note:", "Already a holiday")
-    })
-    this.restrictedDates.filter(l => {
-      if (this.fDate.indexOf(l) == 0) this.snackBars("Note:", "Its a restricted holiday")
-    })
+    this.firstDate = this.getDate // for moment js
+    this.fDate = this.getDate2 // for server
+    
     // enable second datepicker
     this.isFirstDateSelected = false
     // Calculate on the basis of second datepicker if already selected || !selected
-    if (this.secondDate) this.countSundays()
-    else this.leavedays = 1
+    if (this.sDate) this.countSundays()
+
+    // datpicker will not let user to select previous dates
     this.minDate2 = this.firstDate
   }
   secondDateEvent(event: MatDatepickerInputEvent<Date>) {
@@ -120,17 +112,8 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.month = event.value.getMonth() // Now get month
     this.year = event.value.getFullYear() // Now get year
     this.letDateConditions()
-    // Get fulldate
-    this.secondDate = this.getDate
-    this.sDate = this.getDate2
-    // var a = this.getDate2
-    // Find if it is a holiday
-    this.compulsoryDates.filter(k => {
-      if (this.fDate.indexOf(k) == 0) this.snackBars("Note:", "Already a holiday")
-    })
-    this.restrictedDates.filter(l => {
-      if (this.fDate.indexOf(l) == 0) this.snackBars("Note:", "Its a restricted holiday")
-    })
+    this.secondDate = this.getDate // for moment js
+    this.sDate = this.getDate2 // for server
     this.countSundays()
   }
   letDateConditions() {
@@ -140,11 +123,18 @@ export class ApplyComponent implements OnInit, OnDestroy {
     if (m < 9) m++ && (this.month = "0" + m)
     else m++ && (this.month = m)
 
-    var getDate = String(this.year + "-" + this.month + "-" + this.date),
-      temp = String(this.date + "/" + this.month + "/" + this.year)
-    this.getDate = getDate
-    this.getDate2 = temp
-    this.today = temp
+    // just some bad codes. Optimising.................../.
+    this.getDate = String(this.year + "-" + this.month + "-" + this.date)
+    this.getDate2 = String(this.date + "/" + this.month + "/" + this.year)
+    
+    // check if already a compulsory holiday
+    this.compulsoryDates.filter(k => {
+      if (this.getDate2.indexOf(k) == 0) this.snackBars("Note:", "Already a holiday")
+    })
+    // check if already a restricted holiday
+    this.restrictedDates.filter(l => {
+      if (this.getDate2.indexOf(l) == 0) this.snackBars("Note:", "Its a restricted holiday")
+    })
     // check if leave dates are already in the current applications of the employee
     // for loop to create a temp array of all dates
     for (let i = 0; i < this.leave.length; i++) {
@@ -163,16 +153,13 @@ export class ApplyComponent implements OnInit, OnDestroy {
           // is selected date already in the applied application/s list, if index == 0 :=> we found the selected date in already applied application/s(pending,rejected&approved) dates
           if ( this.getDate2.indexOf(k) == 0 ) this.snackBars( "Note:", "Your one of previous application has same date" )
         })
-        // arr.filter(k => {
-        //   if ( this.restricted.Date.indexOf(k) == 0 ) this.snackBars( "Note:", "Restricted Holiday" )
-        // })
-        
       } // else console.log(this.leave[i].leave_status) // Rejected. Right ??
     }
   }
   // echo 65536 | sudo tee -a /proc/sys/fs/inotify/max user watches
   countSundays() {
     // As well anything you can do with dates
+    
     // Calculate sundays/saturday between two days using Moment JS
     var f = moment(this.firstDate), s = moment(this.secondDate),
       sunday = 0,
@@ -188,117 +175,93 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.dayList = temp
     
     // After running while(f<s) loop, reset firstdate to initial. Comment next line to see the effect
-    f = moment(this.firstDate)
+    f = moment(this.fDate)
+    
     // Find all sunday/'s
     while (c.day(7 + sunday).isBefore(s)) r.push(c.clone())
     this.sundays = r
-    // Calculate leavedays, removing sundays & saturdays total count
-    let td: number = s.diff(f, "days")
-    this.leavedays = (1 + td) - (r.length * 2)
     if ( !( this.ifLAL == undefined ) ){
       this.ifLeavesAreLess(this.ifLAL)
+      if (this.ifLAL == 'cl' && this.isHalfDay) this.leavedays -= 0.5
     }
   }
   disableSunDay = (d: Date): boolean => {
     const day = d.getDay()
-    return day !== 0 && day !== 6 // Uncomment if saturday is disabled too
+    return day !== 0 && day !== 6 // comment if saturday is not disabled
   }
   ifLeavesAreLess(item) {
     this.ifLAL = item
-    var a = "bal_" + item,
-      b = Object.keys(this.employee),
-      c = Object.values(this.employee)
-      
-      // JSON changed have to rework for this loop or change above variables
-      // for (let i = 0; i < b.length; i++) {
-      //   if (a == b[i])
-      //     if (this.leavedays > c[i]) {
-      //       this.api.snackBars("Note:", "Total applied days are less than your balance leave")
-      //       this.dis = true
-      //     } else {
-      //       this.dis = false
-      //     }
-      // }
+    this.sundaySaturday = this.sundays.length
+    var a = Object.keys(this.employee),
+      b = Object.values(this.employee) 
     // More functionality added here, not the right name of a function ;-p
+    // Calculate leavedays, removing sundays & saturdays total count
+    let td: number = moment(this.secondDate).diff(moment(this.firstDate), "days")
     if ( item == "cl" ){
-      // Common test case A, when compulsory holiday or restricted holidays lies between two selected dates
+      this.leavedays = 0 // reset leaves
+      this.leavedays = 1 + td // just count total days
       for ( let i = 0; i < this.dayList.length; i++ ){
-        this.compulsoryDates.filter(k => {
+        // see if compulsory holiday is there ?? 
+        this.compulsoryDates.filter(k => {  
           if (this.dayList[i].indexOf(k) == 0) {
             this.cdm.push(this.dayList[i])
+            this.leavedays -= this.cdm.length
+            this.cdm.length = 0
           }
         })
+        // see if restricted holiday is there ??
         this.restrictedDates.filter(l => {
           if (this.dayList[i].indexOf(l) == 0) {
             this.rdm.push(this.dayList[i])
+            this.leavedays -= this.rdm.length
+            this.rdm.length = 0
           }
         })      
       }
-      // test case B, when user plays with web app
-      if ( this.condition == true ){
-        // test case 2, when no sunday lies between two selected dates
-        if ( this.showHalfDay == false && this.isHalfDay == true ) this.leavedays -= 0.5
-        // test case 3, when sunday lies between two selected dates
-        if ( this.sundaySaturday > 0 ) {
-          this.condition = false
-          this.leavedays -= this.sundaySaturday*2
-          this.sundaySaturday == 0
-        }
-      }
-      this.leavedays -= this.cdm.length
-      this.leavedays -= this.rdm.length
-      this.showHalfDay = true
+      // subtract saturdays and sundays
+      this.leavedays -= this.sundaySaturday*2
+      this.sundaySaturday = 0 // reset
+      // Half day concept
       this.disabled = false
+      this.showHalfDay = true // show half day option
+      if (this.condition){
+        this.leavedays -= 0.5
+        this.condition = false
+      }
+      // Warn user for not taking more than 5 leaves
       if ( this.leavedays > 5 ) this.api.snackBars("Note:", "Casual leaves must be less than 5")
     }
     else if ( item == "sl" || item == "pl" || item == "eol" || item == "ml" || item == "ptl" ||  item == "rh" ||  item == "od" ) {
-      // case 1
-      if ( this.cdm.length ) {
-        this.leavedays += this.cdm.length
-        this.cdm.length = 0
-      }
-      if ( this.rdm.length ) {
-        this.leavedays += this.rdm.length
-        this.rdm.length = 0 
-      }
-      // case 2
-      if ( this.showHalfDay == true && this.isHalfDay == true ) {
-        this.leavedays += 0.5
-        // document.getElementById('checkbox').click()
-        // console.log(this.isHalfDay)
-      }
-      // case 3
-      if ( this.condition == false && this.sDate ) {
-        if ( this.sundays.length > 0 ) {
-          this.condition = true
-          this.sundaySaturday = this.sundays.length
-          this.leavedays += this.sundaySaturday*2
-        }
-      }
-      this.showHalfDay = false
+      this.leavedays = 0
+      this.leavedays = 1 + td
+      this.disabled = true
+      this.showHalfDay = false // hide half day option
+      this.condition = true
     }
+    for (let i = 0; i < a.length; i++) {
+      if (item == a[i] && item !== 'od') {
+        if (this.leavedays > b[i].bal) {
+          this.api.snackBars("Note:", "Total applied days are less than your balance leave")
+          this.dis = true
+        } else this.dis = false
+      }
+    }
+    if ( this.leavedays < 1 ) {
+      this.dis = true      
+      this.leavedays = 0
+      this.api.snackBars("Note:", "'Date from' can not preeced 'Date to'")
+    }
+    // else this.dis = false
   }
   halfDay() {
-    if ( this.leavedays || !this.disabled ){
-      if ( !this.isHalfDay ) this.leavedays -= 0.5
-      else this.leavedays += 0.5
+    if ( this.ifLAL == 'cl' && !this.isHalfDay ){
+      this.leavedays -= 0.5
+    } else if (this.ifLAL == 'cl' && this.isHalfDay){
+      if (!this.condition) this.leavedays += 0.5
     }
   }
   Applyleave(stepper) {
-    this.date = this.minDate.getDate() // Get date
-    this.month = this.minDate.getMonth() // Now get month
-    this.year = this.minDate.getFullYear() // Now get year
-    // this.letDateConditions()
-    let d: number = this.date, m = this.month
-    if (d < 10) this.date = "0" + d
-    else this.date = d
-    if (m < 9) m++ && (this.month = "0" + m)
-    else m++ && (this.month = m)
-    this.today = String(this.date + "/" + this.month + "/" + this.year)
-    var temp = localStorage.getItem("userName"),
-      tmp: any
-    if ( this.leave_type == 'cl' && this.isHalfDay == true ){ }
-    // console.log(this.dayList)
+    var temp = localStorage.getItem("userName"), tmp: any
     tmp = {
       qci_id: temp,
       date_of_apply: this.today,
