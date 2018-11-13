@@ -53,7 +53,7 @@
             <div class="col-sm-6 col-md-3 float-left pt-3">
               <mat-form-field>
                 <input matInput [min]="minDate" [matDatepickerFilter]="disableSunDay" [matDatepicker]="fDate"
-                  placeholder="Date from" (dateInput)="firstDateEvent($event)" formControlName="check1">
+                  placeholder="Date from" (dateInput)="firstDateEvent($event)" formControlName="check11">
                 <mat-datepicker-toggle matSuffix [for]="fDate"></mat-datepicker-toggle>
                 <mat-datepicker #fDate></mat-datepicker>
               </mat-form-field>
@@ -61,15 +61,15 @@
             <div class="col-sm-6 col-md-3 float-left pt-3">
               <mat-form-field>
                 <input matInput [min]="minDate2" [matDatepickerFilter]="disableSunDay" [matDatepicker]="sDate"
-                  placeholder="Date to" (dateInput)="secondDateEvent($event)" :disabled="{{isFirstDateSelected}}">
+                  placeholder="Date to" (dateInput)="secondDateEvent($event)" formControlName="check12" :disabled="{{isFirstDateSelected}}">
                 <mat-datepicker-toggle matSuffix [for]="sDate"></mat-datepicker-toggle>
                 <mat-datepicker #sDate></mat-datepicker>
               </mat-form-field>
             </div>
             <div class="col-sm-6 col-md-4 float-right pt-3">
               <mat-form-field>
-                <mat-select placeholder="Select leave type" formControlName="check2" [(ngModel)]="leave_type" (change)="ifLeavesAreLess(leave_type)"
-                  name="leave" [(value)]="selected" :disabled="{{isFirstDateSelected}}">
+                <mat-select placeholder="Select leave type" formControlName="check13" [(ngModel)]="leave_type" (change)="ifLeavesAreLess(leave_type)"
+                  name="leave" [(value)]="selected"><!-- :disabled="{{isFirstDateSelected}}"-->
                   <mat-option *ngIf="employee.cl" :value="cl">
                     <span>Casual Leave ({{employee.cl.bal}})</span>
                   </mat-option>

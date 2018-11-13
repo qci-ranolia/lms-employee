@@ -6,8 +6,8 @@ import 'rxjs/add/operator/map'
 
 @Injectable()
 export class ApiService {
-  // URL: string = "http://13.127.13.175:5000/"
-  URL: string = "http://192.168.15.219:5000/"
+  URL: string = "http://13.127.13.175:5000/"
+  // URL: string = "http://192.168.15.219:5000/"
 
   token: string // Useful in Authentication
   headers: Headers // Useful when backend and frontend have different IP's
@@ -28,12 +28,6 @@ export class ApiService {
   emitApprovedOwn = new EventEmitter<any>()
   emitCancelledOthers = new EventEmitter<any>()
   emitCancelledOwn = new EventEmitter<any>()
-
-  // emitZeroEOL = new EventEmitter<any>()
-  // emitEOL = new EventEmitter<any>()
-  // emitApprovedApplication = new EventEmitter<any>()
-  // emitCancelledApplication = new EventEmitter<any>()
-  
   emitMyApplication = new EventEmitter<any>()
 
   constructor( public snackBar: MatSnackBar, private http: Http, private router: Router ){ //, private router:Router // we will use both imports here. Are we using anywhere in comments only ???

@@ -14,7 +14,6 @@ declare var $
 })
 
 export class ApplyComponent implements OnInit, OnDestroy {
-  
   firstFormGroup: FormGroup; secondFormGroup: FormGroup
   minDate = new Date(); minDate2 = new Date()
   isLinear: boolean = true; loader: boolean = false; isFirstDateSelected: boolean = true; zeroHolidays: boolean = false
@@ -27,7 +26,6 @@ export class ApplyComponent implements OnInit, OnDestroy {
   ifLAL: any; toggleHalf: any; 
   compulsory: any = []; restricted: any = []; compulsoryDates: any = []; restrictedDates: any = []; rdm : any = []; cdm : any = []; applyLeave = new Array(); employee = new Array(); holidays: any = new Array(); leave = new Array()
   unsubLoader: any; unsubGetEmployee: any; unsubGetHoliday: any; unsubMyLeaves: any
-
   snackBars(message:string,action:string){
     this.snackBar.open(message, action,{
       duration: 3000,
@@ -82,8 +80,9 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.api.myLeaves()
     this.api.getHoliday()
     this.firstFormGroup = this._formBuilder.group({
-      check1: ["", Validators.required],
-      check2: ["", Validators.required]
+      check11: ["", Validators.required],
+      check12: ["", Validators.required],
+      check13: ["", Validators.required]
     })
     this.secondFormGroup = this._formBuilder.group({
       check3: ["", Validators.required],
@@ -95,15 +94,16 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.date = event.value.getDate() // Get date
     this.month = event.value.getMonth() // Now get month
     this.year = event.value.getFullYear() // Now get year
+    
     this.letDateConditions()
     this.firstDate = this.getDate // for moment js
     this.fDate = this.getDate2 // for server
-    
     // enable second datepicker
     this.isFirstDateSelected = false
+    
     // Calculate on the basis of second datepicker if already selected || !selected
     if (this.sDate) this.countSundays()
-
+    
     // datpicker will not let user to select previous dates
     this.minDate2 = this.firstDate
   }
@@ -111,6 +111,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.date = event.value.getDate() // Get date
     this.month = event.value.getMonth() // Now get month
     this.year = event.value.getFullYear() // Now get year
+    
     this.letDateConditions()
     this.secondDate = this.getDate // for moment js
     this.sDate = this.getDate2 // for server
@@ -122,18 +123,23 @@ export class ApplyComponent implements OnInit, OnDestroy {
     else this.date = d
     if (m < 9) m++ && (this.month = "0" + m)
     else m++ && (this.month = m)
-
     // just some bad codes. Optimising.................../.
     this.getDate = String(this.year + "-" + this.month + "-" + this.date)
     this.getDate2 = String(this.date + "/" + this.month + "/" + this.year)
-    
     // check if already a compulsory holiday
     this.compulsoryDates.filter(k => {
       if (this.getDate2.indexOf(k) == 0) this.snackBars("Note:", "Already a holiday")
     })
     // check if already a restricted holiday
     this.restrictedDates.filter(l => {
-      if (this.getDate2.indexOf(l) == 0) this.snackBars("Note:", "Its a restricted holiday")
+      if (this.getDate2.indexOf(l) == 0) {
+        this.snackBars("Note:", "Its a restricted holiday")
+      } else {
+        if (localStorage.getItem('rh') == 'rh'){
+          console.log(true)
+          localStorage.removeItem('rh')
+        }
+      }
     })
     // check if leave dates are already in the current applications of the employee
     // for loop to create a temp array of all dates
@@ -170,16 +176,18 @@ export class ApplyComponent implements OnInit, OnDestroy {
       temp.push(f.format("DD/MM/YYYY"))
       f.add(1, "day")
     }
-    if ( f != s ) {
-      console.log('d')
+    if ( f !== s ) {
       temp.push(s.format("DD/MM/YYYY"))
     }
     this.dayList = temp
+    
     // After running while(f<s) loop, reset firstdate to initial. Comment next line to see the effect
     f = moment(this.fDate)
+    
     // Find all sunday/'s
     while (c.day(7 + sunday).isBefore(s)) r.push(c.clone())
     this.sundays = r
+    
     if ( !( this.ifLAL == undefined ) ){
       this.ifLeavesAreLess(this.ifLAL)
       if (this.ifLAL == 'cl' && this.isHalfDay) this.leavedays -= 0.5
@@ -191,13 +199,12 @@ export class ApplyComponent implements OnInit, OnDestroy {
   }
   ifLeavesAreLess(item) {
     this.ifLAL = item
-    this.sundaySaturday = this.sundays.length
     var a = Object.keys(this.employee),
       b = Object.values(this.employee) 
     // More functionality added here, not the right name of a function ;-p
     // Calculate leavedays, removing sundays & saturdays total count
     let td: number = moment(this.secondDate).diff(moment(this.firstDate), "days")
-    if ( item == "cl" ){
+    if ( item == "cl" && this.dayList !== undefined){
       this.leavedays = 0 // reset leaves
       this.leavedays = 1 + td // just count total days
       for ( let i = 0; i < this.dayList.length; i++ ){
@@ -209,44 +216,43 @@ export class ApplyComponent implements OnInit, OnDestroy {
             this.cdm.length = 0
           }
         })
-        // see if restricted holiday is there ??
-        this.restrictedDates.filter(l => {
-          if (this.dayList[i].indexOf(l) == 0) {
-            this.rdm.push(this.dayList[i])
-            // this.leavedays -= this.rdm.length
-            this.rdm.length = 0
-          }
-        })      
       }
       // subtract saturdays and sundays
-      this.leavedays -= this.sundaySaturday*2
-      this.sundaySaturday = 0 // reset
+      if ( this.sundays > 0 ){
+        this.sundaySaturday = this.sundays.length
+        this.leavedays -= this.sundaySaturday * 2
+        this.sundaySaturday = 0 // reset
+      }
       // Half day concept
       this.disabled = false
       this.showHalfDay = true // show half day option
-      if (this.condition){
+      if (this.condition == true && this.isHalfDay == true){
         this.leavedays -= 0.5
         this.condition = false
       }
       // Warn user for not taking more than 5 leaves
       if ( this.leavedays > 5 ) this.api.snackBars("Note:", "Casual leaves must be less than 5")
     }
-    else if ( item == "sl" || item == "pl" || item == "eol" || item == "ml" || item == "ptl" ||  item == "rh" ||  item == "od" ) {
+    else if ( (item == "sl" || item == "pl" || item == "eol" || item == "ml" || item == "ptl" || item == "od") && this.dayList !== undefined ) {
       this.leavedays = 0
       this.leavedays = 1 + td
       this.disabled = true
       this.showHalfDay = false // hide half day option
       this.condition = true
     }
+    else if (item == "rh"){
+      this.leavedays = 0
+      this.leavedays = 1
+    }
     for (let i = 0; i < a.length; i++) {
-      if (item == a[i] && item !== 'od') {
+      if (item == a[i] && item !== 'od' && item !== 'rh') {
         if (this.leavedays > b[i].bal) {
           this.api.snackBars("Note:", "Total applied days are less than your balance leave")
           this.dis = true
         } else this.dis = false
       }
     }
-    if ( this.leavedays < 1 ) {
+    if ( this.leavedays < 0.5 ) {
       this.dis = true      
       this.leavedays = 0
       this.api.snackBars("Note:", "'Date from' can not preeced 'Date to'")
@@ -257,6 +263,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     if ( this.ifLAL == 'cl' && !this.isHalfDay ){
       this.leavedays -= 0.5
     } else if (this.ifLAL == 'cl' && this.isHalfDay){
+      if (this.condition && this.isHalfDay) this.condition = !this.condition
       if (!this.condition) this.leavedays += 0.5
     }
   }
@@ -273,7 +280,6 @@ export class ApplyComponent implements OnInit, OnDestroy {
       leave_type: this.leave_type
     }
     this.applyLeave.push(tmp)
-    console.log(tmp)
     // this.api.applyLeave(tmp, stepper)
   }
   ngOnDestroy() {
