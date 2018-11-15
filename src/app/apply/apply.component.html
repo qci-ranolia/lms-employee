@@ -130,7 +130,7 @@
             </div>
             <div class="col-sm-6 col-md-4 float-left mb-3 mt-4">
               <button mat-raised-button color="accent" matStepperPrevious>Back</button>
-              <button mat-raised-button (click)="Applyleave(stepper)" matStepperNext>Apply</button>
+              <button mat-raised-button (click)="Applyleave(stepper)" matStepperNext [disabled]=dis2>Apply</button>
             </div>
           </form>
         </mat-step>

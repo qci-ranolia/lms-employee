@@ -19,7 +19,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
   isLinear: boolean = true; loader: boolean = false; isFirstDateSelected: boolean = true; zeroHolidays: boolean = false
   condition: boolean = false; dis: any = false; isHalfDay: boolean = false
   disabled: boolean = true; showHalfDay: boolean = false
-  selectedValue: string  
+  selectedValue: string; dis2:any;
   getDate2: any; fDate: any; sDate: any; today: any; leavedays: any; selected: any; tDate:any; test:any
   firstDate: any; secondDate: any; sundays: any; sundaySaturday:any; dayList: any
   date: any; month: any; year: any; getDate: any; leave_type: any; leave_reason: any
@@ -270,7 +270,9 @@ export class ApplyComponent implements OnInit, OnDestroy {
     }
   }
   Applyleave(stepper) {
-    this.dis = true
+    if (this.leave_reason !== null && this.leave_reason !== undefined){
+      this.dis2 = true
+    }
     var temp = localStorage.getItem("userName"), tmp: any
     tmp = {
       qci_id: temp,
