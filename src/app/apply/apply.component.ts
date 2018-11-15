@@ -283,7 +283,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
       leave_type: this.leave_type
     }
     this.applyLeave.push(tmp)
-    // this.api.applyLeave(tmp, stepper)
+    this.api.applyLeave(tmp, stepper)
   }
   ngOnDestroy() {
     this.unsubLoader.unsubscribe()

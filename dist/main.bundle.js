@@ -1118,7 +1118,7 @@ var ApplyComponent = /** @class */ (function () {
             leave_type: this.leave_type
         };
         this.applyLeave.push(tmp);
-        // this.api.applyLeave(tmp, stepper)
+        this.api.applyLeave(tmp, stepper);
     };
     ApplyComponent.prototype.ngOnDestroy = function () {
         this.unsubLoader.unsubscribe();
