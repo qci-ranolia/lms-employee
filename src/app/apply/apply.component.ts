@@ -28,7 +28,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
   unsubLoader: any; unsubGetEmployee: any; unsubGetHoliday: any; unsubMyLeaves: any
   snackBars(message:string,action:string){
     this.snackBar.open(message, action,{
-      duration: 3000,
+      duration:4000,
     })
   }
 
@@ -132,13 +132,8 @@ export class ApplyComponent implements OnInit, OnDestroy {
     })
     // check if already a restricted holiday
     this.restrictedDates.filter(l => {
-      if (this.getDate2.indexOf(l) == 0) {
+      if ( this.getDate2.indexOf(l) == 0 && this.ifLAL == 'rh' ) {
         this.snackBars("Note:", "Its a restricted holiday")
-      } else {
-        if (localStorage.getItem('rh') == 'rh'){
-          console.log(true)
-          localStorage.removeItem('rh')
-        }
       }
     })
     // check if leave dates are already in the current applications of the employee
@@ -208,7 +203,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
       this.leavedays = 0 // reset leaves
       this.leavedays = 1 + td // just count total days
       for ( let i = 0; i < this.dayList.length; i++ ){
-        // see if compulsory holiday is there ?? 
+        // see if compulsory holiday is there ??
         this.compulsoryDates.filter(k => {  
           if (this.dayList[i].indexOf(k) == 0) {
             this.cdm.push(this.dayList[i])
@@ -218,7 +213,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
         })
       }
       // subtract saturdays and sundays
-      if ( this.sundays > 0 ){
+      if ( this.sundays.length > 0 ){
         this.sundaySaturday = this.sundays.length
         this.leavedays -= this.sundaySaturday * 2
         this.sundaySaturday = 0 // reset
@@ -240,14 +235,21 @@ export class ApplyComponent implements OnInit, OnDestroy {
       this.showHalfDay = false // hide half day option
       this.condition = true
     }
-    else if (item == "rh"){
+    else if (item == "rh" && this.dayList !== undefined ){
       this.leavedays = 0
-      this.leavedays = 1
+      this.leavedays = 1 + td
+      // this.leavedays = 0
+      // this.leavedays = 1
+      this.dis = false
+      if (this.leavedays > 1){
+        this.snackBars("Note:", "You can only apply for one day in restricted holiday")
+        this.dis = true
+      }
     }
     for (let i = 0; i < a.length; i++) {
       if (item == a[i] && item !== 'od' && item !== 'rh') {
         if (this.leavedays > b[i].bal) {
-          this.api.snackBars("Note:", "Total applied days are less than your balance leave")
+          this.snackBars("Note:", "Total applied days are less than your balance leave")
           this.dis = true
         } else this.dis = false
       }
