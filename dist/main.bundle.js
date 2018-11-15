@@ -315,8 +315,7 @@ var ApiService = /** @class */ (function () {
         this.snackBar = snackBar;
         this.http = http;
         this.router = router;
-        // URL: string = "http://13.127.13.175:5000/"
-        this.URL = "http://192.168.15.219:5000/";
+        this.URL = "http://13.127.13.175:5000/";
         this.emitgetHoliday = new __WEBPACK_IMPORTED_MODULE_2__angular_core__["x" /* EventEmitter */]();
         this.emitgetEmployee = new __WEBPACK_IMPORTED_MODULE_2__angular_core__["x" /* EventEmitter */]();
         this.emitLogin = new __WEBPACK_IMPORTED_MODULE_2__angular_core__["x" /* EventEmitter */]();
@@ -1106,6 +1105,7 @@ var ApplyComponent = /** @class */ (function () {
         }
     };
     ApplyComponent.prototype.Applyleave = function (stepper) {
+        this.dis = true;
         var temp = localStorage.getItem("userName"), tmp;
         tmp = {
             qci_id: temp,

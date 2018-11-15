@@ -270,6 +270,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     }
   }
   Applyleave(stepper) {
+    this.dis = true
     var temp = localStorage.getItem("userName"), tmp: any
     tmp = {
       qci_id: temp,
