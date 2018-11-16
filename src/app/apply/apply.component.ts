@@ -23,7 +23,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
   getDate2: any; fDate: any; sDate: any; today: any; leavedays: any; selected: any; tDate:any; test:any
   firstDate: any; secondDate: any; sundays: any; sundaySaturday:any; dayList: any
   date: any; month: any; year: any; getDate: any; leave_type: any; leave_reason: any
-  ifLAL: any; toggleHalf: any; 
+  ifLAL: any; toggleHalf: any; dL_removal:any;
   compulsory: any = []; restricted: any = []; compulsoryDates: any = []; restrictedDates: any = []; rdm : any = []; cdm : any = []; applyLeave = new Array(); employee = new Array(); holidays: any = new Array(); leave = new Array()
   unsubLoader: any; unsubGetEmployee: any; unsubGetHoliday: any; unsubMyLeaves: any
   snackBars(message:string,action:string){
@@ -72,6 +72,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
       }
     })
   }
+
   ngOnInit() {
     this.tDate = this.minDate.getDate() // Get date
     this.month = this.minDate.getMonth() // Now get month
@@ -174,6 +175,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     if ( f !== s ) {
       temp.push(s.format("DD/MM/YYYY"))
     }
+    this.dayList = []
     this.dayList = temp
     
     // After running while(f<s) loop, reset firstdate to initial. Comment next line to see the effect
@@ -185,7 +187,23 @@ export class ApplyComponent implements OnInit, OnDestroy {
     
     if ( !( this.ifLAL == undefined ) ){
       this.ifLeavesAreLess(this.ifLAL)
-      if (this.ifLAL == 'cl' && this.isHalfDay) this.leavedays -= 0.5
+      if (this.ifLAL == 'cl' && this.isHalfDay) {
+        var dd = this.dayList
+        var cc = '28/11/2018'
+        for (let i = 0; i < this.dayList.length; i++){
+          if (cc == this.dayList[i] && this.dL_removal == false){
+            var index = this.dayList.indexOf(this.dayList[i])
+            if (index == 0){
+              this.dayList.splice(index, 1)
+              this.dL_removal = true
+            }
+            console.log(i)
+          }
+          console.log(i)
+        }
+        console.log(this.dayList)
+        this.leavedays -= 0.5
+      }
     }
   }
   disableSunDay = (d: Date): boolean => {
@@ -199,6 +217,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     // More functionality added here, not the right name of a function ;-p
     // Calculate leavedays, removing sundays & saturdays total count
     let td: number = moment(this.secondDate).diff(moment(this.firstDate), "days")
+
     if ( item == "cl" && this.dayList !== undefined){
       this.leavedays = 0 // reset leaves
       this.leavedays = 1 + td // just count total days
@@ -218,10 +237,29 @@ export class ApplyComponent implements OnInit, OnDestroy {
         this.leavedays -= this.sundaySaturday * 2
         this.sundaySaturday = 0 // reset
       }
+      // bad code...... optimised solution ???
+      var aa = [], bb = []
+      aa = this.dayList
+      bb = this.dayList
+      this.dayList = bb.concat(aa)
       // Half day concept
       this.disabled = false
       this.showHalfDay = true // show half day option
       if (this.condition == true && this.isHalfDay == true){
+        var dd = this.dayList
+        var cc = '28/11/2018'
+        for (let i = 0; i < this.dayList.length; i++){
+          if (cc == this.dayList[i] && this.dL_removal == false){
+            var index = this.dayList.indexOf(this.dayList[i])
+            if (index == 0){
+              this.dayList.splice(index, 1)
+              this.dL_removal = true
+            }
+            console.log(i)
+          }
+          console.log(i)
+        }
+        console.log(this.dayList)
         this.leavedays -= 0.5
         this.condition = false
       }
@@ -234,28 +272,33 @@ export class ApplyComponent implements OnInit, OnDestroy {
       this.disabled = true
       this.showHalfDay = false // hide half day option
       this.condition = true
+      this.dis = false
     }
-    else if (item == "rh" && this.dayList !== undefined ){
+    else if (item == "rh" && this.dayList !== undefined){
       this.leavedays = 0
       this.leavedays = 1 + td
-      // this.leavedays = 0
-      // this.leavedays = 1
-      this.dis = false
+      // check if already a restricted holiday
+      this.restrictedDates.filter(l => {
+        if (this.getDate2.indexOf(l) == 0){
+          this.snackBars("Note:", "Its a restricted holiday")
+          this.dis = false
+        }
+      })
       if (this.leavedays > 1){
-        this.snackBars("Note:", "You can only apply for one day in restricted holiday")
+        this.snackBars("Note:", "You can only apply for restricted holidays only")
         this.dis = true
       }
     }
-    for (let i = 0; i < a.length; i++) {
+    for (let i = 0; i < a.length; i++){
       if (item == a[i] && item !== 'od' && item !== 'rh') {
-        if (this.leavedays > b[i].bal) {
+        if (this.leavedays > b[i].bal){
           this.snackBars("Note:", "Total applied days are less than your balance leave")
           this.dis = true
         } else this.dis = false
       }
     }
-    if ( this.leavedays < 0.5 ) {
-      this.dis = true      
+    if (this.leavedays < 0.5){
+      this.dis = true
       this.leavedays = 0
       this.api.snackBars("Note:", "'Date from' can not preeced 'Date to'")
     }
@@ -263,6 +306,20 @@ export class ApplyComponent implements OnInit, OnDestroy {
   }
   halfDay() {
     if ( this.ifLAL == 'cl' && !this.isHalfDay ){
+      var dd = this.dayList
+      var cc = '28/11/2018'
+      for (let i = 0; i < this.dayList.length; i++){
+        if (cc == this.dayList[i] && this.dL_removal == false){
+          var index = this.dayList.indexOf(this.dayList[i])
+          if (index == 0){
+            this.dayList.splice(index, 1)
+            this.dL_removal = true
+          }
+          console.log(i)
+        }
+        console.log(i)
+      }
+      console.log(this.dayList)
       this.leavedays -= 0.5
     } else if (this.ifLAL == 'cl' && this.isHalfDay){
       if (this.condition && this.isHalfDay) this.condition = !this.condition
@@ -277,10 +334,10 @@ export class ApplyComponent implements OnInit, OnDestroy {
     tmp = {
       qci_id: temp,
       date_of_apply: this.today,
-      days:this.leavedays,
+      days: this.leavedays,
       date_from: this.fDate,
-      date_to:this.sDate,
-      day_list:this.dayList,
+      date_to: this.sDate,
+      day_list: this.dayList,
       leave_reason: this.leave_reason,
       leave_type: this.leave_type
     }
