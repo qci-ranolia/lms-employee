@@ -73,6 +73,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.unsubGetEmployees = this.api.emitgetEmployee.subscribe( r => {
       this.employee = r
+      console.log(this.employee)
       var lt = Object.keys(r)
       var rt = Object.values(r)
       for (let i = 22; i < lt.length; i++ ){
@@ -80,7 +81,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if ( rt[i][0] == 'reporting_officer') {
             this.ro = true
           }
-        } 
+        }
       }
     })
     this.unsubZeroLeaves = this.api.emitMyZero.subscribe( r => this.hide = false )
@@ -98,7 +99,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }, 800)
     
     // Do you really need this API to work with this small app???
-    /* this.unsubGetEmpCSV = this.api.emitgetEmpCSV.subscribe( e => {
+    /*
+    this.unsubGetEmpCSV = this.api.emitgetEmpCSV.subscribe( e => {
       this.emplCSV = e
       let i: any, j: any, k: any
       for ( i = 0; i < this.emplCSV.length; i++ ) {
@@ -113,7 +115,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.employeeLeave.push(this.temp1)
         this.temp1 = []
       }
-    }) */
+    })
+    */
 
     // if pending leave
     this.unsubInputOthers = this.api.emitInputOthers.subscribe( el => {

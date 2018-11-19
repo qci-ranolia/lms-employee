@@ -60,7 +60,8 @@ export class ApplyComponent implements OnInit, OnDestroy {
             m = this.month
           if (d < 10) this.date = "0" + d
           else this.date = d
-          if (m < 9) m++ && (this.month = "0" + m)
+          if (m < 9 && m > 0 ) m++ && (this.month = "0" + m)
+          else if ( m == 0 ) this.month = "01"
           else m++ && (this.month = m)
           this.today = String(this.date + "/" + this.month + "/" + this.year)
           this.holidays.push({ Today: "Today", Date: this.today })
@@ -122,7 +123,8 @@ export class ApplyComponent implements OnInit, OnDestroy {
     let d: number = this.date, m = this.month
     if (d < 10) this.date = "0" + d
     else this.date = d
-    if (m < 9) m++ && (this.month = "0" + m)
+    if (m < 9 && m > 0 ) m++ && (this.month = "0" + m)
+    else if ( m == 0 ) this.month = "01"
     else m++ && (this.month = m)
     // just some bad codes. Optimising.................../.
     this.getDate = String(this.year + "-" + this.month + "-" + this.date)
