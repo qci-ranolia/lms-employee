@@ -73,7 +73,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.unsubGetEmployees = this.api.emitgetEmployee.subscribe( r => {
       this.employee = r
-      console.log(this.employee)
       var lt = Object.keys(r)
       var rt = Object.values(r)
       for (let i = 22; i < lt.length; i++ ){
@@ -85,7 +84,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     })
     this.unsubZeroLeaves = this.api.emitMyZero.subscribe( r => this.hide = false )
-    this.unsubMyLeaves = this.api.emitMyLeaves.subscribe( r => this.leave = r )
+    this.unsubMyLeaves = this.api.emitMyLeaves.subscribe( r => {
+      this.leave = r
+    
+      console.log(r)
+    } )
 
     setTimeout(() => {
       $(function () {

@@ -18,7 +18,7 @@
   <div class="col-sm-8 float-left p-0">
     <h5 class="col-sm-12">Profile Status</h5>
     <div class="col-sm-12"><!-- h78 ovf-y-->
-      <div class="col-sm-12 p-0 bg-white rad-box">
+      <div class="col-sm-12 p-0 bg-white rad-box h555">
         <mat-card class="example-card" style="box-shadow:none;">
           <mat-card-header>
             <div mat-card-avatar class="example-header-image mr-3">{{employee.qci_id}}</div>
@@ -28,8 +28,8 @@
           <div class="col-sm-12 p-0">
               <div class="clearfix col-sm-12 p-0">
                 <div class="col-sm-4 float-left">Type of leave</div>
-                <div class="col-sm-4 float-left">Total</div>
                 <div class="col-sm-4 float-left">Balance</div>
+                <div class="col-sm-4 float-left">Total</div>
               </div>
               <div class="clearfix col-sm-12 p-0" *ngIf="employee.cl">
                 <mat-card-subtitle class="col-sm-4 float-left mt-1 mb-1">Casual leave</mat-card-subtitle>
@@ -70,7 +70,7 @@
 <div class="col-sm-12 p-0">
   <h5 class="col-sm-12" *ngIf="ro">Team Application's Status</h5>
   <div class="col-sm-12" *ngIf="ro"><!-- h78 ovf-y-->
-    <div class="col-sm-12 p-0 bg-white rad-box h52 ovf-y">
+    <div class="col-sm-12 p-0 bg-white rad-box h78 ovf-y">
       <mat-tab-group (selectedTabChange)="whichApplication($event)">
         <mat-tab label="New Applications">
           <div class="col-sm-12 bg-white pt-3 pb-2 d-inline-block rad-box">

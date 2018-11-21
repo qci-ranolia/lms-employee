@@ -17,15 +17,16 @@ export class ApplyComponent implements OnInit, OnDestroy {
   firstFormGroup: FormGroup; secondFormGroup: FormGroup
   minDate = new Date(); minDate2 = new Date()
   isLinear: boolean = true; loader: boolean = false; isFirstDateSelected: boolean = true; zeroHolidays: boolean = false
-  condition: boolean = false; dis: any = false; isHalfDay: boolean = false
-  disabled: boolean = true; showHalfDay: boolean = false
+  condition: boolean = false; scondition: boolean = false; dis: any = false; isHalfDay: boolean = false; issHalfDay: boolean = false;
+  disabled: boolean = true; sdisabled: boolean = true; showHalfDay: boolean = false; noSameDay: boolean = true
   selectedValue: string; dis2:any;
   getDate2: any; fDate: any; sDate: any; today: any; leavedays: any; selected: any; tDate:any; test:any
-  firstDate: any; secondDate: any; sundays: any; sundaySaturday:any; dayList: any
+  firstDate: any; secondDate: any; sundays: any; sundaySaturday:any; totalDays: any = []; dayList: any; filteredDayList: any = []; 
   date: any; month: any; year: any; getDate: any; leave_type: any; leave_reason: any
-  ifLAL: any; toggleHalf: any; dL_removal:any;
+  ifLAL: any; toggleHalf: any; dL_removal: boolean = false; sdL_removal: boolean = false;
   compulsory: any = []; restricted: any = []; compulsoryDates: any = []; restrictedDates: any = []; rdm : any = []; cdm : any = []; applyLeave = new Array(); employee = new Array(); holidays: any = new Array(); leave = new Array()
   unsubLoader: any; unsubGetEmployee: any; unsubGetHoliday: any; unsubMyLeaves: any
+  
   snackBars(message:string,action:string){
     this.snackBar.open(message, action,{
       duration:4000,
@@ -166,21 +167,18 @@ export class ApplyComponent implements OnInit, OnDestroy {
     // Calculate sundays/saturday between two days using MomentJS
     var f = moment(this.firstDate), s = moment(this.secondDate),
       sunday = 0,
-      r = [], c = f.clone(),
-      temp = []
+      r = [], c = f.clone()
     // calculate leave days list
     // Find all dates between two dates and push them in an array
+    this.totalDays = []
     while ( f < s || f == s ) {
-      temp.push(f.format("DD/MM/YYYY"))
+      this.totalDays.push(f.format("DD/MM/YYYY"))
       f.add(1, "day")
     }
     if ( f !== s ) {
-      temp.push(s.format("DD/MM/YYYY"))
+      this.totalDays.push(s.format("DD/MM/YYYY"))
     }
-    this.dayList = []
-    this.dayList = temp
-    
-    // After running while(f<s) loop, reset firstdate to initial. Comment next line to see the effect
+    // After running while(f < s) loop, reset firstdate to initial. Comment next line to see the effect
     f = moment(this.fDate)
     
     // Find all sunday/'s
@@ -189,21 +187,22 @@ export class ApplyComponent implements OnInit, OnDestroy {
     
     if ( !( this.ifLAL == undefined ) ){
       this.ifLeavesAreLess(this.ifLAL)
-      if (this.ifLAL == 'cl' && this.isHalfDay) {
-        var dd = this.dayList
-        var cc = '28/11/2018'
+      if (this.ifLAL == 'cl' && this.isHalfDay){
         for (let i = 0; i < this.dayList.length; i++){
-          if (cc == this.dayList[i] && this.dL_removal == false){
-            var index = this.dayList.indexOf(this.dayList[i])
-            if (index == 0){
-              this.dayList.splice(index, 1)
-              this.dL_removal = true
-            }
-            console.log(i)
+          if (this.fDate == this.dayList[i] && this.dL_removal == false){
+            this.dayList.splice(i, 1)
+            this.dL_removal = true
           }
-          console.log(i)
         }
-        console.log(this.dayList)
+        this.leavedays -= 0.5
+      }
+      if (this.ifLAL == 'cl' && this.issHalfDay){
+        for (let i = 0; i < this.dayList.length; i++){
+          if (this.sDate == this.dayList[i] && this.sdL_removal == false){
+            this.dayList.splice(i, 1)
+            this.sdL_removal = true
+          }
+        }
         this.leavedays -= 0.5
       }
     }
@@ -214,6 +213,8 @@ export class ApplyComponent implements OnInit, OnDestroy {
   }
   ifLeavesAreLess(item) {
     this.ifLAL = item
+    this.dayList = []
+    this.dayList = this.totalDays
     var a = Object.keys(this.employee),
       b = Object.values(this.employee) 
     // More functionality added here, not the right name of a function ;-p
@@ -221,49 +222,65 @@ export class ApplyComponent implements OnInit, OnDestroy {
     let td: number = moment(this.secondDate).diff(moment(this.firstDate), "days")
 
     if ( item == "cl" && this.dayList !== undefined){
+      if ( this.secondDate == this.firstDate ) this.noSameDay = false
+      else this.noSameDay = true
+      var rem_sun_date = []
       this.leavedays = 0 // reset leaves
-      this.leavedays = 1 + td // just count total days
+      this.filteredDayList = [] // reset list
+      // see if compulsory holiday is there ??
       for ( let i = 0; i < this.dayList.length; i++ ){
-        // see if compulsory holiday is there ??
         this.compulsoryDates.filter(k => {  
           if (this.dayList[i].indexOf(k) == 0) {
-            this.cdm.push(this.dayList[i])
-            this.leavedays -= this.cdm.length
-            this.cdm.length = 0
+            this.dayList.splice(i, 1)
           }
         })
       }
-      // subtract saturdays and sundays
+      // remove sundays and saturdays
+      for ( let i = 0; i < this.dayList.length; i++ ){
+        if ( this.sundays[i] !== undefined ){
+          rem_sun_date.push(this.sundays[i].format('DD/MM/YYYY'))
+          for ( let j = 0; j < this.dayList.length; j++ ) {
+            if ( rem_sun_date[i] == this.dayList[j] ){
+              this.filteredDayList.pop()
+            } else {
+              this.filteredDayList.push(this.dayList[j])
+            }
+          }
+        }
+      }
       if ( this.sundays.length > 0 ){
-        this.sundaySaturday = this.sundays.length
-        this.leavedays -= this.sundaySaturday * 2
-        this.sundaySaturday = 0 // reset
+        this.dayList = this.filteredDayList
       }
       // bad code...... optimised solution ???
       var aa = [], bb = []
       aa = this.dayList
       bb = this.dayList
       this.dayList = bb.concat(aa)
+      this.leavedays = this.dayList.length/2
+      
       // Half day concept
       this.disabled = false
+      this.sdisabled = false
       this.showHalfDay = true // show half day option
       if (this.condition == true && this.isHalfDay == true){
-        var dd = this.dayList
-        var cc = '28/11/2018'
         for (let i = 0; i < this.dayList.length; i++){
-          if (cc == this.dayList[i] && this.dL_removal == false){
-            var index = this.dayList.indexOf(this.dayList[i])
-            if (index == 0){
-              this.dayList.splice(index, 1)
-              this.dL_removal = true
-            }
-            console.log(i)
+          if (this.fDate == this.dayList[i] && this.dL_removal == false){
+            this.dayList.splice(i, 1)
+            this.dL_removal = true
           }
-          console.log(i)
         }
-        console.log(this.dayList)
         this.leavedays -= 0.5
         this.condition = false
+      }
+      if (this.scondition == true && this.issHalfDay == true){
+        for (let i = 0; i < this.dayList.length; i++){
+          if (this.sDate == this.dayList[i] && this.sdL_removal == false){
+            this.dayList.splice(i, 1)
+            this.sdL_removal = true
+          }
+        }
+        this.leavedays -= 0.5
+        this.scondition = false
       }
       // Warn user for not taking more than 5 leaves
       if ( this.leavedays > 5 ) this.api.snackBars("Note:", "Casual leaves must be less than 5")
@@ -271,14 +288,22 @@ export class ApplyComponent implements OnInit, OnDestroy {
     else if ( (item == "sl" || item == "pl" || item == "eol" || item == "ml" || item == "ptl" || item == "od") && this.dayList !== undefined ) {
       this.leavedays = 0
       this.leavedays = 1 + td
-      this.disabled = true
-      this.showHalfDay = false // hide half day option
       this.condition = true
+      this.scondition = true
+      this.disabled = true
+      this.sdisabled = true
+      this.showHalfDay = false // hide half day option
       this.dis = false
     }
     else if (item == "rh" && this.dayList !== undefined){
       this.leavedays = 0
       this.leavedays = 1 + td
+      this.condition = true
+      this.scondition = true
+      this.disabled = true
+      this.sdisabled = true
+      this.showHalfDay = false // hide half day option
+      this.dis = true
       // check if already a restricted holiday
       this.restrictedDates.filter(l => {
         if (this.getDate2.indexOf(l) == 0){
@@ -299,7 +324,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
         } else this.dis = false
       }
     }
-    if (this.leavedays < 0.5){
+    if ( this.leavedays < 0.5 ){
       this.dis = true
       this.leavedays = 0
       this.api.snackBars("Note:", "'Date from' can not preeced 'Date to'")
@@ -308,24 +333,50 @@ export class ApplyComponent implements OnInit, OnDestroy {
   }
   halfDay() {
     if ( this.ifLAL == 'cl' && !this.isHalfDay ){
-      var dd = this.dayList
-      var cc = '28/11/2018'
       for (let i = 0; i < this.dayList.length; i++){
-        if (cc == this.dayList[i] && this.dL_removal == false){
-          var index = this.dayList.indexOf(this.dayList[i])
-          if (index == 0){
-            this.dayList.splice(index, 1)
-            this.dL_removal = true
-          }
-          console.log(i)
+        if (this.fDate == this.dayList[i] && this.dL_removal == false){
+          this.dayList.splice(i, 1)
+          this.dL_removal = true
         }
-        console.log(i)
       }
-      console.log(this.dayList)
       this.leavedays -= 0.5
     } else if (this.ifLAL == 'cl' && this.isHalfDay){
-      if (this.condition && this.isHalfDay) this.condition = !this.condition
-      if (!this.condition) this.leavedays += 0.5
+      if (this.condition && this.isHalfDay) {
+        this.condition = !this.condition
+      }
+      if (!this.condition && this.leavedays < 5 ){
+        this.dis = false
+        this.dayList.push(this.fDate)
+        this.dL_removal = false
+        this.leavedays += 0.5
+      } else {
+        this.dis = true
+        this.api.snackBars("Note:", "Casual leaves must be less than 5")
+      }
+    }
+  }
+  shalfDay() {
+    if ( this.ifLAL == 'cl' && !this.issHalfDay ){
+      for (let i = 0; i < this.dayList.length; i++){
+        if (this.sDate == this.dayList[i] && this.sdL_removal == false){
+          this.dayList.splice(i, 1)
+          this.sdL_removal = true
+        }
+    }
+      this.leavedays -= 0.5
+    } else if (this.ifLAL == 'cl' && this.issHalfDay){
+      if (this.scondition && this.issHalfDay) {
+        this.scondition = !this.scondition
+      }
+      if (!this.scondition && this.leavedays < 5 ){
+        this.dis = false
+        this.dayList.push(this.sDate)
+        this.sdL_removal = false
+        this.leavedays += 0.5
+      } else {
+        this.dis = true
+        this.api.snackBars("Note:", "Casual leaves must be less than 5")
+      }
     }
   }
   Applyleave(stepper) {
