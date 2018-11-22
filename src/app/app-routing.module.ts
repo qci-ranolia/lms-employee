@@ -19,6 +19,7 @@ export const routes: Routes = [
     ]
   },
   { path: 'login', component: LoginComponent },
+  { path: 'login?email=rep', component: LoginComponent },
   { path: '**', redirectTo: '/login' }
 ]
 

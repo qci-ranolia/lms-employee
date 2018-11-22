@@ -67,9 +67,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
   unsubApprovedOwn: any
   unsubCancelledOthers: any
   unsubCancelledOwn: any
+
   constructor( private lms:LmsService, private api:ApiService, public datepipe:DatePipe, public dialog:MatDialog ){
     this.unsubLoader = this.lms.emitsload.subscribe( el => this.loader = el )
     this.lms.showLoader()
+    setTimeout(() => {
+      $(function () {
+        this.table = $('#table_id').DataTable({
+          paging: true,
+          searching: true,
+          ordering: true,
+          scrollY: 335
+        })
+      })
+    }, 400)
 
     this.unsubGetEmployees = this.api.emitgetEmployee.subscribe( r => {
       this.employee = r
@@ -84,42 +95,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     })
     this.unsubZeroLeaves = this.api.emitMyZero.subscribe( r => this.hide = false )
-    this.unsubMyLeaves = this.api.emitMyLeaves.subscribe( r => {
-      this.leave = r
-    
-      console.log(r)
-    } )
-
-    setTimeout(() => {
-      $(function () {
-        let user = $('#table_id').DataTable({
-          paging: true,
-          searching: true,
-          ordering: true,
-          scrollY: 335
-        })
-      })
-    }, 800)
-    
-    // Do you really need this API to work with this small app???
-    /*
-    this.unsubGetEmpCSV = this.api.emitgetEmpCSV.subscribe( e => {
-      this.emplCSV = e
-      let i: any, j: any, k: any
-      for ( i = 0; i < this.emplCSV.length; i++ ) {
-        for ( j = 1; j <= 12; j++ ) {
-          k = j
-          if ( j < 10 ) {
-            j = '0' + j
-          }
-          this.temp1.push(this.emplCSV[i][j])
-          j = k
-        }
-        this.employeeLeave.push(this.temp1)
-        this.temp1 = []
-      }
-    })
-    */
+    this.unsubMyLeaves = this.api.emitMyLeaves.subscribe( r => this.leave = r )
 
     // if pending leave
     this.unsubInputOthers = this.api.emitInputOthers.subscribe( el => {
@@ -173,7 +149,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     })
   }
   
-  public ngOnInit() {
+  ngOnInit() {
     this.api.getEmployee()
     this.api.myLeaves()
     // Do you really need this here ??
@@ -235,7 +211,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.case = this.cancelledLeave
     }
   }
-
 
   appInfo(application_id, qci_id, leave_type) {
     localStorage.setItem('qci_id', qci_id)

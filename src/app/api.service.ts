@@ -6,8 +6,8 @@ import 'rxjs/add/operator/map'
 
 @Injectable()
 export class ApiService {
-  URL: string = "http://13.127.13.175:5000/"
-  // URL: string = "http://192.168.15.219:5000/"
+  // URL: string = "http://13.127.13.175:5000/"
+  URL: string = "http://192.168.15.219:5000/"
 
   token: string // Useful in Authentication
   headers: Headers // Useful when backend and frontend have different IP's
@@ -65,13 +65,6 @@ export class ApiService {
           this.opts = new RequestOptions() // how to check if front end have issue or backend, without even using postman!! Am i correct ?
           this.opts.headers = this.headers
           
-
-          console.log(response)
-          console.log(this.token)
-          console.log(this.headers)
-          console.log(this.opts)
-          
-
           this.getEmployee()
           this.myLeaves()
           this.getEOL()
