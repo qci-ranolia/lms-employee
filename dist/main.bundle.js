@@ -1282,6 +1282,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var AuthService = /** @class */ (function () {
     function AuthService(router) {
         this.router = router;
+        if (router.url == '/login?email=rep') {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('qci_id');
+        }
     }
     AuthService.prototype.canActivate = function () {
         if (localStorage.getItem('token') != null) {
@@ -2058,11 +2063,6 @@ var LoginComponent = /** @class */ (function () {
         this.api = api;
         this.router = router;
         this.route = route;
-        if (router.url == '/login?email=rep') {
-            localStorage.removeItem('token');
-            localStorage.removeItem('userName');
-            localStorage.removeItem('qci_id');
-        }
     }
     LoginComponent.prototype.isLogin = function () {
         localStorage.setItem('userName', this.uname);
