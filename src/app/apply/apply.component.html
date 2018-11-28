@@ -101,13 +101,21 @@
                 <input matInput placeholder="Total Applied Dates" :value="{{leavedays}}" disabled>
               </mat-form-field>
             </div>
-            <div class="col-sm-6 col-md-3 float-left pt-2" *ngIf="showHalfDay">
+            <div class="col-sm-6 col-md-3 float-left pt-2" *ngIf="showHalfDay && clAct">
               <br />
               <mat-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="isHalfDay" (click)="halfDay()" [disabled]="disabled">{{this.firstDate}}</mat-checkbox>
             </div>
-            <div class="col-sm-6 col-md-3 float-left pt-2" *ngIf="showHalfDay && noSameDay">
+            <div class="col-sm-6 col-md-3 float-left pt-2" *ngIf="showHalfDay && clAct && noSameDay">
               <br />
               <mat-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="issHalfDay" (click)="shalfDay()" [disabled]="sdisabled">{{this.secondDate}}</mat-checkbox>
+            </div>
+            <div class="col-sm-6 col-md-3 float-left pt-2" *ngIf="showHalfDaySL && slAct">
+              <br />
+              <mat-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="isHalfDaySL" (click)="halfDaySL()" [disabled]="disabledSL">{{this.firstDate}}</mat-checkbox>
+            </div>
+            <div class="col-sm-6 col-md-3 float-left pt-2" *ngIf="showHalfDaySL && slAct && noSameDaySL">
+              <br />
+              <mat-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="issHalfDaySL" (click)="shalfDaySL()" [disabled]="sdisabledSL">{{this.secondDate}}</mat-checkbox>
             </div>
             <div class="clearfix pt-4"></div>
             <div class="col-sm-6 col-md-4 float-left mb-3 mt-4">
