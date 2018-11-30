@@ -95,8 +95,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     })
     this.unsubZeroLeaves = this.api.emitMyZero.subscribe( r => this.hide = false )
-    this.unsubMyLeaves = this.api.emitMyLeaves.subscribe( r => this.leave = r )
-
+    this.unsubMyLeaves = this.api.emitMyLeaves.subscribe( r => {
+      this.leave = r.reverse()
+    })
     // if pending leave
     this.unsubInputOthers = this.api.emitInputOthers.subscribe( el => {
       if ( this.ro == true ){

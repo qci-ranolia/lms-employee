@@ -1,15 +1,16 @@
 .today {
-    color:blue
+    color:blue;
 } .material-icons:hover, .material-icons {
     cursor:pointer;
-    font-size:15px
-}
-.table thead tr th{
-    font-size: 0.8rem;
-}
-.app-status .mat-card-content,.app-status .mat-card-header .mat-card-title,.app-status .mat-card-subtitle{
+    font-size:15px;
+} .table thead tr th, .table tbody tr td {
+    font-size:0.8rem;
+} .app-status .mat-card-content, .app-status .mat-card-header .mat-card-title, .app-status .mat-card-subtitle {
     font-size:13px;
-}
-.app-status .mat-card{
+} .app-status .mat-card {
     padding:10px;
+} .brder {
+    border-right:1px solid #e4e4e4;
+} .mat-tab-label-content {
+    font-size:13px;
 }

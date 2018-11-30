@@ -32,6 +32,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
   unsubLoader: any; unsubGetEmployee: any; unsubGetHoliday: any; unsubMyLeaves: any
   clAct : boolean = true
   slAct : boolean = true
+  filtered : any = []
   
   snackBars(message:string,action:string){
     this.snackBar.open(message, action,{
@@ -138,7 +139,10 @@ export class ApplyComponent implements OnInit, OnDestroy {
     this.getDate2 = String(this.date + "/" + this.month + "/" + this.year)
     // check if already a compulsory holiday
     this.compulsoryDates.filter(k => {
-      if (this.getDate2.indexOf(k) == 0) this.snackBars("Note:", "Already a holiday")
+      if (this.getDate2.indexOf(k) == 0) {
+        this.snackBars("Note:", "Already a holiday")
+        this.dis = true
+      }
     })
     // check if already a restricted holiday
     this.restrictedDates.filter(l => {
@@ -162,7 +166,11 @@ export class ApplyComponent implements OnInit, OnDestroy {
         arr.push(s)
         arr.filter(k => {
           // is selected date already in the applied application/s list, if index == 0 :=> we found the selected date in already applied application/s(pending,rejected&approved) dates
-          if ( this.getDate2.indexOf(k) == 0 ) this.snackBars( "Note:", "Your one of previous application has same date" )
+          // this.dis = false
+          if ( this.getDate2.indexOf(k) == 0 ) {
+            this.snackBars( "Note:", "Your one of previous application has same date" )
+            // this.dis = true
+          }
         })
       } // else console.log(this.leave[i].leave_status) // Rejected. Right ??
     }
@@ -246,8 +254,8 @@ export class ApplyComponent implements OnInit, OnDestroy {
   ifLeavesAreLess(item) {
     this.ifLAL = item
     this.dayList = []
-    this.dayList.push(this.totalDays) 
-    console.log(this.totalDays)
+    this.dayList = this.totalDays 
+    this.dis = false
     var a = Object.keys(this.employee),
       b = Object.values(this.employee) 
     // More functionality added here, not the right name of a function ;-p
@@ -263,33 +271,47 @@ export class ApplyComponent implements OnInit, OnDestroy {
       this.leavedays = 0 // reset leaves
       this.filteredDayList = [] // reset list
       
-      // see if compulsory holiday is there ??
-      for ( let i = 0; i < this.dayList.length; i++ ){
-        this.compulsoryDates.filter(k => {  
-          if (this.dayList[i].indexOf(k) == 0) {
-            this.dayList.splice(i, 1)
-          }
-        })
-      }
+      // // see if compulsory holiday is there ??
+      // for ( let i = 0; i < this.dayList.length; i++ ){
+      //   this.compulsoryDates.filter(k => {  
+      //     if (this.dayList[i].indexOf(k) == 0) {
+      //       this.dayList.splice(i, 1)
+      //     }
+      //   })
+      // }
       // remove sundays and saturdays
-      for ( let i = 0; i < this.dayList.length; i++ ){
-        if ( this.sundays[i] !== undefined ){
-          rem_sun_date.push(this.sundays[i].format('DD/MM/YYYY'))
-          for ( let j = 0; j < this.dayList.length; j++ ) {
-            if ( rem_sun_date[i] == this.dayList[j] ){
-              this.filteredDayList.pop()
-            } else {
-              this.filteredDayList.push(this.dayList[j])
+      for (let i = 0; i < this.dayList.length; i++){
+        let j = 0, k = 0, l = null
+        if ( this.sundays[i] !== undefined){
+            rem_sun_date.push(this.sundays[i].format('DD/MM/YYYY'))
+            // if ( l !== null ) k = l
+            for ( j = k; j < this.dayList.length; j++ ) {
+                if ( rem_sun_date[i] !== this.dayList[j] ){
+                    this.filteredDayList.push(this.dayList[j])
+                } else {
+                    this.filteredDayList.pop()
+                    // l = j + 1
+                    // break
+                }
             }
-          }
         }
       }
-      console.log(this.filteredDayList)
-      console.log(this.dayList)
-      console.log(this.totalDays)
+      // this.dis = false
       if ( this.sundays.length > 0 ){
-        this.dayList = this.filteredDayList
+        if (this.sundays.length > 1) this.dis = true
+            this.dayList = this.filteredDayList
       }
+      // see if compulsory holiday is there ??
+      for ( let i = 0; i < this.dayList.length; i++ ){
+        this.compulsoryDates.filter(k => { 
+            if (this.dayList[i].indexOf(k) == 0) {
+                this.filtered = this.dayList.filter( (value, index, arr) => {
+                    return index !== i
+                })
+            }
+        })
+      }
+      if (this.filtered.length > 0) this.dayList = this.filtered
       // bad code...... optimised solution ???
       var aa = [], bb = []
       aa = this.dayList
@@ -322,7 +344,11 @@ export class ApplyComponent implements OnInit, OnDestroy {
         this.scondition = false
       }
       // Warn user for not taking more than 5 leaves
-      if ( this.leavedays > 5 ) this.api.snackBars("Note:", "Casual leaves must be less than 5")
+      if ( this.leavedays > 5 ) {
+        this.api.snackBars("Note:", "Casual leaves must be less than 5")
+        this.leavedays = 'NaN'
+        this.dis = true
+      }
     }
     else if ( ( item == "pl" || item == "eol" || item == "ml" || item == "ptl" || item == "od") && this.dayList !== undefined ) {
       this.leavedays = 0
@@ -370,12 +396,10 @@ export class ApplyComponent implements OnInit, OnDestroy {
       if ( this.secondDate == this.firstDate ) this.noSameDaySL = false
       else this.noSameDaySL = true
       
-      var ccc = [], ddd = []
-      this.dayList = []
-      this.dayList = this.totalDays
-      ccc = this.dayList
-      ddd = this.dayList
-      this.dayList = ccc.concat(ddd)
+      var aa = [], bb = []
+      aa = this.dayList
+      bb = this.dayList
+      this.dayList = aa.concat(bb)
       this.leavedays = this.dayList.length
       
       // Half day concept
@@ -408,13 +432,13 @@ export class ApplyComponent implements OnInit, OnDestroy {
         if (this.leavedays > b[i].bal){
           this.snackBars("Note:", "Total applied days are less than your balance leave")
           this.dis = true
-        } else this.dis = false
+        }
       }
     }
     if ( this.leavedays < 0.5 ){
-      this.dis = true
       this.leavedays = 0
       this.api.snackBars("Note:", "'Date from' can not preeced 'Date to'")
+      this.dis = true
     }
     // else this.dis = false
   }
@@ -524,7 +548,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
       leave_type: this.leave_type
     }
     this.applyLeave.push(tmp)
-    // this.api.applyLeave(tmp, stepper)
+    this.api.applyLeave(tmp, stepper)
   }
   ngOnDestroy() {
     this.unsubLoader.unsubscribe()

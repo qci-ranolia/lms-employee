@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 
 export class NavComponent implements OnInit {
   
-  loader : boolean = false
+  loader:boolean = false
   constructor( private lms: LmsService, private router: Router ){
     this.lms.emitsload.subscribe( el => this.loader = el )
   }

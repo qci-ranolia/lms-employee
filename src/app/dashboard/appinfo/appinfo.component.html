@@ -20,6 +20,31 @@
       </strong>
       <small class="d-block">{{dialogData.email_id}}</small>
     </div>
+    <div class="col-sm-6">
+      <strong class="text-muted">
+        <small class="d-block">Leave type</small>
+      </strong>
+      <small class="d-block" *ngIf="dialogData.leave_type == 'cl'">Casual leave</small>
+      <small class="d-block" *ngIf="dialogData.leave_type == 'sl'">Sick leave</small>
+      <small class="d-block" *ngIf="dialogData.leave_type == 'pl'">Privileged leave</small>
+      <small class="d-block" *ngIf="dialogData.leave_type == 'ptl'">Paternity leave</small>
+      <small class="d-block" *ngIf="dialogData.leave_type == 'ml'">Maternity leave</small>
+      <small class="d-block" *ngIf="dialogData.leave_type == 'rh'">Restricted Holiday</small>
+    </div>
+  </mat-list-item>
+  <mat-list-item class="mb-3">
+    <div class="col-sm-6">
+      <strong class="text-muted">
+        <small class="d-block">Leave applied on</small>
+      </strong>
+      <small class="d-block">{{dialogData.date_of_apply}}</small>
+    </div>
+    <div class="col-sm-6">
+      <strong class="text-muted">
+        <small class="d-block">Leave dates</small>
+      </strong>
+      <small class="d-block">{{dialogData.date_from}}-{{dialogData.date_to}}</small>
+    </div>
   </mat-list-item>
   <mat-progress-bar class="clearfix pos-abs" mode="indeterminate" *ngIf="proBar"></mat-progress-bar>
 </mat-list>
