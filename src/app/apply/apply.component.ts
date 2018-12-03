@@ -186,7 +186,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     // Find all dates between two dates and push them in an array
     this.totalDays = []
     while ( f < s || f == s ) {
-      this.totalDays.push(f.format("DD/MM/YYYY"))
+      // this.totalDays.push(f.format("DD/MM/YYYY"))
       f.add(1, "day")
     }
     if ( f !== s ) {
@@ -206,44 +206,60 @@ export class ApplyComponent implements OnInit, OnDestroy {
         this.slAct = false
         for (let i = 0; i < this.dayList.length; i++){
           if (this.fDate == this.dayList[i] && this.dL_removal == false){
-            this.dayList.splice(i, 1)
+            var xd = this.dayList.filter( (value, index, arr) => {
+              return index !== i
+            })
+            this.dayList = []
+            this.dayList = xd
+            this.leavedays = this.dayList.length/2
             this.dL_removal = true
           }
         }
-        this.leavedays -= 0.5
       }
       if (this.ifLAL == 'cl' && this.issHalfDay){
         this.clAct = true
         this.slAct = false
         for (let i = 0; i < this.dayList.length; i++){
           if (this.sDate == this.dayList[i] && this.sdL_removal == false){
-            this.dayList.splice(i, 1)
+            var xd = this.dayList.filter( (value, index, arr) => {
+              return index !== i
+            })
+            this.dayList = []
+            this.dayList = xd
+            this.leavedays = this.dayList.length/2
             this.sdL_removal = true
           }
         }
-        this.leavedays -= 0.5
       }
       if (this.ifLAL == 'sl' && this.isHalfDaySL){
         this.clAct = false
         this.slAct = true
         for (let i = 0; i < this.dayList.length; i++){
           if (this.fDate == this.dayList[i] && this.dL_removal_SL == false){
-            this.dayList.splice(i, 1)
+            var xd = this.dayList.filter( (value, index, arr) => {
+              return index !== i
+            })
+            this.dayList = []
+            this.dayList = xd
+            this.leavedays = this.dayList.length
             this.dL_removal_SL = true
           }
         }
-        this.leavedays -= 1
       }
       if (this.ifLAL == 'sl' && this.issHalfDaySL){
         this.clAct = false
         this.slAct = true
         for (let i = 0; i < this.dayList.length; i++){
           if (this.sDate == this.dayList[i] && this.sdL_removal_SL == false){
-            this.dayList.splice(i, 1)
+            var xd = this.dayList.filter( (value, index, arr) => {
+              return index !== i
+            })
+            this.dayList = []
+            this.dayList = xd
+            this.leavedays = this.dayList.length
             this.sdL_removal_SL = true
           }
         }
-        this.leavedays -= 1
       }
     }
   }
@@ -265,20 +281,10 @@ export class ApplyComponent implements OnInit, OnDestroy {
     if ( item == "cl" && this.dayList !== undefined){
       this.clAct = true
       this.slAct = false
-      if ( this.secondDate == this.firstDate ) this.noSameDay = false
-      else this.noSameDay = true
       var rem_sun_date = []
       this.leavedays = 0 // reset leaves
       this.filteredDayList = [] // reset list
       
-      // // see if compulsory holiday is there ??
-      // for ( let i = 0; i < this.dayList.length; i++ ){
-      //   this.compulsoryDates.filter(k => {  
-      //     if (this.dayList[i].indexOf(k) == 0) {
-      //       this.dayList.splice(i, 1)
-      //     }
-      //   })
-      // }
       // remove sundays and saturdays
       for (let i = 0; i < this.dayList.length; i++){
         let j = 0, k = 0, l = null
@@ -326,27 +332,88 @@ export class ApplyComponent implements OnInit, OnDestroy {
       if (this.condition == true && this.isHalfDay == true){
         for (let i = 0; i < this.dayList.length; i++){
           if (this.fDate == this.dayList[i] && this.dL_removal == false){
-            this.dayList.splice(i, 1)
+            var xd = this.dayList.filter( (value, index, arr) => {
+              return index !== i
+            })
+            this.dayList = []
+            this.dayList = xd
+            this.leavedays = this.dayList.length/2
             this.dL_removal = true
           }
         }
-        this.leavedays -= 0.5
         this.condition = false
       }
       if (this.scondition == true && this.issHalfDay == true){
         for (let i = 0; i < this.dayList.length; i++){
           if (this.sDate == this.dayList[i] && this.sdL_removal == false){
-            this.dayList.splice(i, 1)
+            var xd = this.dayList.filter( (value, index, arr) => {
+              return index !== i
+            })
+            this.dayList = []
+            this.dayList = xd
+            this.leavedays = this.dayList.length/2
             this.sdL_removal = true
           }
         }
-        this.leavedays -= 0.5
         this.scondition = false
+      }
+      if ( (this.secondDate == this.firstDate) && this.issHalfDay == true ) {
+        for (let i = 0; i < this.dayList.length; i++){
+          if (this.sDate == this.dayList[i]){
+            var xd = this.dayList.filter( (value, index, arr) => {
+              return index !== i
+            })
+          }
+        }
+        this.dayList = []
+        this.dayList = xd
+        this.leavedays = this.dayList.length/2
+        this.noSameDay = false
+      } else if ( (this.secondDate == this.firstDate) && this.issHalfDay == false ){
+        if ( (this.secondDate == this.firstDate) && this.isHalfDay == true ){
+          for (let i = 0; i < this.dayList.length; i++){
+            if (this.fDate == this.dayList[i]){
+              var xd = this.dayList.filter( (value, index, arr) => {
+                return index !== i
+              })
+            }
+          }
+          this.dayList = []
+          this.dayList = xd
+          this.leavedays = this.dayList.length/2
+        }
+        this.noSameDay = false
+      } else {
+        if ( this.isHalfDay == true ) {
+          for (let i = 0; i < this.dayList.length; i++){
+            if (this.fDate == this.dayList[i]){
+              var xd = this.dayList.filter( (value, index, arr) => {
+                return index !== i
+              })
+            }
+          }
+          this.dayList = []
+          this.dayList = xd
+          this.leavedays = this.dayList.length/2
+        }
+        if ( this.issHalfDay == true ) {
+          for (let i = 0; i < this.dayList.length; i++){
+            if (this.sDate == this.dayList[i]){
+              var xd = this.dayList.filter( (value, index, arr) => {
+                return index !== i
+              })
+            }
+          }
+          this.dayList = []
+          this.dayList = xd
+          this.leavedays = this.dayList.length/2
+        }
+        this.noSameDay = true
       }
       // Warn user for not taking more than 5 leaves
       if ( this.leavedays > 5 ) {
         this.api.snackBars("Note:", "Casual leaves must be less than 5")
-        this.leavedays = 'NaN'
+        this.leavedays = 'N.A.'
         this.dis = true
       }
     }
@@ -393,8 +460,6 @@ export class ApplyComponent implements OnInit, OnDestroy {
     } else if ( item == "sl" && this.dayList !== undefined ) {
       this.clAct = false
       this.slAct = true
-      if ( this.secondDate == this.firstDate ) this.noSameDaySL = false
-      else this.noSameDaySL = true
       
       var aa = [], bb = []
       aa = this.dayList
@@ -409,22 +474,83 @@ export class ApplyComponent implements OnInit, OnDestroy {
       if (this.conditionSL == true && this.isHalfDaySL == true){
         for (let i = 0; i < this.dayList.length; i++){
           if (this.fDate == this.dayList[i] && this.dL_removal_SL == false){
-            this.dayList.splice(i, 1)
+            var xd = this.dayList.filter( (value, index, arr) => {
+              return index !== i
+            })
+            this.dayList = []
+            this.dayList = xd
+            this.leavedays = this.dayList.length
             this.dL_removal_SL = true
           }
         }
-        this.leavedays -= 1
         this.conditionSL = false
       }
       if (this.sconditionSL == true && this.issHalfDaySL == true){
         for (let i = 0; i < this.dayList.length; i++){
           if (this.sDate == this.dayList[i] && this.sdL_removal_SL == false){
-            this.dayList.splice(i, 1)
+            var xd = this.dayList.filter( (value, index, arr) => {
+              return index !== i
+            })
+            this.dayList = []
+            this.dayList = xd
+            this.leavedays = this.dayList.length
             this.sdL_removal_SL = true
           }
         }
-        this.leavedays -= 1
         this.sconditionSL = false
+      }
+      if ( (this.secondDate == this.firstDate) && this.issHalfDaySL == true ) {
+        for (let i = 0; i < this.dayList.length; i++){
+          if (this.sDate == this.dayList[i]){
+            var xd = this.dayList.filter( (value, index, arr) => {
+              return index !== i
+            })
+          }
+        }
+        this.dayList = []
+        this.dayList = xd
+        this.leavedays = this.dayList.length
+        this.noSameDaySL = false
+      } else if ( (this.secondDate == this.firstDate) && this.issHalfDaySL == false ) {
+        if ( (this.secondDate == this.firstDate) && this.isHalfDaySL == true ){
+          for (let i = 0; i < this.dayList.length; i++){
+            if (this.fDate == this.dayList[i]){
+              var xd = this.dayList.filter( (value, index, arr) => {
+                return index !== i
+              })
+            }
+          }
+          this.dayList = []
+          this.dayList = xd
+          this.leavedays = this.dayList.length
+        }
+        this.noSameDaySL = false
+      } else {
+        if (this.isHalfDaySL == true ) {
+          for (let i = 0; i < this.dayList.length; i++){
+            if (this.fDate == this.dayList[i]){
+              var xd = this.dayList.filter( (value, index, arr) => {
+                return index !== i
+              })
+            }
+          }
+          this.dayList = []
+          this.dayList = xd
+          this.leavedays = this.dayList.length
+        }
+        if (this.issHalfDaySL == true ) {
+          for (let i = 0; i < this.dayList.length; i++){
+            if (this.sDate == this.dayList[i]){  
+              var xd = this.dayList.filter( (value, index, arr) => {
+                return index !== i
+              })
+            }
+          }
+          this.dayList = []
+          this.dayList = xd
+          this.leavedays = this.dayList.length
+        }
+        this.noSameDaySL = true
       }
     }
     for (let i = 0; i < a.length; i++){
@@ -446,11 +572,15 @@ export class ApplyComponent implements OnInit, OnDestroy {
     if ( this.ifLAL == 'cl' && !this.isHalfDay ){
       for (let i = 0; i < this.dayList.length; i++){
         if (this.fDate == this.dayList[i] && this.dL_removal == false){
-          this.dayList.splice(i, 1)
+          var xd = this.dayList.filter( (value, index, arr) => {
+            return index !== i
+          })
+          this.dayList = []
+          this.dayList = xd
+          this.leavedays = this.dayList.length/2
           this.dL_removal = true
         }
       }
-      this.leavedays -= 0.5
     } else if (this.ifLAL == 'cl' && this.isHalfDay){
       if (this.condition && this.isHalfDay) {
         this.condition = !this.condition
@@ -459,7 +589,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
         this.dis = false
         this.dayList.push(this.fDate)
         this.dL_removal = false
-        this.leavedays += 0.5
+        this.leavedays = this.dayList.length/2
       } else {
         this.dis = true
         this.api.snackBars("Note:", "Casual leaves must be less than 5")
@@ -470,11 +600,15 @@ export class ApplyComponent implements OnInit, OnDestroy {
     if ( this.ifLAL == 'cl' && !this.issHalfDay ){
       for (let i = 0; i < this.dayList.length; i++){
         if (this.sDate == this.dayList[i] && this.sdL_removal == false){
-          this.dayList.splice(i, 1)
+          var xd = this.dayList.filter( (value, index, arr) => {
+            return index !== i
+          })
+          this.dayList = []
+          this.dayList = xd
+          this.leavedays = this.dayList.length/2
           this.sdL_removal = true
         }
-    }
-      this.leavedays -= 0.5
+      }
     } else if (this.ifLAL == 'cl' && this.issHalfDay){
       if (this.scondition && this.issHalfDay) {
         this.scondition = !this.scondition
@@ -483,7 +617,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
         this.dis = false
         this.dayList.push(this.sDate)
         this.sdL_removal = false
-        this.leavedays += 0.5
+        this.leavedays = this.dayList.length/2
       } else {
         this.dis = true
         this.api.snackBars("Note:", "Casual leaves must be less than 5")
@@ -494,11 +628,15 @@ export class ApplyComponent implements OnInit, OnDestroy {
     if ( this.ifLAL == 'sl' && !this.isHalfDaySL ){
       for (let i = 0; i < this.dayList.length; i++){
         if (this.fDate == this.dayList[i] && this.dL_removal_SL == false){
-          this.dayList.splice(i, 1)
+          var xd = this.dayList.filter( (value, index, arr) => {
+            return index !== i
+          })
+          this.dayList = []
+          this.dayList = xd
+          this.leavedays = this.dayList.length
           this.dL_removal_SL = true
         }
       }
-      this.leavedays -= 1
     } else if (this.ifLAL == 'sl' && this.isHalfDaySL){
       if (this.conditionSL && this.isHalfDaySL) {
         this.conditionSL = !this.conditionSL
@@ -507,7 +645,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
         this.dis = false
         this.dayList.push(this.fDate)
         this.dL_removal_SL = false
-        this.leavedays += 1
+        this.leavedays = this.dayList.length
       }
     }
   }
@@ -515,11 +653,15 @@ export class ApplyComponent implements OnInit, OnDestroy {
     if ( this.ifLAL == 'sl' && !this.issHalfDaySL ){
       for (let i = 0; i < this.dayList.length; i++){
         if (this.sDate == this.dayList[i] && this.sdL_removal_SL == false){
-          this.dayList.splice(i, 1)
+          var xd = this.dayList.filter( (value, index, arr) => {
+            return index !== i
+          })
+          this.dayList = []
+          this.dayList = xd
+          this.leavedays = this.dayList.length
           this.sdL_removal_SL = true
         }
-    }
-      this.leavedays -= 1
+      }
     } else if (this.ifLAL == 'sl' && this.issHalfDaySL){
       if (this.sconditionSL && this.issHalfDaySL) {
         this.sconditionSL = !this.sconditionSL
@@ -528,7 +670,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
         this.dis = false
         this.dayList.push(this.sDate)
         this.sdL_removal_SL = false
-        this.leavedays += 1
+        this.leavedays = this.dayList.length
       }
     }
   }
