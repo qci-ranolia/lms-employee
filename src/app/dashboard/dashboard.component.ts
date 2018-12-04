@@ -162,14 +162,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   simplyfiData() {
-    if (!(this.cmn.length > 0)) this.restHide = false
+    if ( !(this.cmn.length > 0) ) this.restHide = false
     else {
       this.restHide = true
       var i = this.cmn.length
-      for (var j = 0; j < i; j++) {
+      for ( var j = 0; j < i; j++ ) {
         this.cmn[j].info.map(r => {
           // delete this.cmn[j].info[0].application_id
-          var t = Object.assign(this.cmn[j], r)
+          var t = Object.assign( this.cmn[j], r )
           delete this.cmn[j].info
         })
       }

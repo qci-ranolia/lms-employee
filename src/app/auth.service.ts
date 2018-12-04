@@ -4,6 +4,7 @@ import { Router, CanActivate } from '@angular/router'
 @Injectable()
 export class AuthService implements CanActivate {
   constructor(private router: Router) {
+    
     if ( router.url == '/login?email=rep' ){
       localStorage.removeItem('token')
       localStorage.removeItem('userName')
@@ -18,5 +19,7 @@ export class AuthService implements CanActivate {
     this.router.navigate(['/login'])
     return false
   }
+
+  
   
 }

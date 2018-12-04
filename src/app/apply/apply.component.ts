@@ -66,12 +66,12 @@ export class ApplyComponent implements OnInit, OnDestroy {
           this.restricted.map(e => this.restrictedDates.push(e["Date"]))
           let d = this.tDate,
             m = this.month
-          if (d < 10) this.date = "0" + d
+          if ( d < 10 ) this.date = "0" + d
           else this.date = d
-          if (m < 9 && m > 0 ) m++ && (this.month = "0" + m)
+          if ( m < 9 && m > 0 ) m++ && ( this.month = "0" + m )
           else if ( m == 0 ) this.month = "01"
-          else m++ && (this.month = m)
-          this.today = String(this.date + "/" + this.month + "/" + this.year)
+          else m++ && ( this.month = m )
+          this.today = String( this.date + "/" + this.month + "/" + this.year )
           this.holidays.push({ Today: "Today", Date: this.today })
           this.holidays.sort((a, b) => {
             (a = a.Date.split("/").reverse().join("")), (b = b.Date.split("/").reverse().join(""))
@@ -186,7 +186,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
     // Find all dates between two dates and push them in an array
     this.totalDays = []
     while ( f < s || f == s ) {
-      // this.totalDays.push(f.format("DD/MM/YYYY"))
+      this.totalDays.push(f.format("DD/MM/YYYY"))
       f.add(1, "day")
     }
     if ( f !== s ) {
