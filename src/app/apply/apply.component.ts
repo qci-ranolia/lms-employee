@@ -209,7 +209,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
             var xd = this.dayList.filter( (value, index, arr) => {
               return index !== i
             })
-            this.dayList = []
+            // this.dayList = []
             this.dayList = xd
             this.leavedays = this.dayList.length/2
             this.dL_removal = true
@@ -217,6 +217,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
         }
       }
       if (this.ifLAL == 'cl' && this.issHalfDay){
+        console.log('cl and ahalfday true')
         this.clAct = true
         this.slAct = false
         for (let i = 0; i < this.dayList.length; i++){
@@ -224,7 +225,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
             var xd = this.dayList.filter( (value, index, arr) => {
               return index !== i
             })
-            this.dayList = []
+            // this.dayList = []
             this.dayList = xd
             this.leavedays = this.dayList.length/2
             this.sdL_removal = true
@@ -239,7 +240,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
             var xd = this.dayList.filter( (value, index, arr) => {
               return index !== i
             })
-            this.dayList = []
+            // this.dayList = []
             this.dayList = xd
             this.leavedays = this.dayList.length
             this.dL_removal_SL = true
@@ -254,7 +255,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
             var xd = this.dayList.filter( (value, index, arr) => {
               return index !== i
             })
-            this.dayList = []
+            // this.dayList = []
             this.dayList = xd
             this.leavedays = this.dayList.length
             this.sdL_removal_SL = true
@@ -335,7 +336,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
             var xd = this.dayList.filter( (value, index, arr) => {
               return index !== i
             })
-            this.dayList = []
+            // this.dayList = []
             this.dayList = xd
             this.leavedays = this.dayList.length/2
             this.dL_removal = true
@@ -349,7 +350,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
             var xd = this.dayList.filter( (value, index, arr) => {
               return index !== i
             })
-            this.dayList = []
+            // this.dayList = []
             this.dayList = xd
             this.leavedays = this.dayList.length/2
             this.sdL_removal = true
@@ -365,9 +366,13 @@ export class ApplyComponent implements OnInit, OnDestroy {
             })
           }
         }
-        this.dayList = []
+        // this.dayList = []
         this.dayList = xd
         this.leavedays = this.dayList.length/2
+        if (this.isHalfDay == false) {
+          this.dayList.push(this.fDate)
+          this.leavedays = this.dayList.length/2
+        }
         this.noSameDay = false
       } else if ( (this.secondDate == this.firstDate) && this.issHalfDay == false ){
         if ( (this.secondDate == this.firstDate) && this.isHalfDay == true ){
@@ -378,7 +383,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
               })
             }
           }
-          this.dayList = []
+          // this.dayList = []
           this.dayList = xd
           this.leavedays = this.dayList.length/2
         }
@@ -392,7 +397,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
               })
             }
           }
-          this.dayList = []
+          // this.dayList = []
           this.dayList = xd
           this.leavedays = this.dayList.length/2
         }
@@ -404,7 +409,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
               })
             }
           }
-          this.dayList = []
+          // this.dayList = []
           this.dayList = xd
           this.leavedays = this.dayList.length/2
         }
@@ -477,7 +482,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
             var xd = this.dayList.filter( (value, index, arr) => {
               return index !== i
             })
-            this.dayList = []
+            // this.dayList = []
             this.dayList = xd
             this.leavedays = this.dayList.length
             this.dL_removal_SL = true
@@ -491,7 +496,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
             var xd = this.dayList.filter( (value, index, arr) => {
               return index !== i
             })
-            this.dayList = []
+            // this.dayList = []
             this.dayList = xd
             this.leavedays = this.dayList.length
             this.sdL_removal_SL = true
@@ -507,9 +512,13 @@ export class ApplyComponent implements OnInit, OnDestroy {
             })
           }
         }
-        this.dayList = []
+        // this.dayList = []
         this.dayList = xd
         this.leavedays = this.dayList.length
+        if (this.isHalfDaySL == false) {
+          this.dayList.push(this.fDate)
+          this.leavedays = this.dayList.length
+        }
         this.noSameDaySL = false
       } else if ( (this.secondDate == this.firstDate) && this.issHalfDaySL == false ) {
         if ( (this.secondDate == this.firstDate) && this.isHalfDaySL == true ){
@@ -520,7 +529,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
               })
             }
           }
-          this.dayList = []
+          // this.dayList = []
           this.dayList = xd
           this.leavedays = this.dayList.length
         }
@@ -534,7 +543,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
               })
             }
           }
-          this.dayList = []
+          // this.dayList = []
           this.dayList = xd
           this.leavedays = this.dayList.length
         }
@@ -546,7 +555,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
               })
             }
           }
-          this.dayList = []
+          // this.dayList = []
           this.dayList = xd
           this.leavedays = this.dayList.length
         }
@@ -575,7 +584,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
           var xd = this.dayList.filter( (value, index, arr) => {
             return index !== i
           })
-          this.dayList = []
+          // this.dayList = []
           this.dayList = xd
           this.leavedays = this.dayList.length/2
           this.dL_removal = true
@@ -603,7 +612,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
           var xd = this.dayList.filter( (value, index, arr) => {
             return index !== i
           })
-          this.dayList = []
+          // this.dayList = []
           this.dayList = xd
           this.leavedays = this.dayList.length/2
           this.sdL_removal = true
@@ -631,7 +640,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
           var xd = this.dayList.filter( (value, index, arr) => {
             return index !== i
           })
-          this.dayList = []
+          // this.dayList = []
           this.dayList = xd
           this.leavedays = this.dayList.length
           this.dL_removal_SL = true
@@ -656,7 +665,7 @@ export class ApplyComponent implements OnInit, OnDestroy {
           var xd = this.dayList.filter( (value, index, arr) => {
             return index !== i
           })
-          this.dayList = []
+          // this.dayList = []
           this.dayList = xd
           this.leavedays = this.dayList.length
           this.sdL_removal_SL = true

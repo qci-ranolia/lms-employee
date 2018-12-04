@@ -10,7 +10,7 @@ export class ApiService {
   // URL: string = "http://192.168.15.219:5000/"
 
   token: string // Useful in Authentication
-  headers: Headers // Useful when backend and frontend have different IP's
+  headers: Headers // Useful when back-end and front-end have different IP's
   opts: any
   uid: any
   
